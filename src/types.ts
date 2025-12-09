@@ -1,6 +1,5 @@
-export type TaiXiu = 'Tài' | 'Xỉu';
+export type TaiXiu = 'Tài' | 'X���u';
 export type ChanLe = 'Chẵn' | 'Lẻ';
-export type Theme = 'dark' | 'light' | 'neon' | 'vintage';
 export interface Round {
   id: string;
   roundNumber: number;
@@ -13,24 +12,12 @@ export interface Round {
 export interface Prediction {
   taiXiu?: TaiXiu;
   chanLe?: ChanLe;
-  bet?: number;
 }
 export interface UserPrediction extends Prediction {
   roundId: string;
   result?: {
     taiXiuCorrect?: boolean;
     chanLeCorrect?: boolean;
-  };
-}
-export interface Achievement {
-  id: string;
-  name: string;
-  description: string;
-  unlocked: boolean;
-  unlockedAt?: string;
-  criteria: {
-    type: 'streak' | 'rounds' | 'wins' | 'points';
-    value: number;
   };
 }
 export interface Stats {
@@ -40,22 +27,9 @@ export interface Stats {
   currentStreak: number;
   longestStreak: number;
   points: number;
-  netProfit: number;
-  achievements: Achievement[];
 }
 export interface Settings {
   autoStart: boolean;
   soundEnabled: boolean;
   historyLimit: number;
-  soundVolume: number;
-  theme: Theme;
-}
-export type BetOutcome = 'win' | 'loss' | 'partial';
-export interface BetRecord {
-  roundId: string;
-  roundNumber: number;
-  betAmount: number;
-  outcome: BetOutcome;
-  profit: number;
-  timestamp: string;
 }
