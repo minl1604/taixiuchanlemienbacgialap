@@ -50,7 +50,7 @@ export function PredictionPanel({ onSpinNow }: PredictionPanelProps) {
             <Button size="lg" variant="destructive" onClick={stopAuto} className="sm:col-span-3 h-14 text-lg">Dừng Auto</Button>
           ) : (
             <>
-              <Button size="lg" variant="secondary" onClick={startAuto} className="h-14 text-lg">B��t đầu Auto</Button>
+              <Button size="lg" variant="secondary" onClick={startAuto} className="h-14 text-lg">Bắt đầu Auto</Button>
               <Button size="lg" onClick={onSpinNow} className="btn-gradient sm:col-span-2 h-14 text-lg">Quay ngay 1 kỳ</Button>
             </>
           )}

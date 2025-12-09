@@ -1,4 +1,4 @@
-export type TaiXiu = 'Tài' | 'X���u';
+export type TaiXiu = 'Tài' | 'Xỉu';
 export type ChanLe = 'Chẵn' | 'Lẻ';
 export interface Round {
   id: string;

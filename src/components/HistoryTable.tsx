@@ -18,7 +18,7 @@ export function HistoryTable({ history, onClearHistory }: HistoryTableProps) {
     <Card className="glass-dark border-green-500/20">
       <CardHeader className="flex flex-row items-center justify-between">
         <CardTitle className="text-2xl font-display">Kết quả gần đây</CardTitle>
-        <Button variant="destructive" size="sm" onClick={onClearHistory}>Xóa l���ch sử</Button>
+        <Button variant="destructive" size="sm" onClick={onClearHistory}>Xóa lịch sử</Button>
       </CardHeader>
       <CardContent>
         <ScrollArea className="h-96">
@@ -53,7 +53,7 @@ export function HistoryTable({ history, onClearHistory }: HistoryTableProps) {
                 ))
               ) : (
                 <TableRow>
-                  <TableCell colSpan={5} className="h-24 text-center">Chưa c�� lịch sử.</TableCell>
+                  <TableCell colSpan={5} className="h-24 text-center">Chưa có lịch sử.</TableCell>
                 </TableRow>
               )}
             </TableBody>

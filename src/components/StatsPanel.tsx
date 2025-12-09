@@ -13,7 +13,7 @@ export function StatsPanel({ stats, onResetStats }: StatsPanelProps) {
     <Card className="glass-dark border-yellow-500/20">
       <CardHeader className="flex flex-row items-center justify-between">
         <CardTitle className="text-2xl font-display">Thống kê</CardTitle>
-        <Button variant="outline" size="sm" onClick={onResetStats}>Đ��t lại</Button>
+        <Button variant="outline" size="sm" onClick={onResetStats}>Đặt lại</Button>
       </CardHeader>
       <CardContent className="space-y-4">
         <div className="flex justify-between items-baseline">
@@ -40,7 +40,7 @@ export function StatsPanel({ stats, onResetStats }: StatsPanelProps) {
           <Progress value={accuracy} className="h-2 [&>div]:bg-gradient-to-r [&>div]:from-blue-500 [&>div]:to-purple-500" />
         </div>
         <div className="flex justify-between items-baseline">
-          <span className="text-muted-foreground">Chuỗi thắng hiện tại</span>
+          <span className="text-muted-foreground">Chuỗi thắng hi��n tại</span>
           <span className="text-lg font-semibold">{stats.currentStreak}</span>
         </div>
         <div className="flex justify-between items-baseline">

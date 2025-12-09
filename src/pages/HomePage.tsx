@@ -23,7 +23,7 @@ export function HomePage() {
     const { newRound, wasCorrect } = spinNewRound();
     const resultText = `${newRound.taiXiu} - ${newRound.chanLe}`;
     if (wasCorrect === true) {
-      toast.success(`Kỳ #${newRound.roundNumber} - ${resultText}`, { description: 'D��� đoán chính xác!' });
+      toast.success(`Kỳ #${newRound.roundNumber} - ${resultText}`, { description: 'Dự đoán chính xác!' });
     } else if (wasCorrect === false) {
       toast.error(`Kỳ #${newRound.roundNumber} - ${resultText}`, { description: 'Chúc bạn may mắn lần sau!' });
     } else {
@@ -38,13 +38,13 @@ export function HomePage() {
         <h1 className="text-4xl md:text-5xl font-display font-bold text-balance leading-tight">
           <span className="text-gradient">Tài Xỉu Miền Bắc</span> Giả Lập
         </h1>
-        <p className="text-sm text-muted-foreground mt-2">Không dùng cho cá cược tiền thật</p>
+        <p className="text-sm text-muted-foreground mt-2">Không dùng cho cá c��ợc tiền thật</p>
       </header>
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="py-8 md:py-10 lg:py-12">
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
             {/* Main Column */}
-            <motion.div 
+            <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5 }}
@@ -56,7 +56,7 @@ export function HomePage() {
               <TrendView history={history} />
             </motion.div>
             {/* Sidebar Column */}
-            <motion.div 
+            <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: 0.2 }}

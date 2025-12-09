@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { motion } from 'framer-motion';
 interface RoundTimerProps {
   intervalSeconds?: number;
@@ -8,12 +8,12 @@ interface RoundTimerProps {
 export function RoundTimer({ intervalSeconds = 45, isAutoRunning, onExpire }: RoundTimerProps) {
   const [secondsLeft, setSecondsLeft] = useState(intervalSeconds);
   const timerRef = useRef<NodeJS.Timeout | null>(null);
-  const resetTimer = () => {
+  const resetTimer = useCallback(() => {
     if (timerRef.current) {
       clearTimeout(timerRef.current);
     }
     setSecondsLeft(intervalSeconds);
-  };
+  }, [intervalSeconds]);
   useEffect(() => {
     if (isAutoRunning) {
       resetTimer();
@@ -38,14 +38,14 @@ export function RoundTimer({ intervalSeconds = 45, isAutoRunning, onExpire }: Ro
         clearTimeout(timerRef.current);
       }
     };
-  }, [isAutoRunning, intervalSeconds, onExpire]);
+  }, [isAutoRunning, intervalSeconds, onExpire, resetTimer]);
   // Manual trigger for onExpire when not auto-running
   useEffect(() => {
     if (!isAutoRunning && secondsLeft <= 0) {
       onExpire();
       resetTimer();
     }
-  }, [secondsLeft, isAutoRunning, onExpire]);
+  }, [secondsLeft, isAutoRunning, onExpire, resetTimer]);
   const minutes = Math.floor(secondsLeft / 60);
   const seconds = secondsLeft % 60;
   return (
