@@ -6,8 +6,8 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/comp
 import { Skeleton } from '@/components/ui/skeleton';
 import type { Round, TaiXiu, ChanLe } from '@/types';
 import { cn } from '@/lib/utils';
-const TrendDot = memo(({ round, viewMode, index }: { round: Round; viewMode: 'tx' | 'cl'; index: number }) => {
-  const isTx = viewMode === 'tx';
+const TrendDot = memo(({ round, viewMode, index }: { round: Round; viewMode: 'taiXiu' | 'chanLe'; index: number }) => {
+  const isTx = viewMode === 'taiXiu';
   const result: TaiXiu | ChanLe = isTx ? round.taiXiu : round.chanLe;
   // Tài/Lẻ are "primary" (red), Xỉu/Chẵn are "secondary" (blue)
   const isPrimary = (isTx && result === 'Tài') || (!isTx && result === 'Lẻ');
@@ -24,7 +24,7 @@ const TrendDot = memo(({ round, viewMode, index }: { round: Round; viewMode: 'tx
             animate={{ opacity: 1, scale: 1 }}
             transition={{ delay: index * 0.02, type: 'spring', stiffness: 300, damping: 20 }}
             className={cn(
-              "center w-5 h-5 rounded-full font-mono text-[10px] font-bold text-white shadow-sm transition-all duration-200 cursor-pointer",
+              "center w-6 h-6 rounded-full font-mono text-xs font-bold text-white shadow-sm transition-all duration-200 cursor-pointer",
               isPrimary && "bg-red-500/90 hover:shadow-[0_0_10px_theme(colors.red.500)]",
               isSecondary && "bg-blue-500/90 hover:shadow-[0_0_10px_theme(colors.blue.500)]",
               "hover:scale-110 active:scale-105"
@@ -48,23 +48,22 @@ const TrendDot = memo(({ round, viewMode, index }: { round: Round; viewMode: 'tx
 });
 TrendDot.displayName = 'TrendDot';
 function TrendViewComponent({ history }: { history: Round[] }) {
-  const [viewMode, setViewMode] = useState<'tx' | 'cl'>('tx');
+  const [viewMode, setViewMode] = useState<'taiXiu' | 'chanLe'>('taiXiu');
   const groupedRows = useMemo(() => {
     if (!history || history.length === 0) {
       return [];
     }
-    // Take the last 50 rounds and reverse so the oldest is first for top-to-bottom rendering.
-    const recentHistory = history.slice(-50).reverse();
-    const rows: Round[][] = [];
+    const recentHistory = history.slice(0, 50).reverse();
     if (recentHistory.length === 0) {
       return [];
     }
+    const rows: Round[][] = [];
     let currentRow: Round[] = [recentHistory[0]];
     for (let i = 1; i < recentHistory.length; i++) {
       const currentRound = recentHistory[i];
       const prevRound = recentHistory[i - 1];
-      const currentResult = viewMode === 'tx' ? currentRound.taiXiu : currentRound.chanLe;
-      const prevResult = viewMode === 'tx' ? prevRound.taiXiu : prevRound.chanLe;
+      const currentResult = viewMode === 'taiXiu' ? currentRound.taiXiu : currentRound.chanLe;
+      const prevResult = viewMode === 'taiXiu' ? prevRound.taiXiu : prevRound.chanLe;
       if (currentResult === prevResult) {
         currentRow.push(currentRound);
       } else {
@@ -72,7 +71,6 @@ function TrendViewComponent({ history }: { history: Round[] }) {
         currentRow = [currentRound];
       }
     }
-    // Add the last running row
     if (currentRow.length > 0) {
       rows.push(currentRow);
     }
@@ -86,16 +84,16 @@ function TrendViewComponent({ history }: { history: Round[] }) {
     <Card className="glass-dark border-purple-500/20 hover:shadow-glow transition-shadow">
       <CardHeader>
         <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
-          <CardTitle className="text-2xl font-display text-gradient">Xu H��ớng Gần Đây</CardTitle>
+          <CardTitle className="text-2xl font-display text-gradient">Xu Hướng</CardTitle>
           <ToggleGroup
             type="single"
             value={viewMode}
-            onValueChange={(value: 'tx' | 'cl') => value && setViewMode(value)}
+            onValueChange={(value: 'taiXiu' | 'chanLe') => value && setViewMode(value)}
             className="w-full sm:w-auto"
             aria-label="Chế độ xem xu hướng"
           >
-            <ToggleGroupItem value="tx" aria-label="Xem xu hướng Tài Xỉu" className="flex-1 data-[state=on]:bg-purple-600/80 data-[state=on]:text-white">Tài Xỉu</ToggleGroupItem>
-            <ToggleGroupItem value="cl" aria-label="Xem xu hướng Chẵn Lẻ" className="flex-1 data-[state=on]:bg-purple-600/80 data-[state=on]:text-white">Chẵn Lẻ</ToggleGroupItem>
+            <ToggleGroupItem value="taiXiu" aria-label="Xem xu hướng Tài Xỉu" className="flex-1 data-[state=on]:bg-purple-600/80 data-[state=on]:text-white">Tài Xỉu</ToggleGroupItem>
+            <ToggleGroupItem value="chanLe" aria-label="Xem xu hướng Chẵn Lẻ" className="flex-1 data-[state=on]:bg-purple-600/80 data-[state=on]:text-white">Chẵn Lẻ</ToggleGroupItem>
           </ToggleGroup>
         </div>
       </CardHeader>
@@ -103,7 +101,7 @@ function TrendViewComponent({ history }: { history: Round[] }) {
         {history.length >= 5 ? (
           <div className="flex flex-col gap-1 p-2 rounded-lg bg-black/20 min-h-[12rem]">
             {groupedRows.map((row, rowIndex) => (
-              <div key={rowIndex} className="flex flex-row flex-wrap gap-1">
+              <div key={rowIndex} className="flex flex-row flex-wrap gap-0.5">
                 {row.map((round, dotIndex) => (
                   <TrendDot key={round.id} round={round} viewMode={viewMode} index={rowIndex * 15 + dotIndex} />
                 ))}
@@ -111,8 +109,8 @@ function TrendViewComponent({ history }: { history: Round[] }) {
             ))}
           </div>
         ) : (
-          <div className="text-center text-muted-foreground p-4 h-32 center">
-            Chưa có đủ dữ liệu để hiển th�� xu hướng.
+          <div className="text-center text-muted-foreground p-4 h-48 center">
+            Chưa có đủ dữ liệu để hiển thị xu hướng.
           </div>
         )}
       </CardContent>
