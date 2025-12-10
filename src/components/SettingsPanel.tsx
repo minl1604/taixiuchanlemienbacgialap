@@ -14,6 +14,7 @@ import { Slider } from '@/components/ui/slider';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useGameStore } from '@/hooks/useGameStore';
 import type { Settings, Theme } from '@/types';
+import { toast } from 'sonner';
 interface SettingsPanelProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
@@ -22,11 +23,12 @@ const themes: { value: Theme; label: string }[] = [
   { value: 'dark', label: 'Tối (Mặc định)' },
   { value: 'light', label: 'Sáng' },
   { value: 'neon', label: 'Neon' },
-  { value: 'vintage', label: 'Cổ điển (Vintage)' },
+  { value: 'vintage', label: 'C��� điển (Vintage)' },
 ];
 export function SettingsPanel({ open, onOpenChange }: SettingsPanelProps) {
   const settings = useGameStore((state) => state.settings);
   const setSettings = useGameStore((state) => state.actions.setSettings);
+  const history = useGameStore((state) => state.history);
   // Set a softer default volume if it's not already set.
   const currentSettings = {
     soundVolume: 30,
@@ -39,6 +41,27 @@ export function SettingsPanel({ open, onOpenChange }: SettingsPanelProps) {
   const handleThemeChange = (theme: Theme) => {
     handleSettingsChange({ theme });
     document.documentElement.setAttribute('data-theme', theme);
+  };
+  const handleExportHistory = () => {
+    if (history && history.length > 0) {
+      try {
+        const blob = new Blob([JSON.stringify(history, null, 2)], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `lich-su-tai-xiu-${new Date().toISOString().split('T')[0]}.json`;
+        document.body.appendChild(a); // Required for Firefox
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+        toast.success('Đã tải lịch sử thành công!');
+      } catch (error) {
+        console.error("Failed to export history:", error);
+        toast.error('Xuất lịch sử thất bại.');
+      }
+    } else {
+      toast.warning('Chưa có dữ liệu lịch sử để xuất.');
+    }
   };
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -54,7 +77,7 @@ export function SettingsPanel({ open, onOpenChange }: SettingsPanelProps) {
             <Label htmlFor="theme-select">Chủ đề giao diện</Label>
             <Select value={currentSettings.theme} onValueChange={handleThemeChange}>
               <SelectTrigger id="theme-select">
-                <SelectValue placeholder="Ch��n một chủ đề" />
+                <SelectValue placeholder="Chọn một chủ đề" />
               </SelectTrigger>
               <SelectContent>
                 {themes.map((theme) => (
@@ -104,7 +127,7 @@ export function SettingsPanel({ open, onOpenChange }: SettingsPanelProps) {
             />
           </div>
           <div className="space-y-3">
-            <Label htmlFor="history-limit">Giới hạn lịch s�� ({currentSettings.historyLimit} kỳ)</Label>
+            <Label htmlFor="history-limit">Giới hạn lịch sử ({currentSettings.historyLimit} kỳ)</Label>
             <Slider
               id="history-limit"
               min={10}
@@ -113,6 +136,12 @@ export function SettingsPanel({ open, onOpenChange }: SettingsPanelProps) {
               value={[currentSettings.historyLimit]}
               onValueChange={(value) => handleSettingsChange({ historyLimit: value[0] })}
             />
+          </div>
+          <div className="space-y-3">
+            <Label htmlFor="export-data">Xuất dữ liệu</Label>
+            <Button id="export-data" onClick={handleExportHistory} variant="outline" className="w-full hover:bg-gradient-to-r hover:from-purple-500/20 hover:to-blue-500/20">
+              Tải lịch sử (JSON)
+            </Button>
           </div>
         </div>
         <DialogFooter>

@@ -1,6 +1,7 @@
 import { create } from 'zustand';
 import { immer } from 'zustand/middleware/immer';
 import { toast } from 'sonner';
+import { useShallow } from 'zustand/react/shallow';
 import type { Round, Prediction, Stats, BetRecord, Settings, Achievement } from '@/types';
 import * as storage from '@/lib/storage';
 import { generateRound, evaluatePrediction, calculateReward } from '@/lib/simulator';
@@ -58,7 +59,7 @@ export const playSound = (type: 'win' | 'loss' | 'tick' | 'achievement', setting
   }
 };
 const initialAchievements: Achievement[] = [
-  { id: 'streak5', name: 'Nóng Tay', description: 'Đạt chu���i thắng 5 kỳ liên tiếp.', unlocked: false, criteria: { type: 'streak', value: 5 } },
+  { id: 'streak5', name: 'Nóng Tay', description: 'Đạt chuỗi thắng 5 kỳ liên tiếp.', unlocked: false, criteria: { type: 'streak', value: 5 } },
   { id: 'streak10', name: 'Bậc Thầy Chuỗi', description: 'Đạt chuỗi thắng 10 kỳ liên tiếp!', unlocked: false, criteria: { type: 'streak', value: 10 } },
   { id: 'rounds50', name: 'Người Chơi Bền Bỉ', description: 'Hoàn thành 50 kỳ quay.', unlocked: false, criteria: { type: 'rounds', value: 50 } },
   { id: 'rounds100', name: 'Trăm Trận Trăm Thắng', description: 'Hoàn thành 100 kỳ quay.', unlocked: false, criteria: { type: 'rounds', value: 100 } },
@@ -216,14 +217,14 @@ export const useGameStore = create<GameState>()(
     },
   }))
 );
-export const useHistory = () => useGameStore(s => s.history);
+export const useHistory = () => useGameStore(useShallow(s => s.history));
 export const useStats = () => useGameStore(s => s.stats);
 export const useBalance = () => useGameStore(s => s.balance);
-export const useBettingHistory = () => useGameStore(s => s.bettingHistory);
+export const useBettingHistory = () => useGameStore(useShallow(s => s.bettingHistory));
 export const useCurrentPrediction = () => useGameStore(s => s.currentPrediction);
 export const useIsAutoRunning = () => useGameStore(s => s.isAutoRunning);
 export const useLastRound = () => useGameStore(s => s.lastRound);
 export const useGameActions = () => useGameStore(s => s.actions);
 export const useSettings = () => useGameStore(s => s.settings);
-export const useAchievements = () => useGameStore(s => s.stats.achievements);
+export const useAchievements = () => useGameStore(useShallow(s => s.stats.achievements));
 export const getGameActions = () => useGameStore.getState().actions;
