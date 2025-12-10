@@ -26,7 +26,7 @@ const TrendDot = memo(({ round, viewMode, index }: { round: Round; viewMode: 'ta
             animate={{ opacity: 1, scale: 1 }}
             transition={{ delay: index * 0.02, type: 'spring', stiffness: 400, damping: 25 }}
             className={cn(
-              "center flex-shrink-0 w-6 h-6 sm:w-7 sm:h-7 rounded-full text-xs font-semibold text-white shadow-[0_2px_6px_rgba(0,0,0,0.35)] border border-white/10 cursor-pointer transition-all duration-200 hover:scale-110 active:scale-105",
+              "center flex-none w-6 h-6 sm:w-7 sm:h-7 rounded-full text-xs font-semibold text-white shadow-[0_2px_6px_rgba(0,0,0,0.35)] border border-white/10 cursor-pointer transition-all duration-200 hover:scale-110 active:scale-105",
               isPrimary && "bg-gradient-to-b from-[#c23a3a] to-[#a82b2b] hover:shadow-[0_0_10px_theme(colors.red.500)]",
               isSecondary && "bg-gradient-to-b from-[#2b6bd1] to-[#1f4fb0] hover:shadow-[0_0_10px_theme(colors.blue.500)]"
             )}
@@ -69,7 +69,7 @@ function TrendViewComponent({ history }: { history: Round[] }) {
         <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
           <CardTitle className="text-2xl font-display text-gradient">Xu Hướng</CardTitle>
           <div className="w-full sm:w-auto">
-            <Label id="trend-mode-label" className="sr-only">Chế đ��� xem xu hướng</Label>
+            <Label id="trend-mode-label" className="sr-only">Chế độ xem xu hướng</Label>
             <ToggleGroup
               type="single"
               value={viewMode}
@@ -85,7 +85,7 @@ function TrendViewComponent({ history }: { history: Round[] }) {
       </CardHeader>
       <CardContent>
         {flatHistory.length > 0 ? (
-          <div className="flex flex-wrap items-start gap-x-[6px] gap-y-2 sm:gap-x-2 sm:gap-y-3 p-3 sm:p-4 rounded-lg bg-black/20 min-h-[12rem] overflow-x-auto">
+          <div className="flex flex-wrap items-start justify-start [align-content:start] gap-y-3 gap-x-2 p-3 sm:p-4 rounded-lg bg-black/20 min-h-[12rem] overflow-x-auto">
             {flatHistory.map((round, index) => (
               <TrendDot key={round.id} round={round} viewMode={viewMode} index={index} />
             ))}
