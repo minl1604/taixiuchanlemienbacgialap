@@ -27,7 +27,7 @@ export function HomePage() {
     } else if (wasCorrect === false) {
       toast.error(`Kỳ #${newRound.roundNumber} - ${resultText}`, { description: 'Chúc bạn may mắn lần sau!' });
     } else {
-      toast.info(`Kỳ #${newRound.roundNumber} - ${resultText}`, { description: 'Đã có kết qu��� mới.' });
+      toast.info(`Kỳ #${newRound.roundNumber} - ${resultText}`, { description: 'Đã có kết quả mới.' });
     }
   }, [spinNewRound]);
   return (
@@ -50,7 +50,7 @@ export function HomePage() {
               transition={{ duration: 0.5 }}
               className="lg:col-span-2 space-y-8"
             >
-              <RoundTimer isAutoRunning={isAutoRunning} onExpire={handleSpin} />
+              <RoundTimer isAutoRunning={isAutoRunning} onExpire={handleSpin} intervalSeconds={45} />
               <CurrentRoundPanel round={lastRound} />
               <PredictionPanel onSpinNow={handleSpin} />
               <TrendView history={history} />
@@ -69,7 +69,7 @@ export function HomePage() {
         </div>
       </main>
       <footer className="text-center py-8 text-muted-foreground/80 text-sm">
-        <p>Built with ❤️ at Cloudflare</p>
+        <p>Built with ❤�� at Cloudflare</p>
       </footer>
       <Toaster richColors closeButton theme="dark" />
     </div>

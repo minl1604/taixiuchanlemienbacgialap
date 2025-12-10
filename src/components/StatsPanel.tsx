@@ -40,7 +40,7 @@ export function StatsPanel({ stats, onResetStats }: StatsPanelProps) {
           <Progress value={accuracy} className="h-2 [&>div]:bg-gradient-to-r [&>div]:from-blue-500 [&>div]:to-purple-500" />
         </div>
         <div className="flex justify-between items-baseline">
-          <span className="text-muted-foreground">Chuỗi thắng hi��n tại</span>
+          <span className="text-muted-foreground">Chuỗi thắng hiện tại</span>
           <span className="text-lg font-semibold">{stats.currentStreak}</span>
         </div>
         <div className="flex justify-between items-baseline">

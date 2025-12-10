@@ -5,7 +5,7 @@ interface RoundTimerProps {
   isAutoRunning: boolean;
   onExpire: () => void;
 }
-export function RoundTimer({ intervalSeconds = 20, isAutoRunning, onExpire }: RoundTimerProps) {
+export function RoundTimer({ intervalSeconds = 45, isAutoRunning, onExpire }: RoundTimerProps) {
   const [secondsLeft, setSecondsLeft] = useState(intervalSeconds);
   const timerRef = useRef<NodeJS.Timeout | null>(null);
   const resetTimer = useCallback(() => {
@@ -16,36 +16,42 @@ export function RoundTimer({ intervalSeconds = 20, isAutoRunning, onExpire }: Ro
   }, [intervalSeconds]);
   useEffect(() => {
     if (isAutoRunning) {
-      resetTimer();
+      // When auto-running starts, we want the first tick to happen after 1s,
+      // not immediately. So we set up the timer to call tick.
       const tick = () => {
         setSecondsLeft((prev) => {
           if (prev <= 1) {
             onExpire();
-            return intervalSeconds;
+            return intervalSeconds; // Reset for the next round
           }
           return prev - 1;
         });
         timerRef.current = setTimeout(tick, 1000);
       };
-      timerRef.current = setTimeout(tick, 1000);
+      // If the timer is not already running, start it.
+      if (!timerRef.current) {
+        timerRef.current = setTimeout(tick, 1000);
+      }
     } else {
+      // If auto-running is stopped, clear any scheduled ticks.
       if (timerRef.current) {
         clearTimeout(timerRef.current);
+        timerRef.current = null;
       }
     }
+    // Cleanup function to clear the timer on component unmount or when dependencies change.
     return () => {
       if (timerRef.current) {
         clearTimeout(timerRef.current);
       }
     };
-  }, [isAutoRunning, intervalSeconds, onExpire, resetTimer]);
-  // Manual trigger for onExpire when not auto-running
+  }, [isAutoRunning, intervalSeconds, onExpire]);
+  // Effect to reset the timer display when auto-running is toggled.
   useEffect(() => {
-    if (!isAutoRunning && secondsLeft <= 0) {
-      onExpire();
+    if (isAutoRunning) {
       resetTimer();
     }
-  }, [secondsLeft, isAutoRunning, onExpire, resetTimer]);
+  }, [isAutoRunning, resetTimer]);
   const minutes = Math.floor(secondsLeft / 60);
   const seconds = secondsLeft % 60;
   return (

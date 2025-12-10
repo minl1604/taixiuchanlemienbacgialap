@@ -12,11 +12,13 @@ export function PredictionPanel({ onSpinNow }: PredictionPanelProps) {
   const currentPrediction = useCurrentPrediction();
   const isAutoRunning = useIsAutoRunning();
   const stats = useStats();
-  const handleTaiXiuChange = (value: TaiXiu) => {
-    setPrediction({ taiXiu: value || undefined });
+  const handleTaiXiuChange = (value: string) => {
+    // onValueChange provides an empty string on deselect.
+    // We set the value to the selected item, or undefined if deselected.
+    setPrediction({ taiXiu: value as TaiXiu || undefined });
   };
-  const handleChanLeChange = (value: ChanLe) => {
-    setPrediction({ chanLe: value || undefined });
+  const handleChanLeChange = (value: string) => {
+    setPrediction({ chanLe: value as ChanLe || undefined });
   };
   return (
     <Card className="glass-dark border-blue-500/20">
