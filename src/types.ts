@@ -34,6 +34,7 @@ export interface Settings {
   autoStart: boolean;
   soundEnabled: boolean;
   historyLimit: number;
+  soundVolume: number;
 }
 export type BetOutcome = 'win' | 'loss' | 'partial';
 export interface BetRecord {

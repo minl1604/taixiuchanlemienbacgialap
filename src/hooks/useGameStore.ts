@@ -3,12 +3,48 @@ import { immer } from 'zustand/middleware/immer';
 import type { Round, Prediction, Stats, BetRecord, Settings } from '@/types';
 import * as storage from '@/lib/storage';
 import { generateRound, evaluatePrediction, calculateReward } from '@/lib/simulator';
-// Mock sound player
-const playSound = (type: 'win' | 'loss' | 'tick') => {
-  console.log(`🔊 Sound played: ${type}`);
-  // In a real app, you would use a library like Howler.js here
-  // const sound = new Audio(`/sounds/${type}.mp3`);
-  // sound.play();
+let audioCtx: AudioContext | null = null;
+const initAudioContext = () => {
+  if (!audioCtx) {
+    try {
+      audioCtx = new (window.AudioContext || (window as any).webkitAudioContext)();
+    } catch (e) {
+      console.error("Web Audio API is not supported in this browser", e);
+    }
+  }
+};
+export const playSound = (type: 'win' | 'loss' | 'tick', settings: Settings) => {
+  if (!settings.soundEnabled || settings.soundVolume === 0) return;
+  initAudioContext();
+  if (!audioCtx) return;
+  const oscillator = audioCtx.createOscillator();
+  const gainNode = audioCtx.createGain();
+  gainNode.gain.setValueAtTime(settings.soundVolume / 100, audioCtx.currentTime);
+  oscillator.connect(gainNode);
+  gainNode.connect(audioCtx.destination);
+  let freq: number, waveType: OscillatorType, duration: number;
+  switch (type) {
+    case 'win':
+      freq = 800;
+      waveType = 'sine';
+      duration = 0.5;
+      break;
+    case 'loss':
+      freq = 200;
+      waveType = 'square';
+      duration = 0.3;
+      break;
+    case 'tick':
+      freq = 600;
+      waveType = 'triangle';
+      duration = 0.05;
+      gainNode.gain.setValueAtTime(settings.soundVolume / 200, audioCtx.currentTime); // Ticks are quieter
+      break;
+  }
+  oscillator.type = waveType;
+  oscillator.frequency.setValueAtTime(freq, audioCtx.currentTime);
+  oscillator.start();
+  oscillator.stop(audioCtx.currentTime + duration);
 };
 interface GameState {
   history: Round[];
@@ -28,6 +64,7 @@ interface GameState {
     resetHistory: () => void;
     resetStatsAndBalance: () => void;
     setSettings: (newSettings: Partial<Settings>) => void;
+    userInteracted: () => void;
   };
 }
 const initialStats: Stats = {
@@ -48,7 +85,7 @@ export const useGameStore = create<GameState>()(
     currentPrediction: {},
     isAutoRunning: false,
     lastRound: undefined,
-    settings: storage.getSettings(), // Initialize with settings from storage
+    settings: storage.getSettings(),
     actions: {
       init: () => {
         const history = storage.getHistory();
@@ -69,6 +106,9 @@ export const useGameStore = create<GameState>()(
             set({ isAutoRunning: true });
           }, 1000);
         }
+      },
+      userInteracted: () => {
+        initAudioContext();
       },
       setPrediction: (prediction) => {
         set((state) => {
@@ -111,9 +151,7 @@ export const useGameStore = create<GameState>()(
                 state.bettingHistory = state.bettingHistory.slice(0, state.settings.historyLimit);
               }
             });
-            if (settings.soundEnabled) {
-              playSound(profit > 0 ? 'win' : 'loss');
-            }
+            playSound(profit > 0 ? 'win' : 'loss', settings);
           }
         }
         const newHistory = [newRound, ...get().history].slice(0, settings.historyLimit);
@@ -149,3 +187,12 @@ export const useGameStore = create<GameState>()(
     },
   }))
 );
+export const useHistory = () => useGameStore(s => s.history);
+export const useStats = () => useGameStore(s => s.stats);
+export const useBalance = () => useGameStore(s => s.balance);
+export const useBettingHistory = () => useGameStore(s => s.bettingHistory);
+export const useCurrentPrediction = () => useGameStore(s => s.currentPrediction);
+export const useIsAutoRunning = () => useGameStore(s => s.isAutoRunning);
+export const useLastRound = () => useGameStore(s => s.lastRound);
+export const useGameActions = () => useGameStore(s => s.actions);
+export const useSettings = () => useGameStore(s => s.settings);

@@ -38,7 +38,7 @@ export function SettingsPanel({ open, onOpenChange }: SettingsPanelProps) {
             <Label htmlFor="auto-start" className="flex flex-col space-y-1">
               <span>Tự động bắt đầu</span>
               <span className="font-normal leading-snug text-muted-foreground">
-                Bắt đầu chế độ auto khi t���i trang.
+                Bắt đầu chế độ auto khi tải trang.
               </span>
             </Label>
             <Switch
@@ -51,13 +51,25 @@ export function SettingsPanel({ open, onOpenChange }: SettingsPanelProps) {
             <Label htmlFor="sound-enabled" className="flex flex-col space-y-1">
               <span>Âm thanh</span>
               <span className="font-normal leading-snug text-muted-foreground">
-                Bật/tắt hiệu ứng âm thanh (chức năng giả lập).
+                Bật/tắt hiệu ứng âm thanh.
               </span>
             </Label>
             <Switch
               id="sound-enabled"
               checked={settings.soundEnabled}
               onCheckedChange={(checked) => handleSettingsChange({ soundEnabled: checked })}
+            />
+          </div>
+          <div className="space-y-3">
+            <Label htmlFor="sound-volume">Âm lượng ({settings.soundVolume}%)</Label>
+            <Slider
+              id="sound-volume"
+              min={0}
+              max={100}
+              step={10}
+              value={[settings.soundVolume]}
+              onValueChange={(value) => handleSettingsChange({ soundVolume: value[0] })}
+              disabled={!settings.soundEnabled}
             />
           </div>
           <div className="space-y-3">

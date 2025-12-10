@@ -42,17 +42,18 @@ export function HomePage() {
   const [showSettings, setShowSettings] = useState(false);
   const [showDisclaimer, setShowDisclaimer] = useState(false);
   const [confetti, setConfetti] = useState<JSX.Element[]>([]);
+  const { init, userInteracted } = useGameStore(s => s.actions);
   useEffect(() => {
     setIsClient(true);
     try {
-      useGameStore.getState().actions.init();
+      init();
       if (!localStorage.getItem('disclaimerSeen')) {
         setShowDisclaimer(true);
       }
     } catch (e) {
       console.error("Failed to initialize game store:", e);
     }
-  }, []);
+  }, [init]);
   const history = useHistory();
   const stats = useStats();
   const isAutoRunning = useIsAutoRunning();
@@ -93,7 +94,7 @@ export function HomePage() {
             toast.error(`Kỳ #${newRound.roundNumber} - ${resultText}`, { description: 'Chúc bạn may mắn lần sau!' });
         }
     } else {
-      toast.info(`Kỳ #${newRound.roundNumber} - ${resultText}`, { description: 'Đã có kết quả mới.' });
+      toast.info(`Kỳ #${newRound.roundNumber} - ${resultText}`, { description: 'Đã có kết quả m���i.' });
     }
   }, [spinNewRound]);
   const handleDisclaimerClose = () => {
@@ -104,7 +105,7 @@ export function HomePage() {
     return null; // or a loading spinner
   }
   return (
-    <div className="min-h-screen bg-gray-900 text-foreground dark font-sans relative overflow-x-hidden">
+    <div className="min-h-screen bg-gray-900 text-foreground dark font-sans relative overflow-x-hidden" onClick={userInteracted} onTouchStart={userInteracted}>
       <div className="absolute inset-0 bg-gradient-mesh opacity-10 pointer-events-none" />
       <div className="absolute top-4 right-4 flex items-center gap-2">
         <Button variant="ghost" size="icon" onClick={() => setShowSettings(true)} className="text-2xl hover:scale-110 hover:rotate-12 transition-all duration-200 active:scale-90 z-50">
@@ -116,7 +117,7 @@ export function HomePage() {
         <h1 className="text-4xl md:text-5xl font-display font-bold text-balance leading-tight">
           <span className="text-gradient">Tài Xỉu Miền Bắc</span> Giả Lập
         </h1>
-        <p className="text-sm text-muted-foreground mt-2">Không dùng cho c�� cược tiền thật</p>
+        <p className="text-sm text-muted-foreground mt-2">Không dùng cho cá cược tiền thật</p>
       </header>
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="py-8 md:py-10 lg:py-12">
@@ -145,7 +146,7 @@ export function HomePage() {
         </div>
       </main>
       <footer className="text-center py-8 text-muted-foreground/80 text-sm">
-        <p>Built with ❤️ at Cloudflare</p>
+        <p>Built with ❤��� at Cloudflare</p>
       </footer>
       <Toaster richColors closeButton theme="dark" />
       <SettingsPanel open={showSettings} onOpenChange={setShowSettings} />

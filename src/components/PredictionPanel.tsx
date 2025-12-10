@@ -58,19 +58,19 @@ export function PredictionPanel({ onSpinNow, defaultBet }: PredictionPanelProps)
   const handleSpinWithBet = () => {
     const betValue = parseInt(betAmount, 10);
     if (isNaN(betValue) || betValue <= 0) {
-      toast.error("Số ti���n cược không hợp lệ.");
+      toast.error("Số tiền cược không hợp lệ.");
       return;
     }
     if (betValue > balance) {
-      toast.error("Số dư không đ��.");
+      toast.error("Số dư không đủ.");
       return;
     }
     if (!selectedTaiXiu && !selectedChanLe) {
-      toast.warning("Vui lòng ch��n dự đoán.");
+      toast.warning("Vui l��ng chọn dự đoán.");
       return;
     }
     setPrediction({ bet: betValue });
-    toast.success(`Đặt cược ${betValue.toLocaleString('vi-VN')} VND thành công!`);
+    toast.success(`��ặt cược ${betValue.toLocaleString('vi-VN')} VND thành công!`);
     setTimeout(() => {
       onSpinNow();
     }, 100);

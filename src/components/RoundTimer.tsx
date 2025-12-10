@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { motion } from 'framer-motion';
+import { useGameStore, playSound } from '@/hooks/useGameStore';
 interface RoundTimerProps {
   intervalSeconds?: number;
   isAutoRunning: boolean;
@@ -7,11 +8,13 @@ interface RoundTimerProps {
 }
 export function RoundTimer({ intervalSeconds = 20, isAutoRunning, onExpire }: RoundTimerProps) {
   const [secondsLeft, setSecondsLeft] = useState(intervalSeconds);
+  const settings = useGameStore(s => s.settings);
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
   const expectedRef = useRef<number | null>(null);
   const tick = useCallback(() => {
     if (expectedRef.current === null) return;
     const drift = Date.now() - expectedRef.current;
+    playSound('tick', settings);
     setSecondsLeft(prev => {
       if (prev <= 1) {
         onExpire();
@@ -21,7 +24,7 @@ export function RoundTimer({ intervalSeconds = 20, isAutoRunning, onExpire }: Ro
     });
     expectedRef.current += 1000;
     intervalRef.current = setTimeout(tick, 1000 - drift);
-  }, [onExpire, intervalSeconds]);
+  }, [onExpire, intervalSeconds, settings]);
   useEffect(() => {
     if (isAutoRunning) {
       setSecondsLeft(intervalSeconds);

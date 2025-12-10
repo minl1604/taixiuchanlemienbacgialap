@@ -47,6 +47,7 @@ export const getSettings = (): Settings => {
     autoStart: false,
     soundEnabled: true,
     historyLimit: 100,
+    soundVolume: 50,
   };
   const storedSettings = safeJSONParse(localStorage.getItem(SETTINGS_KEY), {});
   return { ...defaultSettings, ...storedSettings };
