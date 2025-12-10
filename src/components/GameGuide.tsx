@@ -28,7 +28,7 @@ const guideSections = [
   {
     icon: Target,
     title: "Dự Đoán",
-    content: "Trước mỗi kỳ, bạn có thể chọn dự đoán kết quả. Có hai chế độ: 'Tài / Xỉu' hoặc 'Chẵn / Lẻ'. Bạn chỉ có thể chọn một trong hai chế độ và đặt cược cho một kết quả duy nhất trong chế độ ��ó."
+    content: "Trước mỗi kỳ, bạn có thể chọn dự đoán kết quả. Có hai chế độ: 'Tài / Xỉu' hoặc 'Chẵn / Lẻ'. Bạn chỉ có thể chọn một trong hai chế độ và đặt cược cho một kết quả duy nhất trong chế độ đó."
   },
   {
     icon: CircleDollarSign,
@@ -38,12 +38,12 @@ const guideSections = [
   {
     icon: Trophy,
     title: "Kết Quả",
-    content: "Kết quả được xác định bằng tổng của 5 chữ số:\n- TÀI: nếu tổng lớn hơn hoặc bằng 23.\n- XỈU: nếu tổng nhỏ hơn 23.\n- CH���N: nếu tổng là số chẵn.\n- LẺ: nếu tổng là số lẻ."
+    content: "Kết quả được xác đ��nh bằng tổng của 5 chữ số:\n- TÀI: nếu tổng lớn hơn hoặc bằng 23.\n- XỈU: nếu tổng nhỏ hơn 23.\n- CHẴN: nếu tổng là số chẵn.\n- L���: nếu tổng là số lẻ."
   },
   {
     icon: BarChart,
     title: "Thống Kê & Xu Hướng",
-    content: "Ứng dụng theo dõi độ chính xác, chuỗi th��ng và lợi nhuận của bạn. Bảng 'Xu hướng' hiển thị các kết quả gần đây dưới dạng biểu đồ để bạn dễ dàng theo dõi."
+    content: "Ứng dụng theo dõi độ chính xác, chuỗi thắng và lợi nhuận của bạn. Bảng 'Xu hướng' hiển thị các kết quả gần đây dưới dạng biểu đồ để bạn dễ dàng theo dõi."
   },
   {
     icon: Settings,

@@ -104,7 +104,7 @@ function TrendViewComponent({ history }: { history: Round[] }) {
     <Card className="glass-dark border-purple-500/20 hover:shadow-glow transition-shadow overflow-hidden">
       <CardHeader>
         <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
-          <CardTitle className="text-2xl font-display text-gradient">Xu Hư��ng</CardTitle>
+          <CardTitle className="text-2xl font-display text-gradient">Xu Hướng</CardTitle>
           <div className="w-full sm:w-auto">
             <Label id="trend-mode-label" className="sr-only">Chế độ xem xu hướng</Label>
             <ToggleGroup

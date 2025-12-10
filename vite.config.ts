@@ -10,6 +10,12 @@ export default defineConfig({
       // Configuration for the Cloudflare plugin
     }),
   ],
+  server: {
+    headers: {
+      'Content-Security-Policy': "default-src 'self'; font-src 'self' https://fonts.gstatic.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; img-src 'self' data:; connect-src 'self';",
+      'Access-Control-Allow-Origin': '*',
+    }
+  },
   // Enforce a single instance of React to prevent invalid hook call errors
   resolve: {
     alias: {

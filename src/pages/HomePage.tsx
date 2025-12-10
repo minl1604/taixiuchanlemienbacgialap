@@ -67,7 +67,7 @@ function HomePageContent() {
       }
     } catch (error) {
       console.error("Initialization error:", error);
-      toast.error('Lỗi khởi tạo, vui lòng tải lại trang.');
+      toast.error('Lỗi khởi t���o, vui lòng tải lại trang.');
     }
   }, []);
   const settings = useSettings();
@@ -114,10 +114,10 @@ function HomePageContent() {
           } else if (profit < 0) {
             toast.error(`Kỳ #${newRound.roundNumber} - Thua!`, { description: `Mất: ${(-profit).toLocaleString('vi-VN')} VND` });
           } else {
-            toast.info(`Kỳ #${newRound.roundNumber} - Hòa`, { description: 'Hoàn tiền cược.' });
+            toast.info(`Kỳ #${newRound.roundNumber} - Hòa`, { description: 'Hoàn ti���n cược.' });
           }
         } else if (wasCorrect !== null) {
-          toast.info(`Kỳ #${newRound.roundNumber} - ${newRound.taiXiu} - ${newRound.chanLe}`, { description: `Dự đoán của b���n: ${wasCorrect ? 'Đúng' : 'Sai'}` });
+          toast.info(`Kỳ #${newRound.roundNumber} - ${newRound.taiXiu} - ${newRound.chanLe}`, { description: `Dự đoán của bạn: ${wasCorrect ? 'Đúng' : 'Sai'}` });
         } else {
           toast.info(`Kỳ #${newRound.roundNumber} - ${newRound.taiXiu} - ${newRound.chanLe}`, { description: 'Đã có kết quả mới.' });
         }
@@ -159,7 +159,7 @@ function HomePageContent() {
       </div>
       <header className="text-center pt-8 pb-4">
         <h1 className="text-4xl md:text-5xl font-display font-bold text-balance leading-tight">
-          <span className="text-gradient">Tài Xỉu Miền B��c</span> Giả Lập
+          <span className="text-gradient">Tài Xỉu Miền Bắc</span> Giả Lập
         </h1>
         <p className="text-sm text-muted-foreground mt-2">Không dùng cho cá cược tiền thật</p>
       </header>
@@ -201,13 +201,13 @@ function HomePageContent() {
       <AlertDialog open={showDisclaimer} onOpenChange={setShowDisclaimer}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Lưu ý quan trọng</AlertDialogTitle>
+            <AlertDialogTitle>Lưu �� quan trọng</AlertDialogTitle>
             <AlertDialogDescription>
-              Đây là một ứng dụng giả lập chỉ dành cho mục đích giải trí. Mọi kết quả đều là ngẫu nhiên và không liên quan đến kết quả xổ số thực tế. Ứng dụng này không sử dụng tiền thật và không dành cho mục đích cờ bạc. Vui lòng chơi có trách nhiệm.
+              Đây là một ứng d���ng giả lập chỉ dành cho mục đích giải trí. Mọi kết quả đều là ngẫu nhiên và không liên quan đến kết quả xổ số thực tế. Ứng dụng này không sử dụng tiền thật và không dành cho mục đích cờ bạc. Vui lòng chơi có trách nhiệm.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogAction onClick={handleDisclaimerClose}>Tôi đã hi��u</AlertDialogAction>
+            <AlertDialogAction onClick={handleDisclaimerClose}>Tôi đã hiểu</AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>

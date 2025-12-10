@@ -23,7 +23,7 @@ const themes: { value: Theme; label: string }[] = [
   { value: 'dark', label: 'Tối (Mặc định)' },
   { value: 'light', label: 'Sáng' },
   { value: 'neon', label: 'Neon' },
-  { value: 'vintage', label: 'C�� điển (Vintage)' },
+  { value: 'vintage', label: 'Cổ điển (Vintage)' },
 ];
 export function SettingsPanel({ open, onOpenChange }: SettingsPanelProps) {
   const settings = useGameStore((state) => state.settings);
@@ -60,14 +60,14 @@ export function SettingsPanel({ open, onOpenChange }: SettingsPanelProps) {
         toast.error('Xuất lịch sử thất bại.');
       }
     } else {
-      toast.warning('Chưa có dữ liệu lịch sử đ�� xuất.');
+      toast.warning('Chưa có dữ liệu lịch sử để xuất.');
     }
   };
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-[425px] glass-dark border-purple-500/20">
         <DialogHeader>
-          <DialogTitle className="font-display text-2xl">Cài đặt</DialogTitle>
+          <DialogTitle className="font-display text-2xl">C��i đặt</DialogTitle>
           <DialogDescription>
             Tùy chỉnh trải nghiệm của bạn. Các thay đổi được lưu tự động.
           </DialogDescription>
