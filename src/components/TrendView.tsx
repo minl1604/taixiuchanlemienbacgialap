@@ -35,7 +35,7 @@ const TrendDot = memo(({ round, viewMode, index }: { round: Round; viewMode: 'tx
         <TooltipContent>
           <div className="text-sm">
             <p className="font-bold">Kỳ #{round.roundNumber}</p>
-            <p>Kết qu���: {round.digits}</p>
+            <p>Kết quả: {round.digits}</p>
             <p>Tổng: {round.sum}</p>
             <p>T/X: <span className={cn(round.taiXiu === 'Tài' ? 'text-red-400' : 'text-blue-400')}>{round.taiXiu}</span></p>
             <p>C/L: <span className={cn(round.chanLe === 'Lẻ' ? 'text-red-400' : 'text-blue-400')}>{round.chanLe}</span></p>
@@ -52,7 +52,7 @@ function TrendViewComponent({ history }: { history: Round[] }) {
     if (!history || history.length === 0) {
       return [];
     }
-    // Take the last 50 rounds and reverse so the oldest is first.
+    // Take the last 50 rounds and reverse so the oldest is first for top-to-bottom rendering.
     const recentHistory = history.slice(0, 50).reverse();
     const rows: Round[][] = [];
     if (recentHistory.length === 0) {
@@ -102,9 +102,9 @@ function TrendViewComponent({ history }: { history: Round[] }) {
         {history.length >= 5 ? (
           <div className="flex flex-col gap-1 p-2 rounded-lg bg-black/20 min-h-[12rem]">
             {groupedRows.map((row, rowIndex) => (
-              <div key={rowIndex} className="flex flex-wrap gap-1 sm:gap-1.5">
+              <div key={rowIndex} className="flex flex-wrap gap-1 sm:gap-1.5 max-w-full">
                 {row.map((round, dotIndex) => (
-                  <TrendDot key={round.id} round={round} viewMode={viewMode} index={rowIndex * 10 + dotIndex} />
+                  <TrendDot key={round.id} round={round} viewMode={viewMode} index={rowIndex * 15 + dotIndex} />
                 ))}
               </div>
             ))}
