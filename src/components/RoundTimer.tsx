@@ -8,23 +8,35 @@ interface RoundTimerProps {
 }
 export function RoundTimer({ intervalSeconds = 20, isAutoRunning, onExpire }: RoundTimerProps) {
   const [secondsLeft, setSecondsLeft] = useState(intervalSeconds);
-  const settings = useGameStore(s => s.settings);
+
   const intervalRef = useRef<number | null>(null);
   const expectedRef = useRef<number | null>(null);
+  const expireRef = useRef<number | null>(null);
   const tick = useCallback(() => {
     if (expectedRef.current === null) return;
     const drift = Date.now() - expectedRef.current;
-    playSound('tick', settings);
+    // play tick only when enabled and volume > 0
+    const settings = useGameStore.getState().settings;
+    if (settings?.soundEnabled && (settings?.soundVolume ?? 0) > 0) {
+      playSound('tick', settings);
+    }
     setSecondsLeft(prev => {
       if (prev <= 1) {
-        onExpire();
+        // defer expire to avoid React state updates during render
+        if (expireRef.current) {
+          window.clearTimeout(expireRef.current);
+        }
+        expireRef.current = window.setTimeout(() => {
+          onExpire();
+          expireRef.current = null;
+        }, 0);
         return intervalSeconds;
       }
       return prev - 1;
     });
     expectedRef.current += 1000;
     intervalRef.current = window.setTimeout(tick, 1000 - drift);
-  }, [onExpire, intervalSeconds, settings]);
+  }, [onExpire, intervalSeconds]);
   useEffect(() => {
     if (isAutoRunning) {
       setSecondsLeft(intervalSeconds);
@@ -34,12 +46,21 @@ export function RoundTimer({ intervalSeconds = 20, isAutoRunning, onExpire }: Ro
       if (intervalRef.current) {
         window.clearTimeout(intervalRef.current);
         intervalRef.current = null;
-        expectedRef.current = null;
       }
+      if (expireRef.current) {
+        window.clearTimeout(expireRef.current);
+        expireRef.current = null;
+      }
+      expectedRef.current = null;
     }
     return () => {
       if (intervalRef.current) {
         window.clearTimeout(intervalRef.current);
+        intervalRef.current = null;
+      }
+      if (expireRef.current) {
+        window.clearTimeout(expireRef.current);
+        expireRef.current = null;
       }
     };
   }, [isAutoRunning, intervalSeconds, tick]);

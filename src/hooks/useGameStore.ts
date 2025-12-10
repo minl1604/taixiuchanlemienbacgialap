@@ -27,34 +27,38 @@ export const playSound = (type: 'win' | 'loss' | 'tick' | 'achievement', setting
     const now = audioCtx.currentTime;
     const oscillator = audioCtx.createOscillator();
     const gainNode = audioCtx.createGain();
-    const baseVolume = Math.max(0, Math.min(1, (settings.soundVolume ?? 100) / 100));
-    let freq: number, waveType: OscillatorType, duration: number;
+    // Cap volume at 50% for a softer experience
+    const baseVolume = Math.max(0, Math.min(0.5, (settings.soundVolume ?? 30) / 100));
+    let freq: number, duration: number;
+    const waveType: OscillatorType = 'sine'; // Use sine for all for a softer sound
     switch (type) {
-      case 'win': freq = 800; waveType = 'sine'; duration = 0.5; break;
-      case 'loss': freq = 400; waveType = 'square'; duration = 0.3; break;
-      case 'tick': freq = 600; waveType = 'triangle'; duration = 0.1; break;
-      case 'achievement': freq = 1200; waveType = 'sawtooth'; duration = 0.7; break;
-      default: freq = 600; waveType = 'sine'; duration = 0.1;
+      case 'win': freq = 700; duration = 0.5; break;
+      case 'loss': freq = 300; duration = 0.3; break;
+      case 'tick': freq = 400; duration = 0.1; break;
+      case 'achievement': freq = 1000; duration = 0.7; break;
+      default: freq = 600; duration = 0.1;
     }
-    const targetVolume = type === 'tick' ? baseVolume * 0.5 : baseVolume;
-    const attack = Math.min(0.02, duration * 0.2);
-    const release = Math.min(0.05, duration * 0.3);
+    // Make tick sound very subtle
+    const targetVolume = type === 'tick' ? baseVolume * 0.2 : baseVolume;
+    // Smoother fade in/out
+    const attack = 0.05;
+    const release = 0.1;
     gainNode.gain.setValueAtTime(0, now);
-    gainNode.gain.linearRampToValueAtTime(targetVolume, now + attack);
-    gainNode.gain.setValueAtTime(targetVolume, now + duration - release);
-    gainNode.gain.linearRampToValueAtTime(0, now + duration + 0.001);
+    gainNode.gain.linearRampToValueAtTime(targetVolume, now + attack * 2);
+    gainNode.gain.setValueAtTime(targetVolume, now + duration - release * 2);
+    gainNode.gain.linearRampToValueAtTime(0, now + duration + 0.05);
     oscillator.type = waveType;
     oscillator.frequency.setValueAtTime(freq, now);
     oscillator.connect(gainNode);
     gainNode.connect(audioCtx.destination);
     oscillator.start(now);
-    oscillator.stop(now + duration + 0.02);
+    oscillator.stop(now + duration + 0.1);
   } catch (e) {
     console.error('playSound error', e);
   }
 };
 const initialAchievements: Achievement[] = [
-  { id: 'streak5', name: 'Nóng Tay', description: 'Đạt chuỗi thắng 5 kỳ liên tiếp.', unlocked: false, criteria: { type: 'streak', value: 5 } },
+  { id: 'streak5', name: 'Nóng Tay', description: 'Đạt chu���i thắng 5 kỳ liên tiếp.', unlocked: false, criteria: { type: 'streak', value: 5 } },
   { id: 'streak10', name: 'Bậc Thầy Chuỗi', description: 'Đạt chuỗi thắng 10 kỳ liên tiếp!', unlocked: false, criteria: { type: 'streak', value: 10 } },
   { id: 'rounds50', name: 'Người Chơi Bền Bỉ', description: 'Hoàn thành 50 kỳ quay.', unlocked: false, criteria: { type: 'rounds', value: 50 } },
   { id: 'rounds100', name: 'Trăm Trận Trăm Thắng', description: 'Hoàn thành 100 kỳ quay.', unlocked: false, criteria: { type: 'rounds', value: 100 } },

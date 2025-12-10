@@ -27,6 +27,11 @@ const themes: { value: Theme; label: string }[] = [
 export function SettingsPanel({ open, onOpenChange }: SettingsPanelProps) {
   const settings = useGameStore((state) => state.settings);
   const setSettings = useGameStore((state) => state.actions.setSettings);
+  // Set a softer default volume if it's not already set.
+  const currentSettings = {
+    soundVolume: 30,
+    ...settings,
+  };
   if (!settings) return null;
   const handleSettingsChange = (changedSettings: Partial<Settings>) => {
     setSettings(changedSettings);
@@ -47,9 +52,9 @@ export function SettingsPanel({ open, onOpenChange }: SettingsPanelProps) {
         <div className="grid gap-6 py-4">
           <div className="space-y-3">
             <Label htmlFor="theme-select">Chủ đề giao diện</Label>
-            <Select value={settings.theme} onValueChange={handleThemeChange}>
+            <Select value={currentSettings.theme} onValueChange={handleThemeChange}>
               <SelectTrigger id="theme-select">
-                <SelectValue placeholder="Chọn một chủ đề" />
+                <SelectValue placeholder="Ch��n một chủ đề" />
               </SelectTrigger>
               <SelectContent>
                 {themes.map((theme) => (
@@ -69,7 +74,7 @@ export function SettingsPanel({ open, onOpenChange }: SettingsPanelProps) {
             </Label>
             <Switch
               id="auto-start"
-              checked={settings.autoStart}
+              checked={currentSettings.autoStart}
               onCheckedChange={(checked) => handleSettingsChange({ autoStart: checked })}
             />
           </div>
@@ -82,30 +87,30 @@ export function SettingsPanel({ open, onOpenChange }: SettingsPanelProps) {
             </Label>
             <Switch
               id="sound-enabled"
-              checked={settings.soundEnabled}
+              checked={currentSettings.soundEnabled}
               onCheckedChange={(checked) => handleSettingsChange({ soundEnabled: checked })}
             />
           </div>
           <div className="space-y-3">
-            <Label htmlFor="sound-volume">Âm lượng âm thanh ({settings.soundVolume}%)</Label>
+            <Label htmlFor="sound-volume">Âm lượng âm thanh ({currentSettings.soundVolume}%)</Label>
             <Slider
               id="sound-volume"
               min={0}
               max={100}
               step={1}
-              value={[settings.soundVolume]}
+              value={[currentSettings.soundVolume]}
               onValueChange={(value) => handleSettingsChange({ soundVolume: value[0] })}
-              disabled={!settings.soundEnabled}
+              disabled={!currentSettings.soundEnabled}
             />
           </div>
           <div className="space-y-3">
-            <Label htmlFor="history-limit">Giới hạn lịch sử ({settings.historyLimit} kỳ)</Label>
+            <Label htmlFor="history-limit">Giới hạn lịch s�� ({currentSettings.historyLimit} kỳ)</Label>
             <Slider
               id="history-limit"
               min={10}
               max={100}
               step={10}
-              value={[settings.historyLimit]}
+              value={[currentSettings.historyLimit]}
               onValueChange={(value) => handleSettingsChange({ historyLimit: value[0] })}
             />
           </div>
