@@ -1,13 +1,13 @@
 # 🎲 Tài Xỉu Miền Bắc - Giả Lập
 ## Tổng quan
-**Tài Xỉu Miền Bắc Giả Lập** là một ứng dụng web client-side mô phỏng "Giải Đặc Biệt" của Xổ Số Miền Bắc chỉ dành cho mục đích giải trí. Đây là một trình giả lập **KHÔNG** có thật, mọi k���t quả đều được tạo ngẫu nhiên trên trình duyệt của bạn.
+**Tài Xỉu Miền Bắc Giả Lập** là một ứng dụng web client-side mô phỏng "Giải Đặc Biệt" của Xổ Số Miền Bắc chỉ dành cho mục đích giải trí. Đây là một trình giả lập **KHÔNG** có thật, mọi kết quả đều được tạo ngẫu nhiên trên trình duyệt của bạn.
 Ứng dụng không sử dụng dữ liệu xổ số thật, không liên quan đến tiền bạc, cá cược hay ví điện tử. Mục tiêu chính là mang lại trải nghiệm vui vẻ, giúp bạn thử vận may và theo dõi các xu hướng một cách an toàn. Mọi dữ liệu (lịch sử, thống kê) đều được lưu trữ cục bộ trong `localStorage` của trình duyệt.
 ## ✨ Tính Năng Hoàn Chỉnh
 -   **Chế độ quay tự động 20 giây**: Với đồng hồ đếm ngược neon và hiệu ứng âm thanh "tick" cho mỗi giây.
 -   **Dự đoán độc quyền**: Chọn Tài/Xỉu hoặc Chẵn/Lẻ với thao tác lướt ngang (swipe) trên mobile.
 -   **Cược ảo 1.9x**: Đặt cược bằng tiền ảo và nhận lại 1.9 lần số tiền nếu thắng (lợi nhuận 90%).
 -   **Xu hướng soicau**: Biểu đồ grid động hiển thị kết quả theo cột, với tooltip chi tiết khi hover.
--   **Thành tích tự động**: M�� khóa các huy hiệu khi đạt các cột mốc (chuỗi thắng 5/10, 50/100 kỳ, 50 thắng).
+-   **Thành tích tự động**: Mở khóa các huy hiệu khi đạt các cột mốc (chuỗi thắng 5/10, 50/100 kỳ, 50 thắng).
 -   **Lịch sử & Thống kê**: Lưu trữ 100 kỳ gần nhất, theo dõi số dư, lợi nhuận, độ chính xác và chuỗi thắng.
 -   **Hiệu ứng đa dạng**: Âm thanh Web Audio, rung haptic (phản hồi xúc giác), và hiệu ứng pháo hoa 🎊 khi thắng.
 -   **Tùy chỉnh trải nghiệm**:
@@ -84,6 +84,6 @@ Dự án đã sẵn sàng để triển khai trên Cloudflare Pages.
 ## 🤝 Đóng Góp
 Mọi đóng góp nhằm cải thiện dự án đều được chào đón! Vui lòng fork repository, tạo một feature branch mới cho tính năng của bạn, và gửi một Pull Request với mô tả chi tiết về những thay đổi.
 ## 📄 Giấy Phép
-Dự án này được cấp phép theo giấy phép MIT. Mã nguồn được cung cấp "nguyên trạng" và chỉ dành cho mục đích học tập và giải trí. Tác giả không chịu trách nhiệm cho bất kỳ việc sử dụng sai mục đích nào. **Không dành cho c�� bạc tiền thật.**
+Dự án này được cấp phép theo giấy phép MIT. Mã nguồn được cung cấp "nguyên trạng" và chỉ dành cho mục đích học tập và giải trí. Tác giả không chịu trách nhiệm cho bất kỳ việc sử dụng sai mục đích nào. **Không dành cho cờ bạc tiền thật.**
 ---
 *© 2025 CLTX MB • Dev by MinL x Cloudflare*
