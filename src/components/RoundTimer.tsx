@@ -5,7 +5,7 @@ interface RoundTimerProps {
   isAutoRunning: boolean;
   onExpire: () => void;
 }
-export function RoundTimer({ intervalSeconds = 45, isAutoRunning, onExpire }: RoundTimerProps) {
+export function RoundTimer({ intervalSeconds = 20, isAutoRunning, onExpire }: RoundTimerProps) {
   const [secondsLeft, setSecondsLeft] = useState(intervalSeconds);
   const timerRef = useRef<NodeJS.Timeout | null>(null);
   const resetTimer = useCallback(() => {

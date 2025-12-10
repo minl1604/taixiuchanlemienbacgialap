@@ -27,7 +27,7 @@ export function HomePage() {
     } else if (wasCorrect === false) {
       toast.error(`Kỳ #${newRound.roundNumber} - ${resultText}`, { description: 'Chúc bạn may mắn lần sau!' });
     } else {
-      toast.info(`Kỳ #${newRound.roundNumber} - ${resultText}`, { description: 'Đã có kết quả mới.' });
+      toast.info(`Kỳ #${newRound.roundNumber} - ${resultText}`, { description: 'Đã có kết qu��� mới.' });
     }
   }, [spinNewRound]);
   return (
@@ -38,7 +38,7 @@ export function HomePage() {
         <h1 className="text-4xl md:text-5xl font-display font-bold text-balance leading-tight">
           <span className="text-gradient">Tài Xỉu Miền Bắc</span> Giả Lập
         </h1>
-        <p className="text-sm text-muted-foreground mt-2">Không dùng cho cá c��ợc tiền thật</p>
+        <p className="text-sm text-muted-foreground mt-2">Không dùng cho cá cược tiền thật</p>
       </header>
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="py-8 md:py-10 lg:py-12">

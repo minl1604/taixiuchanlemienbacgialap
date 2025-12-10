@@ -6,7 +6,7 @@ export default {
   	extend: {
   		fontFamily: {
   			sans: [
-  				'Inter',
+  				'Inter', // Primary font, supports Vietnamese
   				'-apple-system',
   				'BlinkMacSystemFont',
   				'Segoe UI',
