@@ -24,27 +24,27 @@ const guideSections = [
   {
     icon: Gamepad2,
     title: "Cách Chơi",
-    content: "Mỗi kỳ quay sẽ tạo ra một số ngẫu nhiên 5 chữ số. Một kỳ mới sẽ tự động bắt đầu sau mỗi 20 giây nếu chế độ 'Auto' đư���c bật. Bạn cũng có thể nhấn 'Đặt cược & Quay' để bắt đầu một kỳ mới ngay lập tức."
+    content: "Mỗi kỳ quay sẽ tạo ra một số ngẫu nhiên 5 chữ số. Một kỳ mới sẽ tự động bắt đầu sau mỗi 20 giây nếu chế độ 'Auto' được bật. Bạn cũng có thể nhấn 'Đặt cược & Quay' để bắt đầu một kỳ mới ngay lập tức."
   },
   {
     icon: Target,
     title: "Dự Đoán",
-    content: "Trước mỗi kỳ, bạn có thể chọn dự đoán kết quả. Có hai chế độ: 'Tài / Xỉu' hoặc 'Chẵn / Lẻ'. Bạn chỉ có thể chọn một trong hai chế độ và đặt cược cho một kết quả duy nhất trong chế độ đó."
+    content: "Trước mỗi kỳ, bạn có thể chọn dự đoán kết qu��. Có hai chế độ: 'Tài / Xỉu' hoặc 'Chẵn / Lẻ'. Bạn chỉ có thể chọn một trong hai chế độ và đặt cược cho một kết quả duy nhất trong chế độ đó."
   },
   {
     icon: CircleDollarSign,
     title: "Quy Tắc Cược",
-    content: "Bạn bắt đầu với một số dư ảo 1,000,000,000 VND. Nhập số tiền cược (mặc định 500,000,000 VND). Nếu đúng, nhận 1.9x (lợi nhuận 0.9x); nếu sai, mất toàn bộ."
+    content: "Bạn bắt đầu với một số d�� ảo 1,000,000,000 VND. Nhập số tiền cược (mặc định 500,000,000 VND). Nếu đúng, nhận 1.9x (lợi nhuận 0.9x); nếu sai, mất toàn bộ."
   },
   {
     icon: Trophy,
     title: "Kết Quả",
-    content: "Kết quả dựa trên tổng 5 chữ số:\n- TÀI: nếu tổng lớn hơn hoặc bằng 23.\n- XỈU: nếu tổng nhỏ hơn 23.\n- CH���N: nếu tổng là số chẵn.\n- LẺ: nếu tổng là số lẻ."
+    content: "Kết quả được xác định dựa trên tổng 5 chữ số:\n- TÀI: nếu tổng lớn hơn hoặc bằng 23.\n- XỈU: nếu tổng nhỏ hơn 23.\n- CHẴN: nếu tổng là số chẵn.\n- LẺ: nếu tổng là số lẻ."
   },
   {
     icon: BarChart,
     title: "Thống Kê & Xu Hướng",
-    content: "Ứng dụng theo dõi độ chính xác, chuỗi thắng và lợi nhuận của bạn. Bảng 'Xu hướng' hiển thị các kết quả gần đây dưới dạng biểu đồ để bạn dễ dàng theo dõi."
+    content: "Ứng dụng theo dõi độ chính xác, chuỗi thắng và lợi nhuận của bạn. Bảng 'Xu hướng' hiển thị các kết quả gần đây dưới dạng biểu đồ để b��n dễ dàng theo dõi."
   },
   {
     icon: Settings,
