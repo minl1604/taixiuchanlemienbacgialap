@@ -41,8 +41,7 @@ const ConfettiPiece = memo(({ x, y, rotate, color }: { x: number; y: number; rot
   />
 ));
 ConfettiPiece.displayName = 'ConfettiPiece';
-export function HomePage() {
-  const [isClient, setIsClient] = useState(false);
+function HomePageContent() {
   const [showSettings, setShowSettings] = useState(false);
   const [showGuide, setShowGuide] = useState(false);
   const [showDisclaimer, setShowDisclaimer] = useState(false);
@@ -50,9 +49,6 @@ export function HomePage() {
   const [confetti, setConfetti] = useState<JSX.Element[]>([]);
   const hasInteracted = useRef(false);
   useEffect(() => {
-    // This effect runs only on the client
-    setIsClient(true);
-    console.log('React version:', React.version);
     try {
       getGameActions()?.init();
       const theme = storage.getSettings()?.theme || 'dark';
@@ -97,8 +93,9 @@ export function HomePage() {
   const handleSpin = useCallback(() => {
     if (!spinNewRound) return;
     try {
-      const { newRound, profit, wasCorrect } = spinNewRound();
-      if (!newRound) return; // Guard against null return
+      const result = spinNewRound();
+      if (!result || !result.newRound) return;
+      const { newRound, profit, wasCorrect } = result;
       if (profit !== null) {
         if (profit > 0) {
           toast.success(`Kỳ #${newRound.roundNumber} - Thắng!`, { description: `Lợi nhuận: +${profit.toLocaleString('vi-VN')} VND` });
@@ -111,7 +108,7 @@ export function HomePage() {
       } else if (wasCorrect !== null) {
         toast.info(`Kỳ #${newRound.roundNumber} - ${newRound.taiXiu} - ${newRound.chanLe}`, { description: `Dự đoán của bạn: ${wasCorrect ? 'Đúng' : 'Sai'}` });
       } else {
-        toast.info(`Kỳ #${newRound.roundNumber} - ${newRound.taiXiu} - ${newRound.chanLe}`, { description: 'Đã có kết qu��� mới.' });
+        toast.info(`Kỳ #${newRound.roundNumber} - ${newRound.taiXiu} - ${newRound.chanLe}`, { description: 'Đã có kết quả mới.' });
       }
     } catch (error) {
       console.error("Error during spin:", error);
@@ -135,33 +132,11 @@ export function HomePage() {
       hasInteracted.current = true;
     }
   };
-  if (!isClient) {
-    return (
-      <div className="min-h-screen bg-background text-foreground font-sans">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="py-8 md:py-10 lg:py-12">
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-              <div className="lg:col-span-2 space-y-8">
-                <Skeleton className="h-24 w-full" />
-                <Skeleton className="h-64 w-full" />
-                <Skeleton className="h-96 w-full" />
-                <Skeleton className="h-48 w-full" />
-              </div>
-              <div className="space-y-8">
-                <Skeleton className="h-96 w-full" />
-                <Skeleton className="h-96 w-full" />
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    );
-  }
   return (
     <div className="min-h-screen bg-background text-foreground font-sans relative overflow-x-hidden flex flex-col" onClick={handleUserInteraction} onTouchStart={handleUserInteraction}>
       <div className="absolute inset-0 bg-gradient-mesh opacity-10 pointer-events-none" />
       <div className="absolute top-4 right-4 flex items-center gap-2 z-50">
-        <Button variant="ghost" size="icon" onClick={() => setShowGuide(true)} className="text-2xl hover:scale-110 hover:rotate-12 transition-all duration-200 active:scale-90" aria-label="Mở hướng dẫn">
+        <Button variant="ghost" size="icon" onClick={() => setShowGuide(true)} className="text-2xl hover:scale-110 hover:rotate-12 transition-all duration-200 active:scale-90" aria-label="M��� hướng dẫn">
           <HelpCircle className="h-6 w-6" />
         </Button>
         <Button variant="ghost" size="icon" onClick={() => setShowSettings(true)} className="text-2xl hover:scale-110 hover:rotate-12 transition-all duration-200 active:scale-90" aria-label="Mở cài đặt">
@@ -170,11 +145,11 @@ export function HomePage() {
       </div>
       <header className="text-center pt-8 pb-4">
         <h1 className="text-4xl md:text-5xl font-display font-bold text-balance leading-tight">
-          <span className="text-gradient">Tài Xỉu Miền Bắc</span> Giả Lập
+          <span className="text-gradient">Tài Xỉu Miền B���c</span> Giả Lập
         </h1>
         <p className="text-sm text-muted-foreground mt-2">Không dùng cho cá cược tiền thật</p>
       </header>
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex-1 w-full" aria-label="Trò chơi Tài Xỉu Miền Bắc Giả Lập - Kỳ hiện tại và dự đoán">
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex-1 w-full" aria-label="Trò chơi Tài Xỉu Miền Bắc Giả Lập - Kỳ hiện tại v�� dự đoán">
         <TooltipProvider>
           <div className="py-8 md:py-10 lg:py-12">
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
@@ -204,7 +179,6 @@ export function HomePage() {
       </main>
       <footer className="text-center py-8 text-muted-foreground/80 text-sm">
         <p>© 2025 CLTX MB • Dev by MinL x Cloudflare</p>
-        <p className="mt-1">Built with ❤️ at Cloudflare</p>
         <Badge variant="secondary" className="text-xs mt-2 opacity-80">Không dùng cho cá cược tiền thật</Badge>
       </footer>
       <Toaster richColors closeButton theme={settings?.theme === 'light' ? 'light' : 'dark'} />
@@ -213,7 +187,7 @@ export function HomePage() {
       <AlertDialog open={showDisclaimer} onOpenChange={setShowDisclaimer}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Lưu ý quan tr���ng</AlertDialogTitle>
+            <AlertDialogTitle>Lưu ý quan trọng</AlertDialogTitle>
             <AlertDialogDescription>
               Đây là một ứng dụng giả lập chỉ dành cho mục đích giải trí. Mọi kết quả đều là ngẫu nhiên và không liên quan đến kết quả xổ số thực tế. Ứng dụng này không sử dụng tiền thật và không dành cho mục đích cờ bạc.
             </AlertDialogDescription>
@@ -226,4 +200,36 @@ export function HomePage() {
       <div className="fixed inset-0 pointer-events-none z-50">{confetti}</div>
     </div>
   );
+}
+export function HomePage() {
+  const [isClient, setIsClient] = useState(false);
+  useEffect(() => {
+    // This effect runs only on the client after the initial render
+    setIsClient(true);
+  }, []);
+  if (!isClient) {
+    // Render a skeleton or loading state on the server or during the initial client render
+    return (
+      <div className="min-h-screen bg-background text-foreground font-sans">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="py-8 md:py-10 lg:py-12">
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+              <div className="lg:col-span-2 space-y-8">
+                <Skeleton className="h-24 w-full" />
+                <Skeleton className="h-64 w-full" />
+                <Skeleton className="h-96 w-full" />
+                <Skeleton className="h-48 w-full" />
+              </div>
+              <div className="space-y-8">
+                <Skeleton className="h-96 w-full" />
+                <Skeleton className="h-96 w-full" />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+  // Once the client has mounted, render the full component which uses hooks
+  return <HomePageContent />;
 }

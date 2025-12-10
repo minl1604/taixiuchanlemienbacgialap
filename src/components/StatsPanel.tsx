@@ -53,7 +53,7 @@ function StatsPanelComponent({ stats, balance, bettingHistory, onResetStats }: {
   const unlockedAchievements = stats.achievements.filter(a => a.unlocked);
   const handleReset = () => {
     onResetStats();
-    toast.success("��ã đặt lại thống kê và số dư.");
+    toast.success("Đã đặt lại thống kê và số dư.");
   };
   return (
     <Card className="glass-dark border-yellow-500/20 hover:shadow-glow transition-shadow">
@@ -67,7 +67,7 @@ function StatsPanelComponent({ stats, balance, bettingHistory, onResetStats }: {
               <AlertDialogHeader>
                 <AlertDialogTitle>Bạn có chắc chắn?</AlertDialogTitle>
                 <AlertDialogDescription>
-                  Hành động này sẽ xóa toàn bộ thống kê, thành tích, lịch sử cược và đặt lại số dư của bạn về mặc định.
+                  Hành động này sẽ xóa toàn bộ thống kê, thành tích, lịch s�� cược và đặt lại số dư của bạn về mặc định.
                 </AlertDialogDescription>
               </AlertDialogHeader>
               <AlertDialogFooter>

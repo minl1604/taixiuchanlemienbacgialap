@@ -23,7 +23,7 @@ const themes: { value: Theme; label: string }[] = [
   { value: 'dark', label: 'Tối (Mặc định)' },
   { value: 'light', label: 'Sáng' },
   { value: 'neon', label: 'Neon' },
-  { value: 'vintage', label: 'C��� điển (Vintage)' },
+  { value: 'vintage', label: 'Cổ điển (Vintage)' },
 ];
 export function SettingsPanel({ open, onOpenChange }: SettingsPanelProps) {
   const settings = useGameStore((state) => state.settings);

@@ -144,9 +144,9 @@ function PredictionPanelComponent({ onSpinNow, defaultBet }: { onSpinNow: () => 
             </Button>
           </motion.div>
           {isAutoRunning ? (
-            <Button size="lg" variant="destructive" onClick={stopAuto} className="h-14 text-lg min-h-[44px]">Dừng Auto</Button>
+            <Button size="lg" variant="destructive" onClick={stopAuto} className="w-full h-14 text-lg min-h-[44px]">Dừng Auto</Button>
           ) : (
-            <Button size="lg" variant="secondary" onClick={startAuto} className="h-14 text-lg min-h-[44px]">Bắt đầu Auto</Button>
+            <Button size="lg" variant="secondary" onClick={startAuto} className="w-full h-14 text-lg min-h-[44px]">Bắt đầu Auto</Button>
           )}
         </div>
       </CardContent>

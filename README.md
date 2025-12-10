@@ -5,23 +5,23 @@
 ## ✨ Tính năng chính
 -   **Tạo Kỳ Quay Ngẫu Nhiên**:
     -   Mỗi kỳ sẽ sinh ra một số 5 chữ số ngẫu nhiên (từ `00000` đến `99999`).
-    -   Tính tổng 5 chữ số để xác định kết quả:
+    -   Tính tổng 5 chữ số đ�� xác định kết quả:
         -   **Tài / Xỉu**: Tổng ≥ 23 là **Tài**, ngược lại là **Xỉu**.
         -   **Chẵn / Lẻ**: Tổng là số chẵn là **Chẵn**, ngược lại là **Lẻ**.
 -   **Chế Độ Quay Tự Động & Thủ Công**:
-    -   **Auto (20 giây)**: Tự động tạo kỳ mới sau mỗi 20 giây, kèm đồng h�� đếm ngược và hiệu ứng âm thanh "tick".
+    -   **Auto (20 giây)**: Tự động tạo kỳ mới sau mỗi 20 giây, kèm đồng hồ đếm ngược và hiệu ứng âm thanh "tick".
     -   **Thủ công**: Nhấn nút "Đặt cược & Quay" để tạo kết quả ngay lập tức.
 -   **Dự Đoán & Cược Ảo**:
     -   Chọn dự đoán **Tài/Xỉu** hoặc **Chẵn/Lẻ** trước mỗi kỳ.
-    -   **Lướt ngang (swipe)** trên mobile để chuyển đổi gi��a hai chế độ dự đoán.
+    -   **Lướt ngang (swipe)** trên mobile để chuyển đổi giữa hai chế độ dự đoán.
     -   Đặt cược bằng tiền ảo (bắt đầu với 1,000,000,000 VND).
-    -   Nếu đoán đúng, bạn nhận lại **1.9 lần** số tiền cược (lợi nhuận 90%).
+    -   Nếu đoán đúng, bạn nhận lại **1.9 lần** số tiền cược (l��i nhuận 90%).
 -   **Lịch Sử & Thống Kê Chi Tiết**:
     -   Lưu trữ 100 kỳ quay gần nhất trong `localStorage`.
     -   Bảng thống kê theo dõi: số dư, lợi nhuận, độ chính xác (%), chuỗi thắng dài nhất.
 -   **Xu Hướng Soicau**: Biểu đồ grid động với cột dọc cho kết quả liên tiếp (Tài/Chẵn theo chiều dọc, cột mới khi đổi sang Xỉu/Lẻ).
--   **Thành Tích**: Mở khóa các huy hiệu như "Bậc Thầy Chuỗi" khi đạt chuỗi thắng 10.
--   **Xuất Dữ Liệu**: Tải toàn bộ lịch sử quay dưới d���ng file JSON từ menu Cài đặt.
+-   **Thành Tích**: Mở kh��a các huy hiệu như "Bậc Thầy Chuỗi" khi đạt chuỗi thắng 10.
+-   **Xuất Dữ Liệu**: Tải toàn bộ lịch sử quay dưới dạng file JSON từ menu Cài đặt.
 -   **Hiệu Ứng**: Tích hợp âm thanh Web Audio và rung haptic (phản hồi xúc giác) trên thiết bị di động được hỗ trợ.
 -   **Tùy Chỉnh Trải Nghiệm**:
     -   Bật/tắt âm thanh, điều chỉnh âm lượng.
@@ -29,7 +29,7 @@
     -   Tùy chỉnh giới hạn lịch sử lưu trữ.
 -   **Giao Diện Hiện Đại & Thân Thiện**:
     -   Thiết kế dark-theme với hiệu ứng neon, gradient và glassmorphism.
-    -   Tư��ng thích hoàn toàn với thiết bị di động (mobile-first).
+    -   Tương thích hoàn toàn với thiết bị di động (mobile-first).
     -   Thông báo kết quả bằng toast (thắng/thua) và hiệu ứng pháo hoa 🎊 khi thắng.
 ## 🛠️ Công nghệ sử dụng
 -   **Frontend**: React 18+ với TypeScript
@@ -42,8 +42,8 @@
 -   **Routing**: React Router DOM
 -   **Triển khai**: Cloudflare Pages (tĩnh)
 -   **Tương thích**: Chrome 90+, Safari 14+, Firefox 88+, Mobile iOS/Android.
-## 🚀 Cài đặt
-Dự án sử dụng **Bun** làm trình quản lý gói để cài đặt nhanh hơn.
+## �� Cài đặt
+Dự án sử dụng **Bun** làm trình quản lý gói để cài đặt nhanh h��n.
 1.  **Clone repository**:
     ```bash
     git clone <repository-url>
@@ -85,8 +85,8 @@ bun dev
     wrangler pages publish dist --project-name=tai-xiu-mien-bac-gia-lap
     ```
 ## 🤝 Đóng góp
-Mọi đóng góp đều được chào đón! Vui lòng fork repo, tạo một feature branch và gửi Pull Request với mô tả rõ ràng.
+Mọi đóng góp đều được chào đón! Vui lòng fork repo, tạo một feature branch và g��i Pull Request với mô tả rõ ràng.
 ## 📄 Giấy phép
 Dự án này được cấp phép theo giấy phép MIT. Chỉ sử dụng cho mục đích giải trí, không dành cho cờ bạc tiền thật.
 ---
-*Built with ���️ at Cloudflare*
+*Dev by MinL x Cloudflare*

@@ -11,6 +11,11 @@ export default {
         display: ['Inter', 'Noto Sans', 'system-ui', 'sans-serif'],
         mono: ['JetBrains Mono', 'Fira Code', 'Consolas', 'monospace'],
       },
+      fontFeatureSettings: {
+        'kern': 1,
+        'liga': 1,
+        'cv02': 1,
+      },
       fontSize: {
         '2xs': [
           '0.625rem',
