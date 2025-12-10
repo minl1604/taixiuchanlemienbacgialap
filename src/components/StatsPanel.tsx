@@ -2,13 +2,19 @@ import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
-import type { Stats } from '@/types';
+import { Badge } from '@/components/ui/badge';
+import { ScrollArea } from '@/components/ui/scroll-area';
+import type { Stats, BetRecord } from '@/types';
+import { cn } from '@/lib/utils';
 interface StatsPanelProps {
   stats: Stats;
+  balance: number;
+  bettingHistory: BetRecord[];
   onResetStats: () => void;
 }
-export function StatsPanel({ stats, onResetStats }: StatsPanelProps) {
+export function StatsPanel({ stats, balance, bettingHistory, onResetStats }: StatsPanelProps) {
   const accuracy = stats.predictionsMade > 0 ? Math.round((stats.correct / stats.predictionsMade) * 100) : 0;
+  const totalWagered = bettingHistory.reduce((sum, bet) => sum + bet.betAmount, 0);
   return (
     <Card className="glass-dark border-yellow-500/20">
       <CardHeader className="flex flex-row items-center justify-between">
@@ -17,20 +23,18 @@ export function StatsPanel({ stats, onResetStats }: StatsPanelProps) {
       </CardHeader>
       <CardContent className="space-y-4">
         <div className="flex justify-between items-baseline">
-          <span className="text-muted-foreground">Điểm vui</span>
-          <span className="text-2xl font-bold text-gradient">{stats.points}</span>
+          <span className="text-muted-foreground">Số dư ảo (VND)</span>
+          <span className="text-2xl font-bold text-gradient">{balance.toLocaleString('vi-VN')}</span>
         </div>
         <div className="flex justify-between items-baseline">
-          <span className="text-muted-foreground">Tổng dự đoán</span>
-          <span className="text-lg font-semibold">{stats.predictionsMade}</span>
+          <span className="text-muted-foreground">Lợi nhuận ròng</span>
+          <span className={cn("text-lg font-semibold", stats.netProfit >= 0 ? 'text-green-400' : 'text-red-400')}>
+            {stats.netProfit.toLocaleString('vi-VN')}
+          </span>
         </div>
-        <div className="flex justify-between items-baseline text-green-400">
-          <span className="text-muted-foreground">Đúng</span>
-          <span className="text-lg font-semibold">{stats.correct}</span>
-        </div>
-        <div className="flex justify-between items-baseline text-red-400">
-          <span className="text-muted-foreground">Sai</span>
-          <span className="text-lg font-semibold">{stats.incorrect}</span>
+        <div className="flex justify-between items-baseline">
+          <span className="text-muted-foreground">Tổng cược</span>
+          <span className="text-lg font-semibold">{totalWagered.toLocaleString('vi-VN')}</span>
         </div>
         <div className="space-y-2">
           <div className="flex justify-between items-baseline">
@@ -40,12 +44,27 @@ export function StatsPanel({ stats, onResetStats }: StatsPanelProps) {
           <Progress value={accuracy} className="h-2 [&>div]:bg-gradient-to-r [&>div]:from-blue-500 [&>div]:to-purple-500" />
         </div>
         <div className="flex justify-between items-baseline">
-          <span className="text-muted-foreground">Chuỗi thắng hiện tại</span>
-          <span className="text-lg font-semibold">{stats.currentStreak}</span>
-        </div>
-        <div className="flex justify-between items-baseline">
           <span className="text-muted-foreground">Chuỗi thắng dài nhất</span>
           <span className="text-lg font-semibold">{stats.longestStreak}</span>
+        </div>
+        <div>
+          <p className="text-sm font-semibold mb-2">Lịch sử cược</p>
+          <ScrollArea className="h-40 pr-4">
+            <div className="space-y-2 text-sm">
+              {bettingHistory.length > 0 ? (
+                bettingHistory.slice(0, 20).map((bet) => (
+                  <div key={bet.roundId} className="flex justify-between items-center">
+                    <span>Kỳ #{bet.roundNumber}</span>
+                    {bet.outcome === 'win' && <Badge className="bg-green-500/80">Thắng {bet.profit.toLocaleString('vi-VN')}</Badge>}
+                    {bet.outcome === 'partial' && <Badge variant="secondary">Hòa</Badge>}
+                    {bet.outcome === 'loss' && <Badge variant="destructive">Thua {bet.profit.toLocaleString('vi-VN')}</Badge>}
+                  </div>
+                ))
+              ) : (
+                <p className="text-muted-foreground text-center py-4">Chưa có l��ch sử cược.</p>
+              )}
+            </div>
+          </ScrollArea>
         </div>
       </CardContent>
     </Card>

@@ -1,8 +1,10 @@
-import type { Round, Stats, Settings, UserPrediction } from '@/types';
+import type { Round, Stats, Settings, UserPrediction, BetRecord } from '@/types';
 const HISTORY_KEY = 'txmb_history';
 const STATS_KEY = 'txmb_stats';
 const SETTINGS_KEY = 'txmb_settings';
 const PREDICTIONS_KEY = 'txmb_predictions';
+const BALANCE_KEY = 'txmb_balance';
+const BETTING_HISTORY_KEY = 'txmb_bettingHistory';
 const safeJSONParse = <T>(jsonString: string | null, fallback: T): T => {
   if (!jsonString) return fallback;
   try {
@@ -29,6 +31,7 @@ export const getStats = (): Stats => safeJSONParse(localStorage.getItem(STATS_KE
   currentStreak: 0,
   longestStreak: 0,
   points: 0,
+  netProfit: 0,
 });
 export const setStats = (stats: Stats): void => {
   try {
@@ -57,5 +60,23 @@ export const setPredictions = (predictions: UserPrediction[]): void => {
     localStorage.setItem(PREDICTIONS_KEY, JSON.stringify(predictions));
   } catch (error) {
     console.error("Failed to save predictions to localStorage", error);
+  }
+};
+// Balance
+export const getBalance = (): number => safeJSONParse(localStorage.getItem(BALANCE_KEY), 1000000000);
+export const setBalance = (balance: number): void => {
+  try {
+    localStorage.setItem(BALANCE_KEY, JSON.stringify(balance));
+  } catch (error) {
+    console.error("Failed to save balance to localStorage", error);
+  }
+};
+// Betting History
+export const getBettingHistory = (): BetRecord[] => safeJSONParse(localStorage.getItem(BETTING_HISTORY_KEY), []);
+export const setBettingHistory = (bettingHistory: BetRecord[]): void => {
+  try {
+    localStorage.setItem(BETTING_HISTORY_KEY, JSON.stringify(bettingHistory));
+  } catch (error) {
+    console.error("Failed to save betting history to localStorage", error);
   }
 };

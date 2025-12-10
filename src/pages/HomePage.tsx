@@ -2,7 +2,7 @@ import React, { useEffect, useCallback } from 'react';
 import { motion } from 'framer-motion';
 import { Toaster, toast } from 'sonner';
 import { ThemeToggle } from '@/components/ThemeToggle';
-import { useGameStore, useHistory, useStats, useIsAutoRunning, useLastRound, useGameActions } from '@/hooks/useGameStore';
+import { useGameStore, useHistory, useStats, useIsAutoRunning, useLastRound, useGameActions, useBalance, useBettingHistory } from '@/hooks/useGameStore';
 import { RoundTimer } from '@/components/RoundTimer';
 import { CurrentRoundPanel } from '@/components/CurrentRoundPanel';
 import { PredictionPanel } from '@/components/PredictionPanel';
@@ -18,14 +18,26 @@ export function HomePage() {
   const stats = useStats();
   const isAutoRunning = useIsAutoRunning();
   const lastRound = useLastRound();
-  const { spinNewRound, resetHistory, resetStats } = useGameActions();
+  const balance = useBalance();
+  const bettingHistory = useBettingHistory();
+  const { spinNewRound, resetHistory, resetStatsAndBalance } = useGameActions();
   const handleSpin = useCallback(() => {
-    const { newRound, wasCorrect } = spinNewRound();
+    const { newRound, wasCorrect, profit } = spinNewRound();
     const resultText = `${newRound.taiXiu} - ${newRound.chanLe}`;
-    if (wasCorrect === true) {
-      toast.success(`Kỳ #${newRound.roundNumber} - ${resultText}`, { description: 'Dự đoán chính xác!' });
-    } else if (wasCorrect === false) {
-      toast.error(`Kỳ #${newRound.roundNumber} - ${resultText}`, { description: 'Chúc bạn may mắn lần sau!' });
+    if (profit !== null) {
+      if (profit > 0) {
+        toast.success(`Kỳ #${newRound.roundNumber} - Thắng!`, { description: `Lợi nhuận: +${profit.toLocaleString('vi-VN')} VND` });
+      } else if (profit < 0) {
+        toast.error(`Kỳ #${newRound.roundNumber} - Thua!`, { description: `Mất: ${(-profit).toLocaleString('vi-VN')} VND` });
+      } else {
+        toast.info(`Kỳ #${newRound.roundNumber} - Hòa`, { description: 'Hoàn tiền cược.' });
+      }
+    } else if (wasCorrect !== null) {
+        if (wasCorrect) {
+            toast.success(`Kỳ #${newRound.roundNumber} - ${resultText}`, { description: 'Dự đoán chính xác!' });
+        } else {
+            toast.error(`Kỳ #${newRound.roundNumber} - ${resultText}`, { description: 'Chúc bạn may mắn lần sau!' });
+        }
     } else {
       toast.info(`Kỳ #${newRound.roundNumber} - ${resultText}`, { description: 'Đã có kết quả mới.' });
     }
@@ -50,7 +62,7 @@ export function HomePage() {
               transition={{ duration: 0.5 }}
               className="lg:col-span-2 space-y-8"
             >
-              <RoundTimer isAutoRunning={isAutoRunning} onExpire={handleSpin} intervalSeconds={45} />
+              <RoundTimer isAutoRunning={isAutoRunning} onExpire={handleSpin} intervalSeconds={20} />
               <CurrentRoundPanel round={lastRound} />
               <PredictionPanel onSpinNow={handleSpin} />
               <TrendView history={history} />
@@ -62,14 +74,14 @@ export function HomePage() {
               transition={{ duration: 0.5, delay: 0.2 }}
               className="space-y-8"
             >
-              <StatsPanel stats={stats} onResetStats={resetStats} />
+              <StatsPanel stats={stats} balance={balance} bettingHistory={bettingHistory} onResetStats={resetStatsAndBalance} />
               <HistoryTable history={history} onClearHistory={resetHistory} />
             </motion.div>
           </div>
         </div>
       </main>
       <footer className="text-center py-8 text-muted-foreground/80 text-sm">
-        <p>Built with ❤�� at Cloudflare</p>
+        <p>Built with ❤️ at Cloudflare</p>
       </footer>
       <Toaster richColors closeButton theme="dark" />
     </div>

@@ -1,9 +1,11 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
-import { useGameActions, useCurrentPrediction, useIsAutoRunning, useStats } from '@/hooks/useGameStore';
+import { useGameActions, useCurrentPrediction, useIsAutoRunning, useBalance } from '@/hooks/useGameStore';
 import type { TaiXiu, ChanLe } from '@/types';
+import { toast } from 'sonner';
 interface PredictionPanelProps {
   onSpinNow: () => void;
 }
@@ -11,20 +13,51 @@ export function PredictionPanel({ onSpinNow }: PredictionPanelProps) {
   const { setPrediction, startAuto, stopAuto } = useGameActions();
   const currentPrediction = useCurrentPrediction();
   const isAutoRunning = useIsAutoRunning();
-  const stats = useStats();
+  const balance = useBalance();
+  const [betAmount, setBetAmount] = useState<string>("500000000");
+  useEffect(() => {
+    // When a new round starts, currentPrediction is cleared.
+    // We can reset the bet amount input here if we want.
+    if (!currentPrediction.taiXiu && !currentPrediction.chanLe) {
+      // Optional: Reset bet amount for new round if desired
+    }
+  }, [currentPrediction]);
   const handleTaiXiuChange = (value: string) => {
-    // onValueChange provides an empty string on deselect.
-    // We set the value to the selected item, or undefined if deselected.
-    setPrediction({ taiXiu: value as TaiXiu || undefined });
+    if (value) { // Prevent un-toggling
+      setPrediction({ taiXiu: value as TaiXiu });
+    }
   };
   const handleChanLeChange = (value: string) => {
-    setPrediction({ chanLe: value as ChanLe || undefined });
+    if (value) { // Prevent un-toggling
+      setPrediction({ chanLe: value as ChanLe });
+    }
+  };
+  const handleSpinWithBet = () => {
+    const betValue = parseInt(betAmount, 10);
+    if (isNaN(betValue) || betValue <= 0) {
+      toast.error("Số tiền cược không hợp lệ.");
+      return;
+    }
+    if (betValue > balance) {
+      toast.error("Số dư không đủ.");
+      return;
+    }
+    if (!currentPrediction.taiXiu && !currentPrediction.chanLe) {
+      toast.warning("Vui lòng chọn dự đoán.");
+      return;
+    }
+    setPrediction({ bet: betValue });
+    toast.success(`��ặt cược ${betValue.toLocaleString('vi-VN')} VND thành công!`);
+    // Use a timeout to ensure state update is processed before spinning
+    setTimeout(() => {
+      onSpinNow();
+    }, 100);
   };
   return (
     <Card className="glass-dark border-blue-500/20">
       <CardHeader>
         <CardTitle className="text-2xl font-display text-center">Dự đoán kỳ này</CardTitle>
-        <p className="text-center text-muted-foreground">Điểm vui: <span className="font-bold text-primary">{stats.points}</span></p>
+        <p className="text-center text-muted-foreground">Số dư: <span className="font-bold text-primary">{balance.toLocaleString('vi-VN')} VND</span></p>
       </CardHeader>
       <CardContent className="space-y-6">
         <div className="space-y-4">
@@ -47,14 +80,24 @@ export function PredictionPanel({ onSpinNow }: PredictionPanelProps) {
             <ToggleGroupItem value="Chẵn" className="h-16 text-2xl font-bold data-[state=on]:bg-blue-500/80 data-[state=on]:text-white">Chẵn</ToggleGroupItem>
           </ToggleGroup>
         </div>
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
+        <div className="space-y-4">
+          <Input
+            type="number"
+            placeholder="Số tiền cược"
+            value={betAmount}
+            onChange={(e) => setBetAmount(e.target.value)}
+            className="h-14 text-center text-lg"
+            min="0"
+          />
+          <Button size="lg" onClick={handleSpinWithBet} className="btn-gradient w-full h-14 text-lg">
+            Đặt cược & Quay
+          </Button>
+        </div>
+        <div className="grid grid-cols-1 gap-2">
           {isAutoRunning ? (
-            <Button size="lg" variant="destructive" onClick={stopAuto} className="sm:col-span-3 h-14 text-lg">Dừng Auto</Button>
+            <Button size="lg" variant="destructive" onClick={stopAuto} className="h-14 text-lg">Dừng Auto</Button>
           ) : (
-            <>
-              <Button size="lg" variant="secondary" onClick={startAuto} className="h-14 text-lg">Bắt đầu Auto</Button>
-              <Button size="lg" onClick={onSpinNow} className="btn-gradient sm:col-span-2 h-14 text-lg">Quay ngay 1 kỳ</Button>
-            </>
+            <Button size="lg" variant="secondary" onClick={startAuto} className="h-14 text-lg">Bắt đầu Auto</Button>
           )}
         </div>
       </CardContent>

@@ -1,5 +1,5 @@
 export type TaiXiu = 'Tài' | 'Xỉu';
-export type ChanLe = 'Chẵn' | 'Lẻ';
+export type ChanLe = 'Chẵn' | 'L���';
 export interface Round {
   id: string;
   roundNumber: number;
@@ -12,6 +12,7 @@ export interface Round {
 export interface Prediction {
   taiXiu?: TaiXiu;
   chanLe?: ChanLe;
+  bet?: number;
 }
 export interface UserPrediction extends Prediction {
   roundId: string;
@@ -27,9 +28,19 @@ export interface Stats {
   currentStreak: number;
   longestStreak: number;
   points: number;
+  netProfit: number;
 }
 export interface Settings {
   autoStart: boolean;
   soundEnabled: boolean;
   historyLimit: number;
+}
+export type BetOutcome = 'win' | 'loss' | 'partial';
+export interface BetRecord {
+  roundId: string;
+  roundNumber: number;
+  betAmount: number;
+  outcome: BetOutcome;
+  profit: number;
+  timestamp: string;
 }
