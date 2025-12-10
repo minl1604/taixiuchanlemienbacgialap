@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
+import { useSwipeable } from 'react-swipeable';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -8,6 +9,7 @@ import { useGameActions, useCurrentPrediction, useIsAutoRunning, useBalance } fr
 import type { TaiXiu, ChanLe } from '@/types';
 import { toast } from 'sonner';
 import * as storage from '@/lib/storage';
+import { cn } from '@/lib/utils';
 interface PredictionPanelProps {
   onSpinNow: () => void;
   defaultBet?: number;
@@ -37,7 +39,7 @@ export function PredictionPanel({ onSpinNow, defaultBet }: PredictionPanelProps)
     }
   };
   const handleModeChange = (mode: 'taiXiu' | 'chanLe') => {
-    if (!mode) return;
+    if (!mode || mode === predictionMode) return;
     setPredictionMode(mode);
     if (mode === 'taiXiu') {
       setPrediction({ chanLe: undefined });
@@ -46,7 +48,16 @@ export function PredictionPanel({ onSpinNow, defaultBet }: PredictionPanelProps)
       setPrediction({ taiXiu: undefined });
       setSelectedTaiXiu("");
     }
+    if (window.navigator.vibrate) {
+      window.navigator.vibrate(50);
+    }
   };
+  const swipeHandlers = useSwipeable({
+    onSwipedLeft: () => handleModeChange('chanLe'),
+    onSwipedRight: () => handleModeChange('taiXiu'),
+    trackMouse: true,
+    preventScrollOnSwipe: true,
+  });
   const handleTaiXiuChange = (value: string | undefined) => {
     setSelectedTaiXiu(value || "");
     setPrediction({ taiXiu: value as TaiXiu | undefined, chanLe: undefined });
@@ -86,8 +97,8 @@ export function PredictionPanel({ onSpinNow, defaultBet }: PredictionPanelProps)
         <p className="text-center text-muted-foreground">Số dư: <span className="font-bold text-primary">{(balance || 0).toLocaleString('vi-VN')} VND</span></p>
       </CardHeader>
       <CardContent className="space-y-6">
-        <div className="space-y-4">
-          <p className="text-sm text-center text-muted-foreground">Chọn chế độ dự đoán</p>
+        <div {...swipeHandlers} className="space-y-4 cursor-grab active:cursor-grabbing">
+          <p className="text-sm text-center text-muted-foreground">Chọn chế độ (hoặc lướt ngang)</p>
           <ToggleGroup
             type="single"
             value={predictionMode}
@@ -105,8 +116,8 @@ export function PredictionPanel({ onSpinNow, defaultBet }: PredictionPanelProps)
             value={selectedTaiXiu}
             onValueChange={handleTaiXiuChange}
           >
-            <ToggleGroupItem value="Tài" className="h-16 text-2xl font-bold data-[state=on]:bg-red-500/80 data-[state=on]:text-white">Tài</ToggleGroupItem>
-            <ToggleGroupItem value="Xỉu" className="h-16 text-2xl font-bold data-[state=on]:bg-blue-500/80 data-[state=on]:text-white">Xỉu</ToggleGroupItem>
+            <ToggleGroupItem value="Tài" className={cn("text-2xl font-bold data-[state=on]:bg-red-500/80 data-[state=on]:text-white", "h-14 md:h-16 min-h-[44px]")}>Tài</ToggleGroupItem>
+            <ToggleGroupItem value="Xỉu" className={cn("text-2xl font-bold data-[state=on]:bg-blue-500/80 data-[state=on]:text-white", "h-14 md:h-16 min-h-[44px]")}>Xỉu</ToggleGroupItem>
           </ToggleGroup>
         )}
         {predictionMode === 'chanLe' && (
@@ -116,8 +127,8 @@ export function PredictionPanel({ onSpinNow, defaultBet }: PredictionPanelProps)
             value={selectedChanLe}
             onValueChange={handleChanLeChange}
           >
-            <ToggleGroupItem value="Lẻ" className="h-16 text-2xl font-bold data-[state=on]:bg-red-500/80 data-[state=on]:text-white">Lẻ</ToggleGroupItem>
-            <ToggleGroupItem value="Chẵn" className="h-16 text-2xl font-bold data-[state=on]:bg-blue-500/80 data-[state=on]:text-white">Chẵn</ToggleGroupItem>
+            <ToggleGroupItem value="Lẻ" className={cn("text-2xl font-bold data-[state=on]:bg-red-500/80 data-[state=on]:text-white", "h-14 md:h-16 min-h-[44px]")}>Lẻ</ToggleGroupItem>
+            <ToggleGroupItem value="Chẵn" className={cn("text-2xl font-bold data-[state=on]:bg-blue-500/80 data-[state=on]:text-white", "h-14 md:h-16 min-h-[44px]")}>Chẵn</ToggleGroupItem>
           </ToggleGroup>
         )}
         <div className="space-y-4">
@@ -126,20 +137,20 @@ export function PredictionPanel({ onSpinNow, defaultBet }: PredictionPanelProps)
             placeholder="Số tiền cược"
             value={betAmount}
             onChange={handleBetAmountChange}
-            className="h-14 text-center text-lg"
+            className="h-14 text-center text-lg min-h-[44px]"
             min="0"
           />
           <motion.div whileTap={{ scale: 0.95 }}>
-            <Button size="lg" onClick={handleSpinWithBet} className="btn-gradient w-full h-14 text-lg">
+            <Button size="lg" onClick={handleSpinWithBet} className="btn-gradient w-full h-14 text-lg min-h-[44px]">
               Đặt cược & Quay
             </Button>
           </motion.div>
         </div>
         <div className="grid grid-cols-1 gap-2">
           {isAutoRunning ? (
-            <Button size="lg" variant="destructive" onClick={stopAuto} className="h-14 text-lg">Dừng Auto</Button>
+            <Button size="lg" variant="destructive" onClick={stopAuto} className="h-14 text-lg min-h-[44px]">Dừng Auto</Button>
           ) : (
-            <Button size="lg" variant="secondary" onClick={startAuto} className="h-14 text-lg">Bắt đầu Auto</Button>
+            <Button size="lg" variant="secondary" onClick={startAuto} className="h-14 text-lg min-h-[44px]">Bắt đầu Auto</Button>
           )}
         </div>
       </CardContent>

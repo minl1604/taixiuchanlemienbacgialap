@@ -1,4 +1,4 @@
-import type { Round, Stats, Settings, UserPrediction, BetRecord } from '@/types';
+import type { Round, Stats, Settings, UserPrediction, BetRecord, Achievement } from '@/types';
 const HISTORY_KEY = 'txmb_history';
 const STATS_KEY = 'txmb_stats';
 const SETTINGS_KEY = 'txmb_settings';
@@ -6,6 +6,7 @@ const PREDICTIONS_KEY = 'txmb_predictions';
 const BALANCE_KEY = 'txmb_balance';
 const BETTING_HISTORY_KEY = 'txmb_bettingHistory';
 const BET_AMOUNT_KEY = 'txmb_betAmount';
+const ACHIEVEMENTS_KEY = 'txmb_achievements';
 const safeJSONParse = <T>(jsonString: string | null, fallback: T): T => {
   if (!jsonString) return fallback;
   try {
@@ -25,7 +26,7 @@ export const setHistory = (history: Round[]): void => {
   }
 };
 // Stats
-export const getStats = (): Stats => safeJSONParse(localStorage.getItem(STATS_KEY), {
+export const getStats = (): Omit<Stats, 'achievements'> => safeJSONParse(localStorage.getItem(STATS_KEY), {
   predictionsMade: 0,
   correct: 0,
   incorrect: 0,
@@ -34,11 +35,30 @@ export const getStats = (): Stats => safeJSONParse(localStorage.getItem(STATS_KE
   points: 0,
   netProfit: 0,
 });
-export const setStats = (stats: Stats): void => {
+export const setStats = (stats: Omit<Stats, 'achievements'>): void => {
   try {
     localStorage.setItem(STATS_KEY, JSON.stringify(stats));
   } catch (error) {
     console.error("Failed to save stats to localStorage", error);
+  }
+};
+// Achievements
+export const getAchievements = (initialAchievements: Achievement[]): Achievement[] => {
+    const stored = safeJSONParse<Achievement[] | null>(localStorage.getItem(ACHIEVEMENTS_KEY), null);
+    if (stored) {
+        // Sync with initial achievements to add new ones if any
+        return initialAchievements.map(ia => {
+            const found = stored.find(sa => sa.id === ia.id);
+            return found ? { ...ia, ...found } : ia;
+        });
+    }
+    return initialAchievements;
+};
+export const setAchievements = (achievements: Achievement[]): void => {
+  try {
+    localStorage.setItem(ACHIEVEMENTS_KEY, JSON.stringify(achievements));
+  } catch (error) {
+    console.error("Failed to save achievements to localStorage", error);
   }
 };
 // Settings
@@ -48,6 +68,7 @@ export const getSettings = (): Settings => {
     soundEnabled: true,
     historyLimit: 100,
     soundVolume: 50,
+    theme: 'dark',
   };
   const storedSettings = safeJSONParse(localStorage.getItem(SETTINGS_KEY), {});
   return { ...defaultSettings, ...storedSettings };

@@ -2,8 +2,7 @@ import React, { useEffect, useCallback, useState } from 'react';
 import { motion } from 'framer-motion';
 import { Toaster, toast } from 'sonner';
 import { Settings as SettingsIcon, HelpCircle } from 'lucide-react';
-import { ThemeToggle } from '@/components/ThemeToggle';
-import { useGameStore, useHistory, useStats, useIsAutoRunning, useLastRound, useGameActions, useBalance, useBettingHistory } from '@/hooks/useGameStore';
+import { useGameStore, useHistory, useStats, useIsAutoRunning, useLastRound, useGameActions, useBalance, useBettingHistory, useSettings, useAchievements } from '@/hooks/useGameStore';
 import { RoundTimer } from '@/components/RoundTimer';
 import { CurrentRoundPanel } from '@/components/CurrentRoundPanel';
 import { PredictionPanel } from '@/components/PredictionPanel';
@@ -14,6 +13,7 @@ import { SettingsPanel } from '@/components/SettingsPanel';
 import { GameGuide } from '@/components/GameGuide';
 import { Button } from '@/components/ui/button';
 import { AlertDialog, AlertDialogAction, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import * as storage from '@/lib/storage';
 const ConfettiPiece = ({ x, y, rotate, color }: { x: number; y: number; rotate: number; color: string }) => (
   <motion.div
@@ -43,14 +43,24 @@ export function HomePage() {
   const [showSettings, setShowSettings] = useState(false);
   const [showGuide, setShowGuide] = useState(false);
   const [showDisclaimer, setShowDisclaimer] = useState(false);
+  const [showOnboarding, setShowOnboarding] = useState(false);
   const [confetti, setConfetti] = useState<JSX.Element[]>([]);
   const { init, userInteracted } = useGameStore(s => s.actions);
+  const settings = useSettings();
   useEffect(() => {
     setIsClient(true);
     try {
       init();
+      const theme = storage.getSettings().theme || 'dark';
+      document.documentElement.setAttribute('data-theme', theme);
       if (!localStorage.getItem('disclaimerSeen')) {
         setShowDisclaimer(true);
+      } else if (!localStorage.getItem('onboardingSeen')) {
+        setShowOnboarding(true);
+        setTimeout(() => {
+          localStorage.setItem('onboardingSeen', 'true');
+          setShowOnboarding(false);
+        }, 7000);
       }
     } catch (e) {
       console.error("Failed to initialize game store:", e);
@@ -78,8 +88,7 @@ export function HomePage() {
     setTimeout(() => setConfetti([]), 2000);
   };
   const handleSpin = useCallback(() => {
-    const { newRound, wasCorrect, profit } = spinNewRound();
-    const resultText = `${newRound.taiXiu} - ${newRound.chanLe}`;
+    const { newRound, profit } = spinNewRound();
     if (profit !== null) {
       if (profit > 0) {
         toast.success(`Kỳ #${newRound.roundNumber} - Thắng!`, { description: `Lợi nhuận: +${profit.toLocaleString('vi-VN')} VND` });
@@ -89,34 +98,34 @@ export function HomePage() {
       } else {
         toast.info(`Kỳ #${newRound.roundNumber} - Hòa`, { description: 'Hoàn tiền cược.' });
       }
-    } else if (wasCorrect !== null) {
-        if (wasCorrect) {
-            toast.success(`Kỳ #${newRound.roundNumber} - ${resultText}`, { description: 'Dự đoán chính xác!' });
-        } else {
-            toast.error(`Kỳ #${newRound.roundNumber} - ${resultText}`, { description: 'Chúc bạn may mắn lần sau!' });
-        }
     } else {
-      toast.info(`Kỳ #${newRound.roundNumber} - ${resultText}`, { description: 'Đã có kết quả mới.' });
+      toast.info(`Kỳ #${newRound.roundNumber} - ${newRound.taiXiu} - ${newRound.chanLe}`, { description: 'Đã có kết quả mới.' });
     }
   }, [spinNewRound]);
   const handleDisclaimerClose = () => {
     localStorage.setItem('disclaimerSeen', 'true');
     setShowDisclaimer(false);
+    if (!localStorage.getItem('onboardingSeen')) {
+      setShowOnboarding(true);
+      setTimeout(() => {
+        localStorage.setItem('onboardingSeen', 'true');
+        setShowOnboarding(false);
+      }, 7000);
+    }
   };
   if (!isClient) {
-    return null; // or a loading spinner
+    return null;
   }
   return (
-    <div className="min-h-screen bg-gray-900 text-foreground dark font-sans relative overflow-x-hidden" onClick={userInteracted} onTouchStart={userInteracted}>
+    <div className="min-h-screen bg-background text-foreground font-sans relative overflow-x-hidden" onClick={userInteracted} onTouchStart={userInteracted}>
       <div className="absolute inset-0 bg-gradient-mesh opacity-10 pointer-events-none" />
-      <div className="absolute top-4 right-4 flex items-center gap-2">
-        <Button variant="ghost" size="icon" onClick={() => setShowGuide(true)} className="text-2xl hover:scale-110 hover:rotate-12 transition-all duration-200 active:scale-90 z-50">
+      <div className="absolute top-4 right-4 flex items-center gap-2 z-50">
+        <Button variant="ghost" size="icon" onClick={() => setShowGuide(true)} className="text-2xl hover:scale-110 hover:rotate-12 transition-all duration-200 active:scale-90">
           <HelpCircle className="h-6 w-6" />
         </Button>
-        <Button variant="ghost" size="icon" onClick={() => setShowSettings(true)} className="text-2xl hover:scale-110 hover:rotate-12 transition-all duration-200 active:scale-90 z-50">
+        <Button variant="ghost" size="icon" onClick={() => setShowSettings(true)} className="text-2xl hover:scale-110 hover:rotate-12 transition-all duration-200 active:scale-90">
           <SettingsIcon className="h-6 w-6" />
         </Button>
-        <ThemeToggle className="relative top-0 right-0" />
       </div>
       <header className="text-center pt-8 pb-4">
         <h1 className="text-4xl md:text-5xl font-display font-bold text-balance leading-tight">
@@ -125,35 +134,37 @@ export function HomePage() {
         <p className="text-sm text-muted-foreground mt-2">Không dùng cho cá cược tiền thật</p>
       </header>
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="py-8 md:py-10 lg:py-12">
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5 }}
-              className="lg:col-span-2 space-y-8"
-            >
-              <RoundTimer isAutoRunning={isAutoRunning} onExpire={handleSpin} intervalSeconds={20} />
-              <CurrentRoundPanel round={lastRound} />
-              <PredictionPanel onSpinNow={handleSpin} defaultBet={storage.getBetAmount()} />
-              <TrendView history={history} />
-            </motion.div>
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.2 }}
-              className="space-y-8"
-            >
-              <StatsPanel stats={stats} balance={balance} bettingHistory={bettingHistory} onResetStats={resetStatsAndBalance} />
-              <HistoryTable history={history} onClearHistory={resetHistory} />
-            </motion.div>
+        <TooltipProvider>
+          <div className="py-8 md:py-10 lg:py-12">
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5 }}
+                className="lg:col-span-2 space-y-8"
+              >
+                <Tooltip open={showOnboarding}><TooltipTrigger asChild><div><RoundTimer isAutoRunning={isAutoRunning} onExpire={handleSpin} intervalSeconds={20} /></div></TooltipTrigger><TooltipContent><p>Đếm ngược kỳ tiếp theo (20s)</p></TooltipContent></Tooltip>
+                <CurrentRoundPanel round={lastRound} />
+                <Tooltip open={showOnboarding}><TooltipTrigger asChild><div><PredictionPanel onSpinNow={handleSpin} defaultBet={storage.getBetAmount()} /></div></TooltipTrigger><TooltipContent><p>Dự đoán và đặt cược tại đây</p></TooltipContent></Tooltip>
+                <TrendView history={history} />
+              </motion.div>
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: 0.2 }}
+                className="space-y-8"
+              >
+                <Tooltip open={showOnboarding}><TooltipTrigger asChild><div><StatsPanel stats={stats} balance={balance} bettingHistory={bettingHistory} onResetStats={resetStatsAndBalance} /></div></TooltipTrigger><TooltipContent><p>Theo dõi thống kê và thành tích của bạn</p></TooltipContent></Tooltip>
+                <HistoryTable history={history} onClearHistory={resetHistory} />
+              </motion.div>
+            </div>
           </div>
-        </div>
+        </TooltipProvider>
       </main>
       <footer className="text-center py-8 text-muted-foreground/80 text-sm">
-        <p>Built with ���️ at Cloudflare</p>
+        <p>Built with ❤️ at Cloudflare</p>
       </footer>
-      <Toaster richColors closeButton theme="dark" />
+      <Toaster richColors closeButton theme={settings.theme === 'light' ? 'light' : 'dark'} />
       <SettingsPanel open={showSettings} onOpenChange={setShowSettings} />
       <GameGuide open={showGuide} onOpenChange={setShowGuide} />
       <AlertDialog open={showDisclaimer} onOpenChange={setShowDisclaimer}>
@@ -161,7 +172,7 @@ export function HomePage() {
           <AlertDialogHeader>
             <AlertDialogTitle>Lưu ý quan trọng</AlertDialogTitle>
             <AlertDialogDescription>
-              Đây là một ��ng dụng giả lập chỉ dành cho mục đích giải trí. Mọi kết quả đều là ngẫu nhiên và không liên quan đ��n kết quả xổ số thực tế. Ứng dụng này không sử dụng tiền thật và không dành cho mục đích cờ bạc.
+              Đây là một ứng dụng giả lập chỉ dành cho mục đích giải trí. Mọi kết quả đều là ngẫu nhiên và không liên quan đến kết quả xổ số thực tế. Ứng dụng này không sử dụng tiền thật và không dành cho mục đích cờ bạc.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>

@@ -1,11 +1,14 @@
 import React from 'react';
+import { motion } from 'framer-motion';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 import { Badge } from '@/components/ui/badge';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import type { Stats, BetRecord } from '@/types';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import type { Stats, BetRecord, Achievement } from '@/types';
 import { cn } from '@/lib/utils';
+import { Trophy } from 'lucide-react';
 interface StatsPanelProps {
   stats: Stats;
   balance: number;
@@ -15,6 +18,7 @@ interface StatsPanelProps {
 export function StatsPanel({ stats, balance, bettingHistory, onResetStats }: StatsPanelProps) {
   const accuracy = stats.predictionsMade > 0 ? Math.round((stats.correct / stats.predictionsMade) * 100) : 0;
   const totalWagered = bettingHistory.reduce((sum, bet) => sum + bet.betAmount, 0);
+  const unlockedAchievements = stats.achievements.filter(a => a.unlocked);
   return (
     <Card className="glass-dark border-yellow-500/20">
       <CardHeader className="flex flex-row items-center justify-between">
@@ -48,6 +52,29 @@ export function StatsPanel({ stats, balance, bettingHistory, onResetStats }: Sta
           <span className="text-lg font-semibold">{stats.longestStreak}</span>
         </div>
         <div>
+          <p className="text-sm font-semibold mb-2">Thành Tích</p>
+          <div className="flex flex-wrap gap-2">
+            {unlockedAchievements.length > 0 ? (
+              unlockedAchievements.map((ach, i) => (
+                <TooltipProvider key={ach.id} delayDuration={100}>
+                  <Tooltip>
+                    <TooltipTrigger>
+                      <motion.div initial={{ opacity: 0, scale: 0.5 }} animate={{ opacity: 1, scale: 1 }} transition={{ delay: i * 0.1 }}>
+                        <Badge className="bg-yellow-500/80 hover:bg-yellow-500/90 text-yellow-foreground border-yellow-400">
+                          <Trophy className="h-4 w-4 mr-1.5" /> {ach.name}
+                        </Badge>
+                      </motion.div>
+                    </TooltipTrigger>
+                    <TooltipContent>{ach.description}</TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+              ))
+            ) : (
+              <p className="text-xs text-muted-foreground">Chưa có thành tích nào được mở khóa.</p>
+            )}
+          </div>
+        </div>
+        <div>
           <p className="text-sm font-semibold mb-2">Lịch sử cược</p>
           <ScrollArea className="h-40 pr-4">
             <div className="space-y-2 text-sm">
@@ -55,7 +82,7 @@ export function StatsPanel({ stats, balance, bettingHistory, onResetStats }: Sta
                 bettingHistory.slice(0, 20).map((bet) => (
                   <div key={bet.roundId} className="flex justify-between items-center">
                     <span>Kỳ #{bet.roundNumber}</span>
-                    {bet.outcome === 'win' && <Badge className="bg-green-500/80">Thắng {bet.profit.toLocaleString('vi-VN')}</Badge>}
+                    {bet.outcome === 'win' && <Badge className="bg-green-500/80">Th���ng {bet.profit.toLocaleString('vi-VN')}</Badge>}
                     {bet.outcome === 'partial' && <Badge variant="secondary">Hòa</Badge>}
                     {bet.outcome === 'loss' && <Badge variant="destructive">Thua {Math.abs(bet.profit).toLocaleString('vi-VN')}</Badge>}
                   </div>

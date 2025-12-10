@@ -11,18 +11,29 @@ import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
 import { Slider } from '@/components/ui/slider';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useGameStore } from '@/hooks/useGameStore';
-import type { Settings } from '@/types';
+import type { Settings, Theme } from '@/types';
 interface SettingsPanelProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
 }
+const themes: { value: Theme; label: string }[] = [
+  { value: 'dark', label: 'Tối (Mặc định)' },
+  { value: 'light', label: 'Sáng' },
+  { value: 'neon', label: 'Neon' },
+  { value: 'vintage', label: 'Cổ điển (Vintage)' },
+];
 export function SettingsPanel({ open, onOpenChange }: SettingsPanelProps) {
   const settings = useGameStore((state) => state.settings);
   const setSettings = useGameStore((state) => state.actions.setSettings);
   if (!settings) return null;
   const handleSettingsChange = (changedSettings: Partial<Settings>) => {
     setSettings(changedSettings);
+  };
+  const handleThemeChange = (theme: Theme) => {
+    handleSettingsChange({ theme });
+    document.documentElement.setAttribute('data-theme', theme);
   };
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -34,9 +45,24 @@ export function SettingsPanel({ open, onOpenChange }: SettingsPanelProps) {
           </DialogDescription>
         </DialogHeader>
         <div className="grid gap-6 py-4">
+          <div className="space-y-3">
+            <Label htmlFor="theme-select">Chủ đề giao diện</Label>
+            <Select value={settings.theme} onValueChange={handleThemeChange}>
+              <SelectTrigger id="theme-select">
+                <SelectValue placeholder="Chọn một chủ đề" />
+              </SelectTrigger>
+              <SelectContent>
+                {themes.map((theme) => (
+                  <SelectItem key={theme.value} value={theme.value}>
+                    {theme.label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
           <div className="flex items-center justify-between space-x-4">
             <Label htmlFor="auto-start" className="flex flex-col space-y-1">
-              <span>Tự động bắt đầu</span>
+              <span>Tự động b��t đầu</span>
               <span className="font-normal leading-snug text-muted-foreground">
                 Bắt đầu chế độ auto khi tải trang.
               </span>
