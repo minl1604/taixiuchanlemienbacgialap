@@ -16,19 +16,17 @@ export function PredictionPanel({ onSpinNow }: PredictionPanelProps) {
   const balance = useBalance();
   const [betAmount, setBetAmount] = useState<string>("500000000");
   useEffect(() => {
-    // When a new round starts, currentPrediction is cleared.
-    // We can reset the bet amount input here if we want.
     if (!currentPrediction.taiXiu && !currentPrediction.chanLe) {
       // Optional: Reset bet amount for new round if desired
     }
   }, [currentPrediction]);
   const handleTaiXiuChange = (value: string) => {
-    if (value) { // Prevent un-toggling
+    if (value) {
       setPrediction({ taiXiu: value as TaiXiu });
     }
   };
   const handleChanLeChange = (value: string) => {
-    if (value) { // Prevent un-toggling
+    if (value) {
       setPrediction({ chanLe: value as ChanLe });
     }
   };
@@ -39,7 +37,7 @@ export function PredictionPanel({ onSpinNow }: PredictionPanelProps) {
       return;
     }
     if (betValue > balance) {
-      toast.error("Số dư không đủ.");
+      toast.error("Số d�� không đủ.");
       return;
     }
     if (!currentPrediction.taiXiu && !currentPrediction.chanLe) {
@@ -47,8 +45,7 @@ export function PredictionPanel({ onSpinNow }: PredictionPanelProps) {
       return;
     }
     setPrediction({ bet: betValue });
-    toast.success(`��ặt cược ${betValue.toLocaleString('vi-VN')} VND thành công!`);
-    // Use a timeout to ensure state update is processed before spinning
+    toast.success(`Đặt cược ${betValue.toLocaleString('vi-VN')} VND thành công!`);
     setTimeout(() => {
       onSpinNow();
     }, 100);
@@ -57,7 +54,7 @@ export function PredictionPanel({ onSpinNow }: PredictionPanelProps) {
     <Card className="glass-dark border-blue-500/20">
       <CardHeader>
         <CardTitle className="text-2xl font-display text-center">Dự đoán kỳ này</CardTitle>
-        <p className="text-center text-muted-foreground">Số dư: <span className="font-bold text-primary">{balance.toLocaleString('vi-VN')} VND</span></p>
+        <p className="text-center text-muted-foreground">Số dư: <span className="font-bold text-primary">{(balance || 0).toLocaleString('vi-VN')} VND</span></p>
       </CardHeader>
       <CardContent className="space-y-6">
         <div className="space-y-4">
@@ -97,7 +94,7 @@ export function PredictionPanel({ onSpinNow }: PredictionPanelProps) {
           {isAutoRunning ? (
             <Button size="lg" variant="destructive" onClick={stopAuto} className="h-14 text-lg">Dừng Auto</Button>
           ) : (
-            <Button size="lg" variant="secondary" onClick={startAuto} className="h-14 text-lg">Bắt đầu Auto</Button>
+            <Button size="lg" variant="secondary" onClick={startAuto} className="h-14 text-lg">B���t đầu Auto</Button>
           )}
         </div>
       </CardContent>

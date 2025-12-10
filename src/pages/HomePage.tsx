@@ -10,9 +10,12 @@ import { TrendView } from '@/components/TrendView';
 import { HistoryTable } from '@/components/HistoryTable';
 import { StatsPanel } from '@/components/StatsPanel';
 export function HomePage() {
-  // Initialize store on mount
   useEffect(() => {
-    useGameStore.getState().actions.init();
+    try {
+      useGameStore.getState().actions.init();
+    } catch (e) {
+      console.error("Failed to initialize game store:", e);
+    }
   }, []);
   const history = useHistory();
   const stats = useStats();
@@ -55,7 +58,6 @@ export function HomePage() {
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="py-8 md:py-10 lg:py-12">
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            {/* Main Column */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
@@ -67,7 +69,6 @@ export function HomePage() {
               <PredictionPanel onSpinNow={handleSpin} />
               <TrendView history={history} />
             </motion.div>
-            {/* Sidebar Column */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}

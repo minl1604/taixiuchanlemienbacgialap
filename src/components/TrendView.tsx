@@ -10,7 +10,7 @@ interface TrendViewProps {
 const TrendDot = ({ round, type }: { round: Round; type: 'tx' | 'cl' }) => {
   const isTai = round.taiXiu === 'Tài';
   const isLe = round.chanLe === 'Lẻ';
-  const colorClass = type === 'tx' 
+  const colorClass = type === 'tx'
     ? (isTai ? 'bg-red-500' : 'bg-blue-500')
     : (isLe ? 'bg-red-500' : 'bg-blue-500');
   const label = type === 'tx' ? round.taiXiu[0] : round.chanLe[0];
@@ -36,13 +36,18 @@ const TrendDot = ({ round, type }: { round: Round; type: 'tx' | 'cl' }) => {
     </TooltipProvider>
   );
 };
-const TrendGrid = ({ history, type }: { history: Round[]; type: 'tx' | 'cl' }) => (
-  <div className="grid grid-cols-10 md:grid-cols-20 gap-2 p-2 bg-black/20 rounded-md">
-    {history.slice(0, 60).map((round) => (
-      <TrendDot key={`${round.id}-${type}`} round={round} type={type} />
-    ))}
-  </div>
-);
+const TrendGrid = ({ history, type }: { history: Round[]; type: 'tx' | 'cl' }) => {
+  if (!history || history.length === 0) {
+    return <div className="text-center text-muted-foreground p-4">Chưa có dữ liệu xu hướng.</div>;
+  }
+  return (
+    <div className="grid grid-cols-10 md:grid-cols-20 gap-2 p-2 bg-black/20 rounded-md">
+      {history.slice(0, 60).map((round) => (
+        <TrendDot key={`${round.id}-${type}`} round={round} type={type} />
+      ))}
+    </div>
+  );
+};
 export function TrendView({ history }: TrendViewProps) {
   return (
     <Card className="glass-dark border-purple-500/20">

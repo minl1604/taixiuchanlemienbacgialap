@@ -19,7 +19,7 @@ const DigitCircle = ({ digit, index }: { digit: string; index: number }) => (
   </motion.div>
 );
 export function CurrentRoundPanel({ round }: CurrentRoundPanelProps) {
-  const digits = round?.digits.split('') ?? Array(5).fill(null);
+  const digits = round?.digits?.split('') ?? Array(5).fill(null);
   return (
     <Card className="glass-dark border-orange-500/20 overflow-hidden">
       <CardHeader className="text-center pb-4">

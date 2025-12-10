@@ -1,5 +1,5 @@
 export type TaiXiu = 'Tài' | 'Xỉu';
-export type ChanLe = 'Chẵn' | 'L���';
+export type ChanLe = 'Chẵn' | 'Lẻ';
 export interface Round {
   id: string;
   roundNumber: number;

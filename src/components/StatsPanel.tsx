@@ -19,22 +19,22 @@ export function StatsPanel({ stats, balance, bettingHistory, onResetStats }: Sta
     <Card className="glass-dark border-yellow-500/20">
       <CardHeader className="flex flex-row items-center justify-between">
         <CardTitle className="text-2xl font-display">Thống kê</CardTitle>
-        <Button variant="outline" size="sm" onClick={onResetStats}>Đặt lại</Button>
+        <Button variant="outline" size="sm" onClick={onResetStats}>Đặt l���i</Button>
       </CardHeader>
       <CardContent className="space-y-4">
         <div className="flex justify-between items-baseline">
-          <span className="text-muted-foreground">Số dư ảo (VND)</span>
-          <span className="text-2xl font-bold text-gradient">{balance.toLocaleString('vi-VN')}</span>
+          <span className="text-muted-foreground">Số dư ��o (VND)</span>
+          <span className="text-2xl font-bold text-gradient">{(balance || 0).toLocaleString('vi-VN')}</span>
         </div>
         <div className="flex justify-between items-baseline">
           <span className="text-muted-foreground">Lợi nhuận ròng</span>
           <span className={cn("text-lg font-semibold", stats.netProfit >= 0 ? 'text-green-400' : 'text-red-400')}>
-            {stats.netProfit.toLocaleString('vi-VN')}
+            {(stats.netProfit || 0).toLocaleString('vi-VN')}
           </span>
         </div>
         <div className="flex justify-between items-baseline">
           <span className="text-muted-foreground">Tổng cược</span>
-          <span className="text-lg font-semibold">{totalWagered.toLocaleString('vi-VN')}</span>
+          <span className="text-lg font-semibold">{(totalWagered || 0).toLocaleString('vi-VN')}</span>
         </div>
         <div className="space-y-2">
           <div className="flex justify-between items-baseline">
@@ -61,7 +61,7 @@ export function StatsPanel({ stats, balance, bettingHistory, onResetStats }: Sta
                   </div>
                 ))
               ) : (
-                <p className="text-muted-foreground text-center py-4">Chưa có l��ch sử cược.</p>
+                <p className="text-muted-foreground text-center py-4">Chưa có lịch sử cược.</p>
               )}
             </div>
           </ScrollArea>
