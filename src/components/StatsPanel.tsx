@@ -21,8 +21,25 @@ const BetHistoryItem = memo(({ bet }: { bet: BetRecord }) => (
 BetHistoryItem.displayName = 'BetHistoryItem';
 function StatsPanelComponent({ stats, balance, bettingHistory, onResetStats }: { stats: Stats; balance: number; bettingHistory: BetRecord[]; onResetStats: () => void; }) {
   if (!stats || !bettingHistory) {
-    console.error('Stats or bettingHistory is undefined in StatsPanel');
-    return <Skeleton className="h-[500px] w-full" />;
+    return (
+      <Card className="glass-dark border-yellow-500/20">
+        <CardHeader><CardTitle>Thống kê</CardTitle></CardHeader>
+        <CardContent className="space-y-4">
+          <Skeleton className="h-8 w-3/4" />
+          <Skeleton className="h-6 w-1/2" />
+          <Skeleton className="h-6 w-2/3" />
+          <div className="space-y-2 pt-2">
+            <Skeleton className="h-4 w-full" />
+            <Skeleton className="h-2 w-full" />
+          </div>
+          <Skeleton className="h-6 w-1/2" />
+          <div className="pt-2">
+            <Skeleton className="h-4 w-1/4 mb-2" />
+            <div className="flex gap-2"><Skeleton className="h-6 w-20" /><Skeleton className="h-6 w-24" /></div>
+          </div>
+        </CardContent>
+      </Card>
+    );
   }
   const accuracy = stats.predictionsMade > 0 ? Math.round((stats.correct / stats.predictionsMade) * 100) : 0;
   const totalWagered = bettingHistory.reduce((sum, bet) => sum + bet.betAmount, 0);
@@ -53,7 +70,7 @@ function StatsPanelComponent({ stats, balance, bettingHistory, onResetStats }: {
             <span className="text-muted-foreground">Độ chính xác</span>
             <span className="text-lg font-semibold">{accuracy}% ({stats.correct}/{stats.predictionsMade})</span>
           </div>
-          <Progress value={accuracy} className="h-2 [&>div]:bg-gradient-to-r [&>div]:from-blue-500 [&>div]:to-purple-500" aria-label={`Độ chính xác ${accuracy}%`} />
+          <Progress value={accuracy} className="h-2 [&>div]:bg-gradient-to-r [&>div]:from-blue-500 [&>div]:to-purple-500 shimmer-bg" aria-label={`Độ chính xác: ${accuracy}%`} />
         </div>
         <div className="flex justify-between items-baseline">
           <span className="text-muted-foreground">Chuỗi thắng dài nhất</span>
@@ -63,20 +80,23 @@ function StatsPanelComponent({ stats, balance, bettingHistory, onResetStats }: {
           <p className="text-sm font-semibold mb-2">Thành Tích</p>
           <div className="flex flex-wrap gap-2">
             {unlockedAchievements.length > 0 ? (
-              unlockedAchievements.map((ach, i) => (
-                <TooltipProvider key={ach.id} delayDuration={100}>
-                  <Tooltip>
-                    <TooltipTrigger>
-                      <motion.div initial={{ opacity: 0, scale: 0.5 }} animate={{ opacity: 1, scale: 1 }} transition={{ delay: i * 0.1 }}>
-                        <Badge className="bg-yellow-500/80 hover:bg-yellow-500/90 text-yellow-foreground border-yellow-400">
-                          <Trophy className="h-4 w-4 mr-1.5" /> {ach.name}
-                        </Badge>
-                      </motion.div>
-                    </TooltipTrigger>
-                    <TooltipContent>{ach.description}</TooltipContent>
-                  </Tooltip>
-                </TooltipProvider>
-              ))
+              unlockedAchievements.map((ach, i) => {
+                const tooltipId = `ach-tooltip-${ach.id}`;
+                return (
+                  <TooltipProvider key={ach.id} delayDuration={100}>
+                    <Tooltip>
+                      <TooltipTrigger>
+                        <motion.div initial={{ opacity: 0, scale: 0.5 }} animate={{ opacity: 1, scale: 1 }} transition={{ delay: i * 0.1 }}>
+                          <Badge className="bg-yellow-500/80 hover:bg-yellow-500/90 text-yellow-foreground border-yellow-400" aria-describedby={tooltipId}>
+                            <Trophy className="h-4 w-4 mr-1.5" /> {ach.name}
+                          </Badge>
+                        </motion.div>
+                      </TooltipTrigger>
+                      <TooltipContent id={tooltipId}>{ach.description}</TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
+                )
+              })
             ) : (
               <p className="text-xs text-muted-foreground">Chưa có thành tích nào được mở khóa.</p>
             )}
@@ -84,7 +104,7 @@ function StatsPanelComponent({ stats, balance, bettingHistory, onResetStats }: {
         </div>
         <div>
           <p className="text-sm font-semibold mb-2">Lịch sử cược</p>
-          <ScrollArea className="h-40 pr-4">
+          <ScrollArea className="h-40 pr-4" aria-label="Lịch sử cược gần đây">
             <div className="space-y-2 text-sm">
               {bettingHistory.length > 0 ? (
                 bettingHistory.slice(0, 20).map((bet) => (

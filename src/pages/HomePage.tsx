@@ -102,7 +102,7 @@ export function HomePage() {
         toast.info(`Kỳ #${newRound.roundNumber} - Hòa`, { description: 'Hoàn tiền cược.' });
       }
     } else {
-      toast.info(`Kỳ #${newRound.roundNumber} - ${newRound.taiXiu} - ${newRound.chanLe}`, { description: 'Đ�� có kết quả mới.' });
+      toast.info(`Kỳ #${newRound.roundNumber} - ${newRound.taiXiu} - ${newRound.chanLe}`, { description: 'Đã c�� kết quả mới.' });
     }
   }, [spinNewRound, triggerConfetti]);
   const handleDisclaimerClose = useCallback(() => {
@@ -142,7 +142,7 @@ export function HomePage() {
     <div className="min-h-screen bg-background text-foreground font-sans relative overflow-x-hidden" onClick={() => getGameActions().userInteracted()} onTouchStart={() => getGameActions().userInteracted()}>
       <div className="absolute inset-0 bg-gradient-mesh opacity-10 pointer-events-none" />
       <div className="absolute top-4 right-4 flex items-center gap-2 z-50">
-        <Button variant="ghost" size="icon" onClick={() => setShowGuide(true)} className="text-2xl hover:scale-110 hover:rotate-12 transition-all duration-200 active:scale-90" aria-label="Mở hướng dẫn">
+        <Button variant="ghost" size="icon" onClick={() => setShowGuide(true)} className="text-2xl hover:scale-110 hover:rotate-12 transition-all duration-200 active:scale-90" aria-label="Mở hướng d��n">
           <HelpCircle className="h-6 w-6" />
         </Button>
         <Button variant="ghost" size="icon" onClick={() => setShowSettings(true)} className="text-2xl hover:scale-110 hover:rotate-12 transition-all duration-200 active:scale-90" aria-label="Mở cài đặt">
@@ -151,11 +151,11 @@ export function HomePage() {
       </div>
       <header className="text-center pt-8 pb-4">
         <h1 className="text-4xl md:text-5xl font-display font-bold text-balance leading-tight">
-          <span className="text-gradient">Tài Xỉu Miền Bắc</span> Giả Lập
+          <span className="text-gradient">Tài Xỉu Miền Bắc</span> Giả L��p
         </h1>
-        <p className="text-sm text-muted-foreground mt-2">Không dùng cho c�� cược tiền thật</p>
+        <p className="text-sm text-muted-foreground mt-2">Không dùng cho cá cược tiền thật</p>
       </header>
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8" aria-label="Trò chơi chính">
         <TooltipProvider>
           <div className="py-8 md:py-10 lg:py-12">
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
@@ -195,7 +195,7 @@ export function HomePage() {
           <AlertDialogHeader>
             <AlertDialogTitle>Lưu ý quan trọng</AlertDialogTitle>
             <AlertDialogDescription>
-              Đây là một ứng dụng giả lập chỉ dành cho mục đích giải trí. Mọi kết quả đều là ngẫu nhiên và không liên quan đến kết quả xổ số thực tế. Ứng dụng này không sử dụng tiền thật và không dành cho mục đích cờ bạc.
+              Đây là m���t ứng dụng giả lập chỉ dành cho mục đích giải trí. Mọi kết quả đều là ngẫu nhiên và không liên quan đến kết quả xổ số thực tế. Ứng dụng này không sử dụng tiền thật và không dành cho mục đích cờ bạc.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>

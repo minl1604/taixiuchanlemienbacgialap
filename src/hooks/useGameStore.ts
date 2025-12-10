@@ -28,10 +28,9 @@ export const playSound = (type: 'win' | 'loss' | 'tick' | 'achievement', setting
     const now = audioCtx.currentTime;
     const oscillator = audioCtx.createOscillator();
     const gainNode = audioCtx.createGain();
-    // Cap volume at 50% for a softer experience
     const baseVolume = Math.max(0, Math.min(0.5, (settings.soundVolume ?? 30) / 100));
     let freq: number, duration: number;
-    const waveType: OscillatorType = 'sine'; // Use sine for all for a softer sound
+    const waveType: OscillatorType = 'sine';
     switch (type) {
       case 'win': freq = 700; duration = 0.5; break;
       case 'loss': freq = 300; duration = 0.3; break;
@@ -39,9 +38,7 @@ export const playSound = (type: 'win' | 'loss' | 'tick' | 'achievement', setting
       case 'achievement': freq = 1000; duration = 0.7; break;
       default: freq = 600; duration = 0.1;
     }
-    // Make tick sound very subtle
     const targetVolume = type === 'tick' ? baseVolume * 0.2 : baseVolume;
-    // Smoother fade in/out
     const attack = 0.05;
     const release = 0.1;
     gainNode.gain.setValueAtTime(0, now);
@@ -63,7 +60,7 @@ const initialAchievements: Achievement[] = [
   { id: 'streak10', name: 'Bậc Thầy Chuỗi', description: 'Đạt chuỗi thắng 10 kỳ liên tiếp!', unlocked: false, criteria: { type: 'streak', value: 10 } },
   { id: 'rounds50', name: 'Người Chơi Bền Bỉ', description: 'Hoàn thành 50 kỳ quay.', unlocked: false, criteria: { type: 'rounds', value: 50 } },
   { id: 'rounds100', name: 'Trăm Trận Trăm Thắng', description: 'Hoàn thành 100 kỳ quay.', unlocked: false, criteria: { type: 'rounds', value: 100 } },
-  { id: 'wins50', name: 'Chuyên Gia Dự Đoán', description: 'Thắng 50 lần.', unlocked: false, criteria: { type: 'wins', value: 50 } },
+  { id: 'wins50', name: 'Chuyên Gia D��� Đoán', description: 'Thắng 50 lần.', unlocked: false, criteria: { type: 'wins', value: 50 } },
 ];
 interface GameState {
   history: Round[];
