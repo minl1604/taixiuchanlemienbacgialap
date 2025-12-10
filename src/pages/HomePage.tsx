@@ -145,11 +145,11 @@ function HomePageContent() {
       </div>
       <header className="text-center pt-8 pb-4">
         <h1 className="text-4xl md:text-5xl font-display font-bold text-balance leading-tight">
-          <span className="text-gradient">Tài Xỉu Miền B���c</span> Giả Lập
+          <span className="text-gradient">Tài Xỉu Miền Bắc</span> Giả Lập
         </h1>
         <p className="text-sm text-muted-foreground mt-2">Không dùng cho cá cược tiền thật</p>
       </header>
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex-1 w-full" aria-label="Trò chơi Tài Xỉu Miền Bắc Giả Lập - Kỳ hiện tại v�� dự đoán">
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex-1 w-full" aria-label="Trò chơi Tài Xỉu Miền Bắc Giả Lập - Kỳ hiện tại và dự đoán">
         <TooltipProvider>
           <div className="py-8 md:py-10 lg:py-12">
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
@@ -178,7 +178,7 @@ function HomePageContent() {
         </TooltipProvider>
       </main>
       <footer className="text-center py-8 text-muted-foreground/80 text-sm">
-        <p>© 2025 CLTX MB • Dev by MinL x Cloudflare</p>
+        <p>© 2025 CLTX MB ��� Dev by MinL x Cloudflare</p>
         <Badge variant="secondary" className="text-xs mt-2 opacity-80">Không dùng cho cá cược tiền thật</Badge>
       </footer>
       <Toaster richColors closeButton theme={settings?.theme === 'light' ? 'light' : 'dark'} />
@@ -189,11 +189,11 @@ function HomePageContent() {
           <AlertDialogHeader>
             <AlertDialogTitle>Lưu ý quan trọng</AlertDialogTitle>
             <AlertDialogDescription>
-              Đây là một ứng dụng giả lập chỉ dành cho mục đích giải trí. Mọi kết quả đều là ngẫu nhiên và không liên quan đến kết quả xổ số thực tế. Ứng dụng này không sử dụng tiền thật và không dành cho mục đích cờ bạc.
+              Đây là một ứng d��ng giả lập chỉ dành cho mục đích giải trí. Mọi kết quả đều là ngẫu nhiên và không liên quan đến kết quả xổ số thực tế. Ứng dụng này không sử dụng tiền thật và không dành cho mục đích cờ bạc.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogAction onClick={handleDisclaimerClose}>Tôi đã hiểu</AlertDialogAction>
+            <AlertDialogAction onClick={handleDisclaimerClose}>Tôi đ�� hiểu</AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
