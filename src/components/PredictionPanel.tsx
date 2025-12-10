@@ -71,8 +71,8 @@ function PredictionPanelComponent({ onSpinNow, defaultBet }: { onSpinNow: () => 
   }, [setPrediction]);
   const handleSpinWithBet = useCallback(() => {
     const betValue = parseInt(betAmount, 10);
-    if (isNaN(betValue) || betValue <= 0) {
-      toast.error("Số ti��n cược không hợp lệ.");
+      if (isNaN(betValue) || betValue <= 0) {
+      toast.error("Số tiền cược không hợp lệ.");
       return;
     }
     if (betValue > balance) {

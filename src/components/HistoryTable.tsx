@@ -34,21 +34,18 @@ function HistoryTableComponent({ history, onClearHistory }: { history: Round[]; 
   const handleClear = () => {
     toast("Bạn có chắc muốn xóa toàn bộ lịch sử?", {
       action: {
-        label: "Xác nhận",
+        label: 'Xác nhận',
         onClick: () => {
           onClearHistory();
-          toast.success("Đã xóa lịch sử.");
+          toast.success('Đã xóa lịch sử.');
         },
       },
-      cancel: {
-        label: "Hủy"
-      }
     });
   };
   return (
     <Card className="glass-dark border-green-500/20">
       <CardHeader className="flex flex-row items-center justify-between">
-        <CardTitle className="text-2xl font-display">Kết qu�� gần đây</CardTitle>
+        <CardTitle className="text-2xl font-display">Kết quả gần đây</CardTitle>
         <Button variant="destructive" size="sm" onClick={handleClear}>Xóa lịch sử</Button>
       </CardHeader>
       <CardContent>

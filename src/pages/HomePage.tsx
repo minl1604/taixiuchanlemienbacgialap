@@ -52,6 +52,28 @@ export function HomePage() {
     setIsClient(true);
     try {
       getGameActions().init();
+
+      // Seed preview history when empty so TrendView has data for testing.
+      // Avoid showing UI toasts by calling the action directly and wrapping in try/catch.
+      try {
+        const actions = getGameActions();
+        const gs = (actions as any).getState ? (actions as any).getState() : undefined;
+        const currentLen = gs?.history?.length || 0;
+        const target = 6;
+        const needed = Math.max(0, target - currentLen);
+        for (let i = 0; i < needed; i++) {
+          try {
+            // call action directly to avoid UI toast side-effects
+            actions.spinNewRound();
+          } catch (seedErr) {
+            console.error('Error seeding round:', seedErr);
+            break;
+          }
+        }
+      } catch (seedOuterErr) {
+        console.error('Seeding history error:', seedOuterErr);
+      }
+
       const theme = storage.getSettings().theme || 'dark';
       document.documentElement.setAttribute('data-theme', theme);
       if (!localStorage.getItem('disclaimerSeen')) {
@@ -101,7 +123,7 @@ export function HomePage() {
       } else if (profit < 0) {
         toast.error(`Kỳ #${newRound.roundNumber} - Thua!`, { description: `Mất: ${(-profit).toLocaleString('vi-VN')} VND` });
       } else {
-        toast.info(`Kỳ #${newRound.roundNumber} - Hòa`, { description: 'Hoàn ti���n cược.' });
+        toast.info(`Kỳ #${newRound.roundNumber} - Hòa`, { description: 'Hoàn tiền cược.' });
       }
     } else if (wasCorrect !== null) {
       // A prediction was made, but no bet

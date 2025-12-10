@@ -22,6 +22,7 @@ const BetHistoryItem = memo(({ bet }: { bet: BetRecord }) => (
 ));
 BetHistoryItem.displayName = 'BetHistoryItem';
 function StatsPanelComponent({ stats, balance, bettingHistory, onResetStats }: { stats: Stats; balance: number; bettingHistory: BetRecord[]; onResetStats: () => void; }) {
+  const recentBets = useMemo(() => bettingHistory ? bettingHistory.slice(0,20) : [], [bettingHistory]);
   if (!stats || !bettingHistory) {
     return (
       <Card className="glass-dark border-yellow-500/20">
@@ -52,9 +53,9 @@ function StatsPanelComponent({ stats, balance, bettingHistory, onResetStats }: {
   const unlockedAchievements = stats.achievements.filter(a => a.unlocked);
   const handleReset = () => {
     onResetStats();
-    toast.success("Đã đặt l��i thống kê và số dư.");
+    toast.success("Đã đặt lại thống kê và số dư.");
   };
-  const recentBets = useMemo(() => bettingHistory.slice(0, 20), [bettingHistory]);
+
   return (
     <Card className="glass-dark border-yellow-500/20 hover:shadow-glow transition-shadow">
         <CardHeader className="flex flex-row items-center justify-between">
@@ -63,11 +64,11 @@ function StatsPanelComponent({ stats, balance, bettingHistory, onResetStats }: {
             <AlertDialogTrigger asChild>
               <Button variant="outline" size="sm">Đặt lại</Button>
             </AlertDialogTrigger>
-            <AlertDialogContent>
+              <AlertDialogContent>
               <AlertDialogHeader>
                 <AlertDialogTitle>Bạn có chắc chắn?</AlertDialogTitle>
                 <AlertDialogDescription>
-                  Hành động này sẽ xóa toàn bộ thống kê, thành tích, lịch s�� cược và đặt lại số dư của bạn về mặc định.
+                  Hành động này sẽ xóa toàn bộ thống kê, thành tích, lịch sử cược và đặt lại số dư của bạn về mặc định.
                 </AlertDialogDescription>
               </AlertDialogHeader>
               <AlertDialogFooter>

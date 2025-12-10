@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 import { immer } from 'zustand/middleware/immer';
 import { toast } from 'sonner';
-import { useShallow } from 'zustand/react/shallow';
+
 import type { Round, Prediction, Stats, BetRecord, Settings, Achievement } from '@/types';
 import * as storage from '@/lib/storage';
 import { generateRound, evaluatePrediction, calculateReward } from '@/lib/simulator';
@@ -214,14 +214,14 @@ export const useGameStore = create<GameState>()(
     },
   }))
 );
-export const useHistory = () => useGameStore(useShallow(s => s.history));
+export const useHistory = () => useGameStore(s => s.history);
 export const useStats = () => useGameStore(s => s.stats);
 export const useBalance = () => useGameStore(s => s.balance);
-export const useBettingHistory = () => useGameStore(useShallow(s => s.bettingHistory));
+export const useBettingHistory = () => useGameStore(s => s.bettingHistory);
 export const useCurrentPrediction = () => useGameStore(s => s.currentPrediction);
 export const useIsAutoRunning = () => useGameStore(s => s.isAutoRunning);
 export const useLastRound = () => useGameStore(s => s.lastRound);
 export const useGameActions = () => useGameStore(s => s.actions);
 export const useSettings = () => useGameStore(s => s.settings);
-export const useAchievements = () => useGameStore(useShallow(s => s.stats.achievements));
+export const useAchievements = () => useGameStore(s => s.stats.achievements);
 export const getGameActions = () => useGameStore.getState().actions;
