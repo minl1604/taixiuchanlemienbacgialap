@@ -19,11 +19,11 @@ export function StatsPanel({ stats, balance, bettingHistory, onResetStats }: Sta
     <Card className="glass-dark border-yellow-500/20">
       <CardHeader className="flex flex-row items-center justify-between">
         <CardTitle className="text-2xl font-display">Thống kê</CardTitle>
-        <Button variant="outline" size="sm" onClick={onResetStats}>Đặt l���i</Button>
+        <Button variant="outline" size="sm" onClick={onResetStats}>Đặt lại</Button>
       </CardHeader>
       <CardContent className="space-y-4">
         <div className="flex justify-between items-baseline">
-          <span className="text-muted-foreground">Số dư ��o (VND)</span>
+          <span className="text-muted-foreground">Số dư khả dụng (VND)</span>
           <span className="text-2xl font-bold text-gradient">{(balance || 0).toLocaleString('vi-VN')}</span>
         </div>
         <div className="flex justify-between items-baseline">
@@ -38,8 +38,8 @@ export function StatsPanel({ stats, balance, bettingHistory, onResetStats }: Sta
         </div>
         <div className="space-y-2">
           <div className="flex justify-between items-baseline">
-            <span className="text-muted-foreground">% Chính xác</span>
-            <span className="text-lg font-semibold">{accuracy}%</span>
+            <span className="text-muted-foreground">Độ chính xác</span>
+            <span className="text-lg font-semibold">{accuracy}% ({stats.correct}/{stats.predictionsMade})</span>
           </div>
           <Progress value={accuracy} className="h-2 [&>div]:bg-gradient-to-r [&>div]:from-blue-500 [&>div]:to-purple-500" />
         </div>
@@ -48,7 +48,7 @@ export function StatsPanel({ stats, balance, bettingHistory, onResetStats }: Sta
           <span className="text-lg font-semibold">{stats.longestStreak}</span>
         </div>
         <div>
-          <p className="text-sm font-semibold mb-2">Lịch sử cược</p>
+          <p className="text-sm font-semibold mb-2">Lịch s�� cược</p>
           <ScrollArea className="h-40 pr-4">
             <div className="space-y-2 text-sm">
               {bettingHistory.length > 0 ? (
@@ -57,7 +57,7 @@ export function StatsPanel({ stats, balance, bettingHistory, onResetStats }: Sta
                     <span>Kỳ #{bet.roundNumber}</span>
                     {bet.outcome === 'win' && <Badge className="bg-green-500/80">Thắng {bet.profit.toLocaleString('vi-VN')}</Badge>}
                     {bet.outcome === 'partial' && <Badge variant="secondary">Hòa</Badge>}
-                    {bet.outcome === 'loss' && <Badge variant="destructive">Thua {bet.profit.toLocaleString('vi-VN')}</Badge>}
+                    {bet.outcome === 'loss' && <Badge variant="destructive">Thua {Math.abs(bet.profit).toLocaleString('vi-VN')}</Badge>}
                   </div>
                 ))
               ) : (

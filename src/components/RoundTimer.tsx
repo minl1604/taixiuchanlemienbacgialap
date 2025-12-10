@@ -5,47 +5,41 @@ interface RoundTimerProps {
   isAutoRunning: boolean;
   onExpire: () => void;
 }
-export function RoundTimer({ intervalSeconds = 45, isAutoRunning, onExpire }: RoundTimerProps) {
+export function RoundTimer({ intervalSeconds = 20, isAutoRunning, onExpire }: RoundTimerProps) {
   const [secondsLeft, setSecondsLeft] = useState(intervalSeconds);
-  const timerRef = useRef<NodeJS.Timeout | null>(null);
-  const resetTimer = useCallback(() => {
-    if (timerRef.current) {
-      clearTimeout(timerRef.current);
-    }
-    setSecondsLeft(intervalSeconds);
-  }, [intervalSeconds]);
+  const intervalRef = useRef<NodeJS.Timeout | null>(null);
+  const expectedRef = useRef<number | null>(null);
+  const tick = useCallback(() => {
+    if (expectedRef.current === null) return;
+    const drift = Date.now() - expectedRef.current;
+    setSecondsLeft(prev => {
+      if (prev <= 1) {
+        onExpire();
+        return intervalSeconds;
+      }
+      return prev - 1;
+    });
+    expectedRef.current += 1000;
+    intervalRef.current = setTimeout(tick, 1000 - drift);
+  }, [onExpire, intervalSeconds]);
   useEffect(() => {
     if (isAutoRunning) {
-      const tick = () => {
-        setSecondsLeft((prev) => {
-          if (prev <= 1) {
-            onExpire();
-            return intervalSeconds;
-          }
-          return prev - 1;
-        });
-        timerRef.current = setTimeout(tick, 1000);
-      };
-      if (!timerRef.current) {
-        timerRef.current = setTimeout(tick, 1000);
-      }
+      setSecondsLeft(intervalSeconds);
+      expectedRef.current = Date.now() + 1000;
+      intervalRef.current = setTimeout(tick, 1000);
     } else {
-      if (timerRef.current) {
-        clearTimeout(timerRef.current);
-        timerRef.current = null;
+      if (intervalRef.current) {
+        clearTimeout(intervalRef.current);
+        intervalRef.current = null;
+        expectedRef.current = null;
       }
     }
     return () => {
-      if (timerRef.current) {
-        clearTimeout(timerRef.current);
+      if (intervalRef.current) {
+        clearTimeout(intervalRef.current);
       }
     };
-  }, [isAutoRunning, intervalSeconds, onExpire]);
-  useEffect(() => {
-    if (isAutoRunning) {
-      resetTimer();
-    }
-  }, [isAutoRunning, resetTimer]);
+  }, [isAutoRunning, intervalSeconds, tick]);
   const minutes = Math.floor(secondsLeft / 60);
   const seconds = secondsLeft % 60;
   return (

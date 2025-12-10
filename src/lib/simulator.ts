@@ -25,20 +25,16 @@ export const evaluatePrediction = (round: Round, prediction: Prediction, current
   if (!prediction.taiXiu && !prediction.chanLe) {
     return { newStats: currentStats, wasCorrect: false, matches: 0 };
   }
-  const taiXiuCorrect = prediction.taiXiu ? prediction.taiXiu === round.taiXiu : undefined;
-  const chanLeCorrect = prediction.chanLe ? prediction.chanLe === round.chanLe : undefined;
-  let correctCount = 0;
-  if (taiXiuCorrect === true) correctCount++;
-  if (chanLeCorrect === true) correctCount++;
-  const wasCorrect = (prediction.taiXiu && prediction.chanLe)
-    ? (taiXiuCorrect === true && chanLeCorrect === true)
-    : (taiXiuCorrect === true || chanLeCorrect === true);
+  const taiXiuCorrect = prediction.taiXiu ? prediction.taiXiu === round.taiXiu : false;
+  const chanLeCorrect = prediction.chanLe ? prediction.chanLe === round.chanLe : false;
+  const wasCorrect = taiXiuCorrect || chanLeCorrect;
+  const matches = wasCorrect ? 1 : 0;
   const newStats: Stats = { ...currentStats };
   newStats.predictionsMade += 1;
   if (wasCorrect) {
     newStats.correct += 1;
     newStats.currentStreak += 1;
-    newStats.points += correctCount;
+    newStats.points += 1; // 1 point for single correct prediction
     if (newStats.currentStreak > newStats.longestStreak) {
       newStats.longestStreak = newStats.currentStreak;
     }
@@ -46,16 +42,11 @@ export const evaluatePrediction = (round: Round, prediction: Prediction, current
     newStats.incorrect += 1;
     newStats.currentStreak = 0;
   }
-  return { newStats, wasCorrect, matches: correctCount };
+  return { newStats, wasCorrect, matches };
 };
 export const calculateReward = (bet: number, matches: number): { profit: number; outcome: BetOutcome } => {
-  if (matches === 2) {
-    // Win both predictions
-    return { profit: Math.floor(bet * 0.95), outcome: 'win' }; // 1.9x payout means 0.95 profit on bet
-  }
-  if (matches === 1) {
-    // Win one of two predictions
-    return { profit: 0, outcome: 'partial' }; // Push/draw
+  if (matches >= 1) { // Win single category prediction
+    return { profit: Math.floor(bet * 0.95), outcome: 'win' }; // 1.9x payout
   }
   // Lose all predictions
   return { profit: -bet, outcome: 'loss' };

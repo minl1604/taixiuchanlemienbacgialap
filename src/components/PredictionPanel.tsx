@@ -14,21 +14,32 @@ export function PredictionPanel({ onSpinNow }: PredictionPanelProps) {
   const currentPrediction = useCurrentPrediction();
   const isAutoRunning = useIsAutoRunning();
   const balance = useBalance();
+  const [predictionMode, setPredictionMode] = useState<'taiXiu' | 'chanLe'>('taiXiu');
   const [betAmount, setBetAmount] = useState<string>("500000000");
+  const [selectedTaiXiu, setSelectedTaiXiu] = useState<string>("");
+  const [selectedChanLe, setSelectedChanLe] = useState<string>("");
   useEffect(() => {
-    if (!currentPrediction.taiXiu && !currentPrediction.chanLe) {
-      // Optional: Reset bet amount for new round if desired
-    }
+    setSelectedTaiXiu(currentPrediction.taiXiu || "");
+    setSelectedChanLe(currentPrediction.chanLe || "");
   }, [currentPrediction]);
-  const handleTaiXiuChange = (value: string) => {
-    if (value) {
-      setPrediction({ taiXiu: value as TaiXiu });
+  const handleModeChange = (mode: 'taiXiu' | 'chanLe') => {
+    if (!mode) return;
+    setPredictionMode(mode);
+    if (mode === 'taiXiu') {
+      setPrediction({ chanLe: undefined });
+      setSelectedChanLe("");
+    } else {
+      setPrediction({ taiXiu: undefined });
+      setSelectedTaiXiu("");
     }
   };
-  const handleChanLeChange = (value: string) => {
-    if (value) {
-      setPrediction({ chanLe: value as ChanLe });
-    }
+  const handleTaiXiuChange = (value: string | undefined) => {
+    setSelectedTaiXiu(value || "");
+    setPrediction({ taiXiu: value as TaiXiu | undefined });
+  };
+  const handleChanLeChange = (value: string | undefined) => {
+    setSelectedChanLe(value || "");
+    setPrediction({ chanLe: value as ChanLe | undefined });
   };
   const handleSpinWithBet = () => {
     const betValue = parseInt(betAmount, 10);
@@ -37,7 +48,7 @@ export function PredictionPanel({ onSpinNow }: PredictionPanelProps) {
       return;
     }
     if (betValue > balance) {
-      toast.error("Số d�� không đủ.");
+      toast.error("Số dư không đủ.");
       return;
     }
     if (!currentPrediction.taiXiu && !currentPrediction.chanLe) {
@@ -45,7 +56,7 @@ export function PredictionPanel({ onSpinNow }: PredictionPanelProps) {
       return;
     }
     setPrediction({ bet: betValue });
-    toast.success(`Đặt cược ${betValue.toLocaleString('vi-VN')} VND thành công!`);
+    toast.success(`��ặt cược ${betValue.toLocaleString('vi-VN')} VND thành công!`);
     setTimeout(() => {
       onSpinNow();
     }, 100);
@@ -58,25 +69,39 @@ export function PredictionPanel({ onSpinNow }: PredictionPanelProps) {
       </CardHeader>
       <CardContent className="space-y-6">
         <div className="space-y-4">
+          <p className="text-sm text-center text-muted-foreground">Chọn chế độ dự đoán</p>
+          <ToggleGroup
+            type="single"
+            value={predictionMode}
+            onValueChange={(value: 'taiXiu' | 'chanLe') => handleModeChange(value)}
+            className="grid grid-cols-2 gap-2"
+          >
+            <ToggleGroupItem value="taiXiu" className="h-12 data-[state=on]:bg-purple-600/80 data-[state=on]:text-white">Tài / Xỉu</ToggleGroupItem>
+            <ToggleGroupItem value="chanLe" className="h-12 data-[state=on]:bg-purple-600/80 data-[state=on]:text-white">Chẵn / Lẻ</ToggleGroupItem>
+          </ToggleGroup>
+        </div>
+        {predictionMode === 'taiXiu' && (
           <ToggleGroup
             type="single"
             className="grid grid-cols-2 gap-2"
-            value={currentPrediction.taiXiu}
+            value={selectedTaiXiu}
             onValueChange={handleTaiXiuChange}
           >
             <ToggleGroupItem value="Tài" className="h-16 text-2xl font-bold data-[state=on]:bg-red-500/80 data-[state=on]:text-white">Tài</ToggleGroupItem>
             <ToggleGroupItem value="Xỉu" className="h-16 text-2xl font-bold data-[state=on]:bg-blue-500/80 data-[state=on]:text-white">Xỉu</ToggleGroupItem>
           </ToggleGroup>
+        )}
+        {predictionMode === 'chanLe' && (
           <ToggleGroup
             type="single"
             className="grid grid-cols-2 gap-2"
-            value={currentPrediction.chanLe}
+            value={selectedChanLe}
             onValueChange={handleChanLeChange}
           >
             <ToggleGroupItem value="Lẻ" className="h-16 text-2xl font-bold data-[state=on]:bg-red-500/80 data-[state=on]:text-white">Lẻ</ToggleGroupItem>
             <ToggleGroupItem value="Chẵn" className="h-16 text-2xl font-bold data-[state=on]:bg-blue-500/80 data-[state=on]:text-white">Chẵn</ToggleGroupItem>
           </ToggleGroup>
-        </div>
+        )}
         <div className="space-y-4">
           <Input
             type="number"
@@ -94,7 +119,7 @@ export function PredictionPanel({ onSpinNow }: PredictionPanelProps) {
           {isAutoRunning ? (
             <Button size="lg" variant="destructive" onClick={stopAuto} className="h-14 text-lg">Dừng Auto</Button>
           ) : (
-            <Button size="lg" variant="secondary" onClick={startAuto} className="h-14 text-lg">B���t đầu Auto</Button>
+            <Button size="lg" variant="secondary" onClick={startAuto} className="h-14 text-lg">Bắt đầu Auto</Button>
           )}
         </div>
       </CardContent>
