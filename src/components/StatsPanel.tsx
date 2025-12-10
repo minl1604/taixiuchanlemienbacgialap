@@ -1,4 +1,4 @@
-import React, { memo, useMemo } from 'react';
+import React, { memo } from 'react';
 import { motion } from 'framer-motion';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -22,7 +22,7 @@ const BetHistoryItem = memo(({ bet }: { bet: BetRecord }) => (
 ));
 BetHistoryItem.displayName = 'BetHistoryItem';
 function StatsPanelComponent({ stats, balance, bettingHistory, onResetStats }: { stats: Stats; balance: number; bettingHistory: BetRecord[]; onResetStats: () => void; }) {
-  const recentBets = useMemo(() => bettingHistory ? bettingHistory.slice(0,20) : [], [bettingHistory]);
+  const recentBets = bettingHistory ? bettingHistory.slice(0,20) : [];
   if (!stats || !bettingHistory) {
     return (
       <Card className="glass-dark border-yellow-500/20">
