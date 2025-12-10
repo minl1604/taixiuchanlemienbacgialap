@@ -110,7 +110,7 @@
   body {
     @apply bg-background text-foreground;
     font-family: 'Inter', 'Noto Sans', sans-serif;
-    font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11';
+    font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11', 'liga', 'kern';
     text-rendering: optimizeLegibility;
   }
 }

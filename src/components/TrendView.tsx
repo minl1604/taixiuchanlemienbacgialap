@@ -22,7 +22,7 @@ const CustomTooltip = ({ active, payload }: any) => {
 };
 const TrendChart = memo(({ data, type }: { data: any[]; type: 'tx' | 'cl' }) => {
   if (!data || data.length === 0) {
-    return <div className="text-center text-muted-foreground p-4 h-40 center">Ch��a có dữ liệu xu hướng.</div>;
+    return <div className="text-center text-muted-foreground p-4 h-40 center">Chưa có dữ liệu xu hướng.</div>;
   }
   return (
     <ResponsiveContainer width="100%" height={150}>
@@ -66,7 +66,7 @@ function TrendViewComponent({ history }: { history: Round[] }) {
       <CardContent className="space-y-4">
         <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.5 }}>
           <div>
-            <p className="text-sm font-semibold mb-2">Tài (Đỏ) / Xỉu (Xanh)</p>
+            <p className="text-sm font-semibold mb-2">Tài (Đ���) / Xỉu (Xanh)</p>
             <TrendChart data={chartData} type="tx" />
           </div>
           <div>

@@ -94,7 +94,7 @@ function PredictionPanelComponent({ onSpinNow, defaultBet }: { onSpinNow: () => 
       </CardHeader>
       <CardContent className="space-y-6">
         <div {...swipeHandlers} className="space-y-4 cursor-grab active:cursor-grabbing">
-          <p className="text-sm text-center text-muted-foreground">Chọn chế độ (hoặc lư��t ngang)</p>
+          <p className="text-sm text-center text-muted-foreground">Chọn chế độ (hoặc lướt ngang)</p>
           <ToggleGroup
             type="single"
             value={predictionMode}
