@@ -46,7 +46,6 @@ export function HomePage() {
   const [showDisclaimer, setShowDisclaimer] = useState(false);
   const [showOnboarding, setShowOnboarding] = useState(false);
   const [confetti, setConfetti] = useState<JSX.Element[]>([]);
-
   const settings = useSettings();
   useEffect(() => {
     setIsClient(true);
@@ -89,7 +88,7 @@ export function HomePage() {
     const { newRound, profit } = spinNewRound();
     if (profit !== null) {
       if (profit > 0) {
-        toast.success(`Kỳ #${newRound.roundNumber} - Thắng!`, { description: `Lợi nhuận: +${profit.toLocaleString('vi-VN')} VND` });
+        toast.success(`K�� #${newRound.roundNumber} - Thắng!`, { description: `Lợi nhuận: +${profit.toLocaleString('vi-VN')} VND` });
         triggerConfetti();
       } else if (profit < 0) {
         toast.error(`Kỳ #${newRound.roundNumber} - Thua!`, { description: `Mất: ${(-profit).toLocaleString('vi-VN')} VND` });
@@ -118,7 +117,7 @@ export function HomePage() {
     <div className="min-h-screen bg-background text-foreground font-sans relative overflow-x-hidden" onClick={() => getGameActions().userInteracted()} onTouchStart={() => getGameActions().userInteracted()}>
       <div className="absolute inset-0 bg-gradient-mesh opacity-10 pointer-events-none" />
       <div className="absolute top-4 right-4 flex items-center gap-2 z-50">
-        <Button variant="ghost" size="icon" onClick={() => setShowGuide(true)} className="text-2xl hover:scale-110 hover:rotate-12 transition-all duration-200 active:scale-90" aria-label="Mở hướng dẫn">
+        <Button variant="ghost" size="icon" onClick={() => setShowGuide(true)} className="text-2xl hover:scale-110 hover:rotate-12 transition-all duration-200 active:scale-90" aria-label="M��� hướng dẫn">
           <HelpCircle className="h-6 w-6" />
         </Button>
         <Button variant="ghost" size="icon" onClick={() => setShowSettings(true)} className="text-2xl hover:scale-110 hover:rotate-12 transition-all duration-200 active:scale-90" aria-label="Mở cài đặt">
@@ -160,7 +159,7 @@ export function HomePage() {
         </TooltipProvider>
       </main>
       <footer className="text-center py-8 text-muted-foreground/80 text-sm">
-        <p>Built with ❤️ at Cloudflare</p>
+        <p>© 2025 CLTX MB • Dev by MinL x Cloudflare</p>
       </footer>
       <Toaster richColors closeButton theme={settings.theme === 'light' ? 'light' : 'dark'} />
       <SettingsPanel open={showSettings} onOpenChange={setShowSettings} />
