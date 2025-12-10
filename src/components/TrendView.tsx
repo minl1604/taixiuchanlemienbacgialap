@@ -9,6 +9,7 @@ import { cn } from '@/lib/utils';
 import { Label } from '@/components/ui/label';
 import { useGameStore } from '@/hooks/useGameStore';
 import { shallow } from 'zustand/shallow';
+import { ChevronRight } from 'lucide-react';
 const TrendDot = memo(({ round, viewMode, index, style }: { round: Round; viewMode: 'taiXiu' | 'chanLe'; index: number; style: React.CSSProperties }) => {
   const isTx = viewMode === 'taiXiu';
   const result: TaiXiu | ChanLe = isTx ? round.taiXiu : round.chanLe;
@@ -16,7 +17,7 @@ const TrendDot = memo(({ round, viewMode, index, style }: { round: Round; viewMo
   const isSecondary = (isTx && result === 'Xỉu') || (!isTx && result === 'Chẵn');
   const label = isTx ? (result === 'Tài' ? 'T' : 'X') : (result === 'Lẻ' ? 'L' : 'C');
   const tooltipId = `trend-dot-tooltip-${round.id}`;
-  const ariaLabel = `Kỳ #${round.roundNumber}: ${result}`;
+  const ariaLabel = `K�� #${round.roundNumber}: ${result}`;
   const handleMouseEnter = () => {
     if (navigator.vibrate) {
       try {
@@ -61,45 +62,48 @@ const TrendDot = memo(({ round, viewMode, index, style }: { round: Round; viewMo
   );
 });
 TrendDot.displayName = 'TrendDot';
+const MAX_VISIBLE_COLUMNS = 15;
 function TrendViewComponent({ history }: { history: Round[] }) {
   const [viewMode, setViewMode] = useState<'taiXiu' | 'chanLe'>('taiXiu');
-  const { columns, maxColHeight, gridNodes } = useMemo(() => {
+  const { columns, maxColHeight, gridNodes, totalColumns } = useMemo(() => {
     if (!history || history.length === 0) {
-      return { columns: [], maxColHeight: 0, gridNodes: [] };
+      return { columns: [], maxColHeight: 0, gridNodes: [], totalColumns: 0 };
     }
     const recentHistory = history.slice(0, 50).reverse();
-    const columns: Round[][] = [];
+    const allColumns: Round[][] = [];
     if (recentHistory.length > 0) {
-      columns.push([recentHistory[0]]);
+      allColumns.push([recentHistory[0]]);
     }
     for (let i = 1; i < recentHistory.length; i++) {
       const currentRound = recentHistory[i];
-      const lastColumn = columns[columns.length - 1];
+      const lastColumn = allColumns[allColumns.length - 1];
       const lastRoundInColumn = lastColumn[lastColumn.length - 1];
       const currentOutcome = viewMode === 'taiXiu' ? currentRound.taiXiu : currentRound.chanLe;
       const lastOutcome = viewMode === 'taiXiu' ? lastRoundInColumn.taiXiu : lastRoundInColumn.chanLe;
       if (currentOutcome === lastOutcome) {
         lastColumn.push(currentRound);
       } else {
-        columns.push([currentRound]);
+        allColumns.push([currentRound]);
       }
     }
-    const maxColHeight = columns.length > 0 ? Math.max(...columns.map(col => col.length)) : 0;
-    const gridNodes = columns.flatMap((col, colIndex) =>
+    const totalColumns = allColumns.length;
+    const visibleColumns = totalColumns > MAX_VISIBLE_COLUMNS ? allColumns.slice(-MAX_VISIBLE_COLUMNS) : allColumns;
+    const maxColHeight = visibleColumns.length > 0 ? Math.max(...visibleColumns.map(col => col.length)) : 0;
+    const gridNodes = visibleColumns.flatMap((col, colIndex) =>
       col.map((round, rowIndex) => ({ round, colIndex, rowIndex }))
     );
-    return { columns, maxColHeight, gridNodes };
+    return { columns: visibleColumns, maxColHeight, gridNodes, totalColumns };
   }, [history, viewMode]);
   if (!history) {
     return <Skeleton className="h-48 w-full" />;
   }
   return (
-    <Card className="glass-dark border-purple-500/20 hover:shadow-glow transition-shadow">
+    <Card className="glass-dark border-purple-500/20 hover:shadow-glow transition-shadow overflow-hidden">
       <CardHeader>
         <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
           <CardTitle className="text-2xl font-display text-gradient">Xu Hướng</CardTitle>
           <div className="w-full sm:w-auto">
-            <Label id="trend-mode-label" className="sr-only">Chế độ xem xu hướng</Label>
+            <Label id="trend-mode-label" className="sr-only">Chế ��ộ xem xu hướng</Label>
             <ToggleGroup
               type="single"
               value={viewMode}
@@ -113,15 +117,17 @@ function TrendViewComponent({ history }: { history: Round[] }) {
           </div>
         </div>
       </CardHeader>
-      <CardContent>
+      <CardContent className="relative">
         {history.length > 0 ? (
-          <div className="overflow-x-auto w-full touch-pan-x" style={{ touchAction: 'manipulation' }}>
+          <div className="w-full max-w-full overflow-x-auto pb-2 -mb-2">
             <div
               className="p-3 sm:p-4 rounded-lg bg-black/20 min-h-[12rem] inline-grid"
               style={{
-                gridTemplateColumns: `repeat(${columns.length}, minmax(24px, 1fr))`,
-                gridTemplateRows: `repeat(${maxColHeight}, minmax(24px, 1fr))`,
-                gap: '6px 8px',
+                gridTemplateColumns: `repeat(${columns.length}, minmax(28px, 1fr))`,
+                gridTemplateRows: `repeat(${maxColHeight}, minmax(28px, 1fr))`,
+                gap: '6px 10px',
+                justifyContent: 'center',
+                minWidth: '100%',
               }}
             >
               {gridNodes.map(({ round, colIndex, rowIndex }, index) => (
@@ -142,12 +148,17 @@ function TrendViewComponent({ history }: { history: Round[] }) {
             </div>
           </div>
         )}
+        {totalColumns > MAX_VISIBLE_COLUMNS && (
+          <div className="absolute right-0 top-0 bottom-0 flex items-center bg-gradient-to-l from-black/50 to-transparent px-2 pointer-events-none">
+            <ChevronRight className="h-5 w-5 text-white/70" />
+          </div>
+        )}
       </CardContent>
     </Card>
   );
 }
 function TrendViewWrapper() {
-  const history = useGameStore((state) => state.history ?? [], shallow);
+  const history: Round[] = useGameStore((state) => state.history ?? [], shallow);
   return <TrendViewComponent history={history} />;
 }
 export const TrendView = memo(TrendViewWrapper);
