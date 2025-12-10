@@ -26,7 +26,7 @@ function StatsPanelComponent({ stats, balance, bettingHistory, onResetStats }: {
   if (!stats || !bettingHistory) {
     return (
       <Card className="glass-dark border-yellow-500/20">
-        <CardHeader><CardTitle>Th���ng kê</CardTitle></CardHeader>
+        <CardHeader><CardTitle>Thống kê</CardTitle></CardHeader>
         <CardContent className="space-y-4">
           <Skeleton className="h-8 w-3/4" />
           <Skeleton className="h-6 w-1/2" />
@@ -125,7 +125,7 @@ function StatsPanelComponent({ stats, balance, bettingHistory, onResetStats }: {
                 )
               })
             ) : (
-              <p className="text-xs text-muted-foreground">Chưa có thành tích nào ��ược mở khóa.</p>
+              <p className="text-xs text-muted-foreground">Chưa có thành tích nào được mở khóa.</p>
             )}
           </div>
         </div>
