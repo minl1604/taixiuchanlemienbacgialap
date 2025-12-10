@@ -53,6 +53,8 @@ function TrendViewComponent({ history }: { history: Round[] }) {
     if (!history || history.length === 0) {
       return [];
     }
+    // Take the 50 most recent rounds. history[0] is the newest.
+    // Reverse to process from oldest to newest.
     const recentHistory = history.slice(0, 50).reverse();
     if (recentHistory.length === 0) {
       return [];
@@ -74,7 +76,8 @@ function TrendViewComponent({ history }: { history: Round[] }) {
     if (currentRow.length > 0) {
       rows.push(currentRow);
     }
-    return rows;
+    // Reverse the final array of rows. This puts the newest row at the top for rendering.
+    return rows.reverse();
   }, [history, viewMode]);
   if (!history) {
     console.warn("TrendView received null or undefined history.");
