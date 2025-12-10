@@ -24,9 +24,10 @@ const TrendDot = memo(({ round, viewMode, index }: { round: Round; viewMode: 'tx
             animate={{ opacity: 1, scale: 1 }}
             transition={{ delay: index * 0.02, type: 'spring', stiffness: 300, damping: 20 }}
             className={cn(
-              "center w-5 h-5 rounded-full font-mono text-[10px] font-bold text-white shadow-sm hover:scale-110 active:scale-105 hover:shadow-glow transition-all duration-200 cursor-pointer",
-              isPrimary && "bg-red-500/90",
-              isSecondary && "bg-blue-500/90"
+              "center w-5 h-5 rounded-full font-mono text-[10px] font-bold text-white shadow-sm transition-all duration-200 cursor-pointer",
+              isPrimary && "bg-red-500/90 hover:shadow-[0_0_10px_theme(colors.red.500)]",
+              isSecondary && "bg-blue-500/90 hover:shadow-[0_0_10px_theme(colors.blue.500)]",
+              "hover:scale-110 active:scale-105"
             )}
           >
             {label}
@@ -85,7 +86,7 @@ function TrendViewComponent({ history }: { history: Round[] }) {
     <Card className="glass-dark border-purple-500/20 hover:shadow-glow transition-shadow">
       <CardHeader>
         <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
-          <CardTitle className="text-2xl font-display text-gradient">Xu Hướng Gần Đây</CardTitle>
+          <CardTitle className="text-2xl font-display text-gradient">Xu H��ớng Gần Đây</CardTitle>
           <ToggleGroup
             type="single"
             value={viewMode}
@@ -102,7 +103,7 @@ function TrendViewComponent({ history }: { history: Round[] }) {
         {history.length >= 5 ? (
           <div className="flex flex-col gap-1 p-2 rounded-lg bg-black/20 min-h-[12rem]">
             {groupedRows.map((row, rowIndex) => (
-              <div key={rowIndex} className="flex flex-wrap gap-1 sm:gap-1.5 max-w-full">
+              <div key={rowIndex} className="flex flex-row flex-wrap gap-1">
                 {row.map((round, dotIndex) => (
                   <TrendDot key={round.id} round={round} viewMode={viewMode} index={rowIndex * 15 + dotIndex} />
                 ))}
@@ -111,7 +112,7 @@ function TrendViewComponent({ history }: { history: Round[] }) {
           </div>
         ) : (
           <div className="text-center text-muted-foreground p-4 h-32 center">
-            Chưa có đủ dữ liệu để hiển thị xu hướng.
+            Chưa có đủ dữ liệu để hiển th�� xu hướng.
           </div>
         )}
       </CardContent>
