@@ -102,7 +102,7 @@ function PredictionPanelComponent({ onSpinNow, defaultBet }: { onSpinNow: () => 
       </CardHeader>
       <CardContent className="space-y-6">
         <div {...swipeHandlers} className="space-y-4 cursor-grab active:cursor-grabbing">
-          <Label id="mode-label" className="text-sm text-center text-muted-foreground block">Chọn chế độ (hoặc lướt ngang)</Label>
+          <Label id="mode-label" className="text-sm text-center text-muted-foreground block">Chọn chế đ�� (hoặc lướt ngang)</Label>
           <ToggleGroup
             type="single"
             value={predictionMode}
@@ -135,7 +135,7 @@ function PredictionPanelComponent({ onSpinNow, defaultBet }: { onSpinNow: () => 
           ) : (
             <Input type="number" placeholder="Số tiền cược" value={betAmount} onChange={handleBetAmountChange} className="h-14 text-center text-lg min-h-[44px]" min="0" aria-describedby="bet-help" />
           )}
-          <p id="bet-help" className="text-xs text-muted-foreground text-center">Số tiền phải > 0 và ≤ số dư.</p>
+          <p id="bet-help" className="text-xs text-muted-foreground text-center">Số tiền phải &gt; 0 và &le; số dư.</p>
         </div>
         <div className="space-y-2">
           <motion.div whileTap={{ scale: 0.95 }}>
