@@ -53,9 +53,8 @@ function StatsPanelComponent({ stats, balance, bettingHistory, onResetStats }: {
   const unlockedAchievements = stats.achievements.filter(a => a.unlocked);
   const handleReset = () => {
     onResetStats();
-    toast.success("Đã đặt lại thống kê và số dư.");
+    toast.success("��ã đặt lại thống kê và số dư.");
   };
-
   return (
     <Card className="glass-dark border-yellow-500/20 hover:shadow-glow transition-shadow">
         <CardHeader className="flex flex-row items-center justify-between">
@@ -105,7 +104,7 @@ function StatsPanelComponent({ stats, balance, bettingHistory, onResetStats }: {
           <span className="text-lg font-semibold">{stats.longestStreak}</span>
         </div>
         <div>
-          <p className="text-sm font-semibold mb-2">Thành Tích</p>
+          <p className="text-sm font-semibold mb-2">Thành tích</p>
           <div className="flex flex-wrap gap-2">
             {unlockedAchievements.length > 0 ? (
               unlockedAchievements.map((ach, i) => {

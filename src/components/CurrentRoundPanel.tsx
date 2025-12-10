@@ -47,7 +47,7 @@ export function CurrentRoundPanel({ round }: CurrentRoundPanelProps) {
         </div>
         <div className="grid grid-cols-3 gap-4 text-center">
           <div>
-            <p className="text-sm text-muted-foreground">Tổng 5 chữ số</p>
+            <p className="text-sm text-muted-foreground">Tổng 5 chữ s��</p>
             {round ? (
               <p className="text-3xl font-bold">{round.sum}</p>
             ) : (

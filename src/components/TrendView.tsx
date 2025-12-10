@@ -7,8 +7,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 import type { Round, TaiXiu, ChanLe } from '@/types';
 import { cn } from '@/lib/utils';
 import { Label } from '@/components/ui/label';
-import { useGameStore } from '@/hooks/useGameStore';
-import { shallow } from 'zustand/shallow';
+import { useHistory } from '@/hooks/useGameStore';
 import { ChevronRight } from 'lucide-react';
 const TrendDot = memo(({ round, viewMode, index, style }: { round: Round; viewMode: 'taiXiu' | 'chanLe'; index: number; style: React.CSSProperties }) => {
   const isTx = viewMode === 'taiXiu';
@@ -17,7 +16,7 @@ const TrendDot = memo(({ round, viewMode, index, style }: { round: Round; viewMo
   const isSecondary = (isTx && result === 'Xỉu') || (!isTx && result === 'Chẵn');
   const label = isTx ? (result === 'Tài' ? 'T' : 'X') : (result === 'Lẻ' ? 'L' : 'C');
   const tooltipId = `trend-dot-tooltip-${round.id}`;
-  const ariaLabel = `K�� #${round.roundNumber}: ${result}`;
+  const ariaLabel = `Kỳ #${round.roundNumber}: ${result}`;
   const handleMouseEnter = () => {
     if (navigator.vibrate) {
       try {
@@ -101,9 +100,9 @@ function TrendViewComponent({ history }: { history: Round[] }) {
     <Card className="glass-dark border-purple-500/20 hover:shadow-glow transition-shadow overflow-hidden">
       <CardHeader>
         <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
-          <CardTitle className="text-2xl font-display text-gradient">Xu Hướng</CardTitle>
+          <CardTitle className="text-2xl font-display text-gradient">Xu Hư���ng</CardTitle>
           <div className="w-full sm:w-auto">
-            <Label id="trend-mode-label" className="sr-only">Chế ��ộ xem xu hướng</Label>
+            <Label id="trend-mode-label" className="sr-only">Chế độ xem xu hướng</Label>
             <ToggleGroup
               type="single"
               value={viewMode}
@@ -158,7 +157,7 @@ function TrendViewComponent({ history }: { history: Round[] }) {
   );
 }
 function TrendViewWrapper() {
-  const history: Round[] = useGameStore((state) => state.history ?? [], shallow);
+  const history = useHistory();
   return <TrendViewComponent history={history} />;
 }
 export const TrendView = memo(TrendViewWrapper);

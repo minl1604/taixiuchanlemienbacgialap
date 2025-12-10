@@ -64,7 +64,7 @@ export function RoundTimer({ intervalSeconds = 20, isAutoRunning, onExpire }: Ro
   return (
     <div className="text-center" aria-live="polite" aria-atomic="true">
       <p className="text-sm text-muted-foreground mb-2">
-        {isAutoRunning ? 'Kỳ ti���p theo sau' : 'Chế độ Auto đang tắt'}
+        {isAutoRunning ? 'Kỳ tiếp theo sau' : 'Chế độ Auto đang tắt'}
       </p>
       {secondsLeft !== undefined ? (
         <motion.div
