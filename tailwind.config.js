@@ -5,9 +5,11 @@ export default {
   theme: {
   	extend: {
   		fontFamily: {
+        // Font stack optimized for Vietnamese diacritics.
+        // 'Inter' is the primary font, with 'Noto Sans' as a fallback for comprehensive Vietnamese character support.
   			sans: [
           'Inter',
-          'Noto Sans', // For Vietnamese accents
+          'Noto Sans',
   				'-apple-system',
   				'BlinkMacSystemFont',
   				'Segoe UI',
@@ -16,7 +18,7 @@ export default {
   			],
   			display: [
   				'Cal Sans',
-          'Noto Sans', // For Vietnamese accents
+          'Noto Sans',
   				'Inter',
   				'system-ui',
   				'sans-serif'

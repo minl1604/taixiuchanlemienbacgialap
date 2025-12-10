@@ -62,7 +62,7 @@ export function SettingsPanel({ open, onOpenChange }: SettingsPanelProps) {
           </div>
           <div className="flex items-center justify-between space-x-4">
             <Label htmlFor="auto-start" className="flex flex-col space-y-1">
-              <span>Tự động b��t đầu</span>
+              <span>Tự động bắt đầu</span>
               <span className="font-normal leading-snug text-muted-foreground">
                 Bắt đầu chế độ auto khi tải trang.
               </span>

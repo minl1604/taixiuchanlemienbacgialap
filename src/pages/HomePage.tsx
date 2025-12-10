@@ -97,7 +97,7 @@ export function HomePage() {
         toast.info(`Kỳ #${newRound.roundNumber} - Hòa`, { description: 'Hoàn tiền cược.' });
       }
     } else {
-      toast.info(`Kỳ #${newRound.roundNumber} - ${newRound.taiXiu} - ${newRound.chanLe}`, { description: 'Đã có kết quả mới.' });
+      toast.info(`Kỳ #${newRound.roundNumber} - ${newRound.taiXiu} - ${newRound.chanLe}`, { description: 'Đã có kết quả m���i.' });
     }
   }, [spinNewRound, triggerConfetti]);
   const handleDisclaimerClose = useCallback(() => {
@@ -143,7 +143,7 @@ export function HomePage() {
               >
                 <Tooltip open={showOnboarding}><TooltipTrigger asChild><div><RoundTimer isAutoRunning={isAutoRunning} onExpire={handleSpin} intervalSeconds={20} /></div></TooltipTrigger><TooltipContent><p>Đếm ngược kỳ tiếp theo (20s)</p></TooltipContent></Tooltip>
                 <CurrentRoundPanel round={lastRound} />
-                <Tooltip open={showOnboarding}><TooltipTrigger asChild><div><PredictionPanel onSpinNow={handleSpin} defaultBet={storage.getBetAmount()} /></div></TooltipTrigger><TooltipContent><p>Dự đoán và đặt cược t���i đây</p></TooltipContent></Tooltip>
+                <Tooltip open={showOnboarding}><TooltipTrigger asChild><div><PredictionPanel onSpinNow={handleSpin} defaultBet={storage.getBetAmount()} /></div></TooltipTrigger><TooltipContent><p>Dự đoán và đặt cược tại đây</p></TooltipContent></Tooltip>
                 <TrendView history={history} />
               </motion.div>
               <motion.div
@@ -152,7 +152,7 @@ export function HomePage() {
                 transition={{ duration: 0.5, delay: 0.2 }}
                 className="space-y-8"
               >
-                <Tooltip open={showOnboarding}><TooltipTrigger asChild><div><StatsPanel stats={stats} balance={balance} bettingHistory={bettingHistory} onResetStats={resetStatsAndBalance} /></div></TooltipTrigger><TooltipContent><p>Theo dõi thống kê và thành tích của bạn</p></TooltipContent></Tooltip>
+                <Tooltip open={showOnboarding}><TooltipTrigger asChild><div><StatsPanel stats={stats} balance={balance} bettingHistory={bettingHistory} onResetStats={resetStatsAndBalance} /></div></TooltipTrigger><TooltipContent><p>Theo d��i thống kê và thành tích của bạn</p></TooltipContent></Tooltip>
                 <HistoryTable history={history} onClearHistory={resetHistory} />
               </motion.div>
             </div>
@@ -160,7 +160,7 @@ export function HomePage() {
         </TooltipProvider>
       </main>
       <footer className="text-center py-8 text-muted-foreground/80 text-sm">
-        <p>Built with ❤️ at Cloudflare</p>
+        <p>Built with ���️ at Cloudflare</p>
       </footer>
       <Toaster richColors closeButton theme={settings.theme === 'light' ? 'light' : 'dark'} />
       <SettingsPanel open={showSettings} onOpenChange={setShowSettings} />
@@ -170,7 +170,7 @@ export function HomePage() {
           <AlertDialogHeader>
             <AlertDialogTitle>Lưu ý quan trọng</AlertDialogTitle>
             <AlertDialogDescription>
-              Đây là một ứng dụng giả lập chỉ dành cho mục đích giải trí. Mọi kết quả đều là ngẫu nhiên và không liên quan đến kết quả xổ số thực tế. Ứng dụng này không sử dụng tiền thật và không dành cho mục đích cờ bạc.
+              Đây là m���t ứng dụng giả lập chỉ dành cho mục đích giải trí. Mọi kết quả đều là ngẫu nhiên và không liên quan đến kết quả xổ số thực tế. Ứng dụng này không sử dụng tiền thật và không dành cho mục đích cờ bạc.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>

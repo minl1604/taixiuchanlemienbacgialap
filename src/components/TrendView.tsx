@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { ResponsiveContainer, ScatterChart, Scatter, XAxis, YAxis, Tooltip, ZAxis } from 'recharts';
 import type { Round } from '@/types';
 import { cn } from '@/lib/utils';
+// The font stack (Inter, Noto Sans) is inherited from the body, ensuring Vietnamese characters render correctly in the tooltip.
 const CustomTooltip = ({ active, payload }: any) => {
   if (active && payload && payload.length) {
     const data = payload[0].payload;
@@ -66,7 +67,7 @@ function TrendViewComponent({ history }: { history: Round[] }) {
       <CardContent className="space-y-4">
         <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.5 }}>
           <div>
-            <p className="text-sm font-semibold mb-2">Tài (Đ���) / Xỉu (Xanh)</p>
+            <p className="text-sm font-semibold mb-2">Tài (Đỏ) / Xỉu (Xanh)</p>
             <TrendChart data={chartData} type="tx" />
           </div>
           <div>

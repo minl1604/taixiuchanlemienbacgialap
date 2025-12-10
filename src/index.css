@@ -2,6 +2,7 @@
 @tailwind components;
 @tailwind utilities;
 @layer base {
+  /* Importing Inter and Noto Sans with Vietnamese subset for proper diacritic rendering. */
   @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans:wght@400;500;700&display=swap&subset=vietnamese');
   :root {
     /* Core Colors */
@@ -104,14 +105,15 @@
   }
   html {
     scroll-behavior: smooth;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
   }
   body {
     @apply bg-background text-foreground;
     font-family: 'Inter', 'Noto Sans', sans-serif;
-    font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11', 'liga', 'kern';
+    /* Font optimizations for better rendering and diacritics support */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
     text-rendering: optimizeLegibility;
+    font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11', 'liga', 'kern';
   }
 }
 @layer components {

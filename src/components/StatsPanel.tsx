@@ -24,10 +24,10 @@ function StatsPanelComponent({ stats, balance, bettingHistory, onResetStats }: {
   const unlockedAchievements = stats.achievements.filter(a => a.unlocked);
   return (
     <Card className="glass-dark border-yellow-500/20">
-      <CardHeader className="flex flex-row items-center justify-between">
-        <CardTitle className="text-2xl font-display">Thống kê</CardTitle>
-        <Button variant="outline" size="sm" onClick={onResetStats}>Đ���t lại</Button>
-      </CardHeader>
+        <CardHeader className="flex flex-row items-center justify-between">
+          <CardTitle className="text-2xl font-display">Thống kê</CardTitle>
+          <Button variant="outline" size="sm" onClick={onResetStats}>Đặt lại</Button>
+        </CardHeader>
       <CardContent className="space-y-4">
         <div className="flex justify-between items-baseline">
           <span className="text-muted-foreground">Số dư khả dụng (VND)</span>
@@ -73,7 +73,7 @@ function StatsPanelComponent({ stats, balance, bettingHistory, onResetStats }: {
                 </TooltipProvider>
               ))
             ) : (
-              <p className="text-xs text-muted-foreground">Chưa có thành tích nào được mở khóa.</p>
+              <p className="text-xs text-muted-foreground">Chưa có thành tích nào được m��� khóa.</p>
             )}
           </div>
         </div>
