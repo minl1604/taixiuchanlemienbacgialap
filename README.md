@@ -1,130 +1,89 @@
-# Tài Xỉu Miền Bắc Giả Lập
-
-[cloudflarebutton]
-
-## Overview
-
-**Tài Xỉu Miền Bắc Giả Lập** is a fully client-side web application that simulates the "Giải Đặc Biệt" (Special Prize) of Northern Vietnam Lottery (Xổ Số Miền Bắc) for entertainment purposes only. This fake simulator generates random 5-digit numbers (00000–99999) entirely on the client, calculates the sum of digits to determine "Tài" (Over) or "Xỉu" (Under), and "Chẵn" (Even) or "Lẻ" (Odd) outcomes. Users can make predictions before each round, track history, view trends, and monitor fun stats—all stored in localStorage. No real lottery data, betting, or money is involved; it's purely for fun.
-
-The app features a 45-second auto-round timer, manual controls, and a retro neon dark theme. All user-facing text is in Vietnamese.
-
-## Key Features
-
-- **Random Round Generation**: Simulates 5-digit lottery numbers with digit sum calculations for Tài/Xỉu (sum ≥23 = Tài, <23 = Xỉu) and Chẵn/Lẻ (even/odd sum).
-- **Auto and Manual Rounds**: Automatic generation every 45 seconds with a countdown timer; options to start/stop auto mode or generate instantly.
-- **User Predictions**: Select Tài/Xỉu and/or Chẵn/Lẻ before each round; tracks correct/incorrect guesses, accuracy percentage, longest streak, and "fun points" (no real currency).
-- **History Management**: Stores up to 100 recent rounds in localStorage, displaying numbers, sums, outcomes, timestamps, and prediction results.
-- **Trend Visualization**: Dot-grid charts for Tài/Xỉu (red/blue) and Chẵn/Lẻ trends with hover details.
-- **Stats Dashboard**: Shows total rounds, correct/wrong counts, accuracy, streaks, and reset options.
-- **Settings**: Toggle auto-start on load, sound effects (optional), and history limits.
-- **Responsive UI**: Mobile-first design with dark theme, neon gradients, and smooth micro-interactions.
-- **Offline-Capable**: Fully client-side with no backend dependencies; easy to extend for Cloudflare Workers if needed.
-
-## Technology Stack
-
-- **Frontend**: React 18+ with TypeScript
-- **Build Tool**: Vite for fast development and bundling
-- **Styling**: Tailwind CSS v3 + shadcn/ui components for accessible, customizable UI
-- **State Management**: Zustand for lightweight, performant state handling
-- **Animations**: Framer Motion for smooth transitions and micro-interactions
-- **Icons**: Lucide React for scalable vector icons
-- **Notifications**: Sonner for toast feedback
-- **Charts**: Recharts (optional) or custom CSS grids for trends
-- **Routing**: React Router DOM
-- **Utilities**: clsx, tailwind-merge, UUID for IDs, date-fns for timestamps
-- **Deployment**: Cloudflare Pages (static) + Workers (optional serverless backend)
-- **Other**: Immer for immutable updates, React Hook Form for forms (if extended)
-
-## Installation
-
-This project uses Bun as the package manager for faster installs and development. Ensure Bun is installed on your system (download from [bun.sh](https://bun.sh)).
-
-1. Clone the repository:
-   ```
-   git clone <repository-url>
-   cd tai-xiu-mien-bac-gia-lap
-   ```
-
-2. Install dependencies:
-   ```
-   bun install
-   ```
-
-3. (Optional) Set up Cloudflare Wrangler for Workers integration:
-   ```
-   bun add -D wrangler
-   wrangler login
-   ```
-
-## Usage
-
-Run the development server:
-
-```
+# 🎲 Tài Xỉu Miền Bắc - Giả Lập
+## Tổng quan
+**Tài Xỉu Miền Bắc Giả Lập** là một ứng d��ng web client-side mô phỏng "Giải Đặc Biệt" của Xổ Số Miền Bắc chỉ dành cho mục đ��ch giải trí. Đây là một trình giả lập **KHÔNG** có thật, mọi kết quả đều được tạo ngẫu nhiên trên trình duyệt của bạn.
+Ứng dụng không sử dụng dữ liệu xổ số thật, không liên quan đến tiền bạc, cá cược hay ví điện tử. Mục tiêu chính là mang lại trải nghiệm vui vẻ, giúp bạn thử vận may và theo d��i các xu hướng một cách an toàn. Mọi dữ liệu (lịch sử, thống kê) đều được lưu trữ cục bộ trong `localStorage` của trình duyệt.
+## ✨ Tính năng chính
+-   **Tạo Kỳ Quay Ngẫu Nhiên**:
+    -   Mỗi kỳ sẽ sinh ra một số 5 chữ số ngẫu nhiên (từ `00000` đến `99999`).
+    -   Tính tổng 5 chữ số để xác định kết quả:
+        -   **Tài / Xỉu**: Tổng ≥ 23 là **Tài**, ngược lại là **Xỉu**.
+        -   **Chẵn / Lẻ**: Tổng là số chẵn là **Chẵn**, ngược lại là **Lẻ**.
+-   **Chế Độ Quay Tự Động & Thủ Công**:
+    -   **Auto (20 giây)**: Tự động tạo kỳ mới sau mỗi 20 giây, kèm đồng hồ đếm ngược và hiệu ứng âm thanh "tick".
+    -   **Thủ công**: Nhấn nút "Đặt cược & Quay" để tạo kết quả ngay lập tức.
+-   **Dự Đoán & Cược Ảo**:
+    -   Chọn dự đoán **Tài/Xỉu** hoặc **Chẵn/Lẻ** trước mỗi kỳ.
+    -   **Lướt ngang (swipe)** trên mobile để chuyển đổi giữa hai chế độ dự đoán.
+    -   Đặt cược bằng tiền ảo (bắt đầu với 1,000,000,000 VND).
+    -   Nếu đoán đúng, bạn nhận lại **1.9 lần** số tiền cược (lợi nhuận 90%).
+-   **Lịch Sử & Thống Kê Chi Tiết**:
+    -   Lưu trữ 100 kỳ quay gần nhất trong `localStorage`.
+    -   Bảng thống kê theo dõi: số dư, lợi nhuận, độ chính xác (%), chuỗi thắng dài nhất.
+    -   Mở khóa **Thành Tích** (ví dụ: "Bậc Thầy Chuỗi" khi đạt chuỗi thắng 10).
+-   **Trực Quan Hóa Xu Hướng**:
+    -   Biểu đồ chấm (dot-grid) hiển thị xu hướng Tài/Xỉu và Chẵn/Lẻ.
+    -   Di chuột qua các điểm để xem chi tiết từng kỳ.
+-   **Tùy Chỉnh Trải Nghiệm**:
+    -   Bật/tắt âm thanh, điều chỉnh âm lượng.
+    -   Chọn chủ đề giao diện (Tối, Sáng, Neon, Cổ điển).
+    -   Tùy chỉnh giới hạn lịch sử lưu trữ.
+-   **Giao Diện Hiện Đ��i & Thân Thiện**:
+    -   Thiết kế dark-theme với hiệu ứng neon, gradient và glassmorphism.
+    -   Tương thích hoàn toàn với thiết bị di động (mobile-first).
+    -   Thông báo kết quả bằng toast (thắng/thua) và hiệu ứng pháo hoa 🎊 khi thắng.
+## ���� Công nghệ sử dụng
+-   **Frontend**: React 18+ với TypeScript
+-   **Build Tool**: Vite
+-   **Styling**: Tailwind CSS v3 + shadcn/ui
+-   **Quản lý Trạng thái**: Zustand
+-   **Animations**: Framer Motion
+-   **Icons**: Lucide React
+-   **Thông báo**: Sonner
+-   **Biểu đồ**: Recharts
+-   **Routing**: React Router DOM
+-   **Triển khai**: Cloudflare Pages (tĩnh)
+## 🚀 Cài đặt
+Dự án sử dụng **Bun** làm trình quản lý gói để cài đặt nhanh hơn.
+1.  **Clone repository**:
+    ```bash
+    git clone <repository-url>
+    cd tai-xiu-mien-bac-gia-lap
+    ```
+2.  **Cài đặt dependencies**:
+    ```bash
+    bun install
+    ```
+## 🎮 Sử dụng
+Chạy server development:
+```bash
 bun dev
 ```
-
-The app will be available at `http://localhost:3000` (or the port specified by `${PORT:-3000}`). Open in a browser to start simulating rounds.
-
-- **Auto Mode**: Click "Bắt đầu auto" to start the 45-second timer cycle.
-- **Manual Generation**: Use "Quay ngay 1 kỳ" to generate a round instantly.
-- **Predictions**: Select options in "Dự đoán kỳ này" before the timer ends.
-- **Views**: Navigate to "Xu hướng" for trends, "Kết quả gần đây" for history, and "Thống kê" for stats.
-- **Persistence**: All data saves to localStorage automatically; clears on incognito or storage reset.
-
-For production builds:
-```
-bun run build
-```
-Output is in the `dist/` folder, ready for deployment.
-
-## Development
-
-- **Linting**: Run `bun lint` to check code quality. Fix issues with your editor or `bun lint --fix`.
-- **TypeScript**: Strict mode enabled; use `bun tsc --noEmit` for type checking.
-- **Hot Reload**: Vite provides instant updates during `bun dev`.
-- **Adding Features**: Extend stores in `src/stores/` (e.g., historyStore, statsStore). Use shadcn/ui components for new UI elements. Follow the blueprint for data flow (simulator in `src/lib/simulator.ts`).
-- **Testing**: Unit tests can be added with Vitest (not included); focus on component isolation for predictions and timer logic.
-- **Customization**: Edit `tailwind.config.js` for colors (#F38020 orange, #4FACFE blue, #F5576C pink). All Vietnamese text is in components.
-
-Common development workflow:
-1. Start dev server: `bun dev`
-2. Make changes to components/stores.
-3. Test predictions and auto-timer.
-4. Build and preview: `bun preview`
-
-## Deployment
-
-Deploy to Cloudflare Pages for static hosting (recommended for v1) or Workers for dynamic features.
-
-### Cloudflare Pages (Static SPA)
-1. Install Wrangler CLI: `bun add -D wrangler`
-2. Login: `wrangler login`
-3. Publish:
-   ```
-   wrangler pages publish dist --project-name=tai-xiu-mien-bac-gia-lap
-   ```
-   Or push to GitHub and connect via Cloudflare Dashboard > Pages > Connect to Git.
-
-The app is fully static and offline-capable after build.
-
-### Cloudflare Workers (Optional Backend)
-For future Worker integration (e.g., authoritative simulation):
-1. Configure routes in `worker/userRoutes.ts`.
-2. Deploy: `wrangler deploy`
-3. Assets route through Pages integration.
-
-[cloudflarebutton]
-
-## Contributing
-
-Contributions are welcome! Please:
-- Fork the repo and create a feature branch.
-- Follow TypeScript and ESLint rules.
-- Add tests for new logic (simulator, stats).
-- Update Vietnamese translations if adding text.
-- Submit PRs with clear descriptions.
-
-## License
-
-This project is MIT licensed. See the blueprint for usage notes: strictly for entertainment; no real gambling.
+Ứng dụng sẽ có tại `http://localhost:3000`.
+-   **Chế độ Auto**: Nhấn "Bắt đầu Auto" để khởi động chu kỳ 20 giây.
+-   **Quay ngay**: Nhấn "Đặt cược & Quay" để có kết quả tức thì.
+-   **Dự đoán**: Chọn ch��� độ (Tài/Xỉu hoặc Chẵn/Lẻ), chọn kết quả và nhập số tiền cược.
+-   **Xem lịch sử & thống kê**: Các bảng tương ứng sẽ tự động cập nhật.
+-   **Dữ liệu**: Mọi thứ được lưu vào `localStorage`. Dữ liệu sẽ mất nếu bạn dùng chế độ ẩn danh hoặc xóa bộ nhớ trình duyệt.
+### 🔧 Xử lý sự cố
+-   **Font tiếng Việt bị lỗi**: Đảm bảo trình duyệt của bạn có thể tải font `Inter` và `Noto Sans` từ Google Fonts với `subset=vietnamese`.
+-   **Trải nghiệm trên mobile**: Sử dụng thao tác **lướt ngang** trên khu vực chọn chế độ để chuyển đổi giữa Tài/Xỉu và Chẵn/Lẻ một cách nhanh chóng.
+-   **Dữ liệu bị hỏng**: Nếu ứng dụng gặp lỗi lạ, hãy thử xóa dữ liệu trang web trong cài đặt trình duyệt (bao gồm `localStorage`).
+## 🏗️ Phát triển
+-   **Linting**: Chạy `bun lint` để kiểm tra chất lượng code.
+-   **Type Checking**: Chạy `bun tsc --noEmit` để kiểm tra lỗi TypeScript.
+-   **Thêm tính năng**: Mở rộng các store trong `src/hooks/useGameStore.ts`. Logic game nằm trong `src/lib/simulator.ts`.
+## ☁️ Triển khai
+### Cloudflare Pages (Đề xuất cho v1)
+1.  Cài đặt Wrangler CLI: `bun add -D wrangler`
+2.  Đăng nhập: `wrangler login`
+3.  Build dự án: `bun run build`
+4.  Triển khai:
+    ```bash
+    wrangler pages publish dist --project-name=tai-xiu-mien-bac-gia-lap
+    ```
+## 🤝 Đóng góp
+Mọi ��óng góp đều được chào đón! Vui lòng fork repo, tạo một feature branch và gửi Pull Request với mô tả rõ ràng.
+## 📄 Giấy phép
+Dự án này được cấp phép theo giấy phép MIT. Chỉ sử dụng cho mục đích giải trí, không dành cho cờ bạc tiền thật.
+---
+*Built with ❤️ at Cloudflare*
