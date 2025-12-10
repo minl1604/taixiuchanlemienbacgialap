@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { memo } from 'react';
 import { motion } from 'framer-motion';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -9,13 +9,16 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/comp
 import type { Stats, BetRecord, Achievement } from '@/types';
 import { cn } from '@/lib/utils';
 import { Trophy } from 'lucide-react';
-interface StatsPanelProps {
-  stats: Stats;
-  balance: number;
-  bettingHistory: BetRecord[];
-  onResetStats: () => void;
-}
-export function StatsPanel({ stats, balance, bettingHistory, onResetStats }: StatsPanelProps) {
+const BetHistoryItem = memo(({ bet }: { bet: BetRecord }) => (
+  <div className="flex justify-between items-center">
+    <span>Kỳ #{bet.roundNumber}</span>
+    {bet.outcome === 'win' && <Badge className="bg-green-500/80">Thắng {bet.profit.toLocaleString('vi-VN')}</Badge>}
+    {bet.outcome === 'partial' && <Badge variant="secondary">Hòa</Badge>}
+    {bet.outcome === 'loss' && <Badge variant="destructive">Thua {Math.abs(bet.profit).toLocaleString('vi-VN')}</Badge>}
+  </div>
+));
+BetHistoryItem.displayName = 'BetHistoryItem';
+function StatsPanelComponent({ stats, balance, bettingHistory, onResetStats }: { stats: Stats; balance: number; bettingHistory: BetRecord[]; onResetStats: () => void; }) {
   const accuracy = stats.predictionsMade > 0 ? Math.round((stats.correct / stats.predictionsMade) * 100) : 0;
   const totalWagered = bettingHistory.reduce((sum, bet) => sum + bet.betAmount, 0);
   const unlockedAchievements = stats.achievements.filter(a => a.unlocked);
@@ -45,7 +48,7 @@ export function StatsPanel({ stats, balance, bettingHistory, onResetStats }: Sta
             <span className="text-muted-foreground">Độ chính xác</span>
             <span className="text-lg font-semibold">{accuracy}% ({stats.correct}/{stats.predictionsMade})</span>
           </div>
-          <Progress value={accuracy} className="h-2 [&>div]:bg-gradient-to-r [&>div]:from-blue-500 [&>div]:to-purple-500" />
+          <Progress value={accuracy} className="h-2 [&>div]:bg-gradient-to-r [&>div]:from-blue-500 [&>div]:to-purple-500" aria-label={`Độ chính xác ${accuracy}%`} />
         </div>
         <div className="flex justify-between items-baseline">
           <span className="text-muted-foreground">Chuỗi thắng dài nhất</span>
@@ -70,7 +73,7 @@ export function StatsPanel({ stats, balance, bettingHistory, onResetStats }: Sta
                 </TooltipProvider>
               ))
             ) : (
-              <p className="text-xs text-muted-foreground">Chưa có thành tích nào được mở khóa.</p>
+              <p className="text-xs text-muted-foreground">Chưa có thành tích nào được m�� khóa.</p>
             )}
           </div>
         </div>
@@ -80,12 +83,7 @@ export function StatsPanel({ stats, balance, bettingHistory, onResetStats }: Sta
             <div className="space-y-2 text-sm">
               {bettingHistory.length > 0 ? (
                 bettingHistory.slice(0, 20).map((bet) => (
-                  <div key={bet.roundId} className="flex justify-between items-center">
-                    <span>Kỳ #{bet.roundNumber}</span>
-                    {bet.outcome === 'win' && <Badge className="bg-green-500/80">Th���ng {bet.profit.toLocaleString('vi-VN')}</Badge>}
-                    {bet.outcome === 'partial' && <Badge variant="secondary">Hòa</Badge>}
-                    {bet.outcome === 'loss' && <Badge variant="destructive">Thua {Math.abs(bet.profit).toLocaleString('vi-VN')}</Badge>}
-                  </div>
+                  <BetHistoryItem key={bet.roundId} bet={bet} />
                 ))
               ) : (
                 <p className="text-muted-foreground text-center py-4">Chưa có lịch sử cược.</p>
@@ -97,3 +95,5 @@ export function StatsPanel({ stats, balance, bettingHistory, onResetStats }: Sta
     </Card>
   );
 }
+export const StatsPanel = memo(StatsPanelComponent);
+StatsPanel.displayName = 'StatsPanel';

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { memo } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
@@ -6,14 +6,29 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import type { Round } from '@/types';
 import { cn } from '@/lib/utils';
-interface HistoryTableProps {
-  history: Round[];
-  onClearHistory: () => void;
-}
-const MiniDigit = ({ digit }: { digit: string }) => (
+const MiniDigit = memo(({ digit }: { digit: string }) => (
   <div className="center w-5 h-5 rounded-full bg-gray-600 text-white text-xs font-bold">{digit}</div>
-);
-export function HistoryTable({ history, onClearHistory }: HistoryTableProps) {
+));
+MiniDigit.displayName = 'MiniDigit';
+const HistoryRow = memo(({ round }: { round: Round }) => (
+  <TableRow>
+    <TableCell className="font-medium">#{round.roundNumber}</TableCell>
+    <TableCell>
+      <div className="flex items-center gap-1">
+        {round.digits.split('').map((d, i) => <MiniDigit key={i} digit={d} />)}
+      </div>
+    </TableCell>
+    <TableCell className="text-center font-bold">{round.sum}</TableCell>
+    <TableCell className="text-center">
+      <Badge className={cn(round.taiXiu === 'Tài' ? 'bg-red-500' : 'bg-blue-500')}>{round.taiXiu}</Badge>
+    </TableCell>
+    <TableCell className="text-center">
+      <Badge className={cn(round.chanLe === 'Lẻ' ? 'bg-red-500' : 'bg-blue-500')}>{round.chanLe}</Badge>
+    </TableCell>
+  </TableRow>
+));
+HistoryRow.displayName = 'HistoryRow';
+function HistoryTableComponent({ history, onClearHistory }: { history: Round[]; onClearHistory: () => void; }) {
   return (
     <Card className="glass-dark border-green-500/20">
       <CardHeader className="flex flex-row items-center justify-between">
@@ -35,21 +50,7 @@ export function HistoryTable({ history, onClearHistory }: HistoryTableProps) {
             <TableBody>
               {history.length > 0 ? (
                 history.map((round) => (
-                  <TableRow key={round.id}>
-                    <TableCell className="font-medium">#{round.roundNumber}</TableCell>
-                    <TableCell>
-                      <div className="flex items-center gap-1">
-                        {round.digits.split('').map((d, i) => <MiniDigit key={i} digit={d} />)}
-                      </div>
-                    </TableCell>
-                    <TableCell className="text-center font-bold">{round.sum}</TableCell>
-                    <TableCell className="text-center">
-                      <Badge className={cn(round.taiXiu === 'Tài' ? 'bg-red-500' : 'bg-blue-500')}>{round.taiXiu}</Badge>
-                    </TableCell>
-                    <TableCell className="text-center">
-                      <Badge className={cn(round.chanLe === 'Lẻ' ? 'bg-red-500' : 'bg-blue-500')}>{round.chanLe}</Badge>
-                    </TableCell>
-                  </TableRow>
+                  <HistoryRow key={round.id} round={round} />
                 ))
               ) : (
                 <TableRow>
@@ -63,3 +64,5 @@ export function HistoryTable({ history, onClearHistory }: HistoryTableProps) {
     </Card>
   );
 }
+export const HistoryTable = memo(HistoryTableComponent);
+HistoryTable.displayName = 'HistoryTable';

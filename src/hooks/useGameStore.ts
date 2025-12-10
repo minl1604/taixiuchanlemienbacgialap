@@ -6,25 +6,24 @@ import * as storage from '@/lib/storage';
 import { generateRound, evaluatePrediction, calculateReward } from '@/lib/simulator';
 let audioCtx: AudioContext | null = null;
 const initAudioContext = () => {
-  if (!audioCtx) {
-    const AudioCtxConstructor = (window.AudioContext || (window as any).webkitAudioContext);
-    if (!AudioCtxConstructor) {
-      console.warn("Web Audio API is not available in this browser");
-      return;
-    }
-    try {
-      audioCtx = new AudioCtxConstructor();
-    } catch (e) {
-      console.error("Failed to create AudioContext", e);
-      audioCtx = null;
-    }
+  if (audioCtx && audioCtx.state !== 'closed') return;
+  const AudioCtxConstructor = (window.AudioContext || (window as any).webkitAudioContext);
+  if (!AudioCtxConstructor) {
+    console.warn("Web Audio API is not available in this browser");
+    return;
+  }
+  try {
+    audioCtx = new AudioCtxConstructor();
+  } catch (e) {
+    console.error("Failed to create AudioContext", e);
+    audioCtx = null;
   }
 };
 export const playSound = (type: 'win' | 'loss' | 'tick' | 'achievement', settings: Settings) => {
   if (!settings.soundEnabled || settings.soundVolume === 0) return;
   try {
     initAudioContext();
-    if (!audioCtx) return;
+    if (!audioCtx || audioCtx.state === 'suspended') return;
     const now = audioCtx.currentTime;
     const oscillator = audioCtx.createOscillator();
     const gainNode = audioCtx.createGain();
@@ -50,11 +49,6 @@ export const playSound = (type: 'win' | 'loss' | 'tick' | 'achievement', setting
     gainNode.connect(audioCtx.destination);
     oscillator.start(now);
     oscillator.stop(now + duration + 0.02);
-    const cleanupMs = Math.ceil((duration + 0.05) * 1000);
-    setTimeout(() => {
-      try { oscillator.disconnect(); } catch (e) { /* ignore */ }
-      try { gainNode.disconnect(); } catch (e) { /* ignore */ }
-    }, cleanupMs);
   } catch (e) {
     console.error('playSound error', e);
   }
@@ -122,11 +116,9 @@ export const useGameStore = create<GameState>()(
       },
       userInteracted: () => {
         initAudioContext();
-        try {
-          if (audioCtx && audioCtx.state === 'suspended' && typeof audioCtx.resume === 'function') {
-            audioCtx.resume().catch(() => {});
-          }
-        } catch (e) { /* ignore */ }
+        if (audioCtx && audioCtx.state === 'suspended') {
+          audioCtx.resume().catch(console.error);
+        }
       },
       setPrediction: (prediction) => set((state) => { state.currentPrediction = { ...state.currentPrediction, ...prediction }; }),
       startAuto: () => set({ isAutoRunning: true }),
@@ -165,7 +157,6 @@ export const useGameStore = create<GameState>()(
           }
         }
         const newHistory = [newRound, ...get().history].slice(0, settings.historyLimit);
-        // Check for achievements
         const unlockedAchievements: string[] = [];
         const updatedAchievements = newStats.achievements.map(ach => {
           if (ach.unlocked) return ach;

@@ -1,8 +1,8 @@
-import React, { useEffect, useCallback, useState } from 'react';
+import React, { useEffect, useCallback, useState, memo } from 'react';
 import { motion } from 'framer-motion';
 import { Toaster, toast } from 'sonner';
 import { Settings as SettingsIcon, HelpCircle } from 'lucide-react';
-import { useGameStore, useHistory, useStats, useIsAutoRunning, useLastRound, useGameActions, useBalance, useBettingHistory, useSettings, useAchievements } from '@/hooks/useGameStore';
+import { useGameStore, useHistory, useStats, useIsAutoRunning, useLastRound, useGameActions, useBalance, useBettingHistory, useSettings } from '@/hooks/useGameStore';
 import { RoundTimer } from '@/components/RoundTimer';
 import { CurrentRoundPanel } from '@/components/CurrentRoundPanel';
 import { PredictionPanel } from '@/components/PredictionPanel';
@@ -15,7 +15,7 @@ import { Button } from '@/components/ui/button';
 import { AlertDialog, AlertDialogAction, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import * as storage from '@/lib/storage';
-const ConfettiPiece = ({ x, y, rotate, color }: { x: number; y: number; rotate: number; color: string }) => (
+const ConfettiPiece = memo(({ x, y, rotate, color }: { x: number; y: number; rotate: number; color: string }) => (
   <motion.div
     style={{
       position: 'absolute',
@@ -37,7 +37,8 @@ const ConfettiPiece = ({ x, y, rotate, color }: { x: number; y: number; rotate: 
     }}
     transition={{ duration: 2, ease: "easeOut" }}
   />
-);
+));
+ConfettiPiece.displayName = 'ConfettiPiece';
 export function HomePage() {
   const [isClient, setIsClient] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
@@ -45,25 +46,22 @@ export function HomePage() {
   const [showDisclaimer, setShowDisclaimer] = useState(false);
   const [showOnboarding, setShowOnboarding] = useState(false);
   const [confetti, setConfetti] = useState<JSX.Element[]>([]);
-  const { init, userInteracted } = useGameStore(s => s.actions);
+  const { init, userInteracted } = useGameActions();
   const settings = useSettings();
   useEffect(() => {
     setIsClient(true);
-    try {
-      init();
-      const theme = storage.getSettings().theme || 'dark';
-      document.documentElement.setAttribute('data-theme', theme);
-      if (!localStorage.getItem('disclaimerSeen')) {
-        setShowDisclaimer(true);
-      } else if (!localStorage.getItem('onboardingSeen')) {
-        setShowOnboarding(true);
-        setTimeout(() => {
-          localStorage.setItem('onboardingSeen', 'true');
-          setShowOnboarding(false);
-        }, 7000);
-      }
-    } catch (e) {
-      console.error("Failed to initialize game store:", e);
+    init();
+    const theme = storage.getSettings().theme || 'dark';
+    document.documentElement.setAttribute('data-theme', theme);
+    if (!localStorage.getItem('disclaimerSeen')) {
+      setShowDisclaimer(true);
+    } else if (!localStorage.getItem('onboardingSeen')) {
+      setShowOnboarding(true);
+      const timer = setTimeout(() => {
+        localStorage.setItem('onboardingSeen', 'true');
+        setShowOnboarding(false);
+      }, 7000);
+      return () => clearTimeout(timer);
     }
   }, [init]);
   const history = useHistory();
@@ -73,7 +71,7 @@ export function HomePage() {
   const balance = useBalance();
   const bettingHistory = useBettingHistory();
   const { spinNewRound, resetHistory, resetStatsAndBalance } = useGameActions();
-  const triggerConfetti = () => {
+  const triggerConfetti = useCallback(() => {
     const colors = ['#F38020', '#4FACFE', '#F5576C', '#FFD700'];
     const newConfetti = Array.from({ length: 50 }).map((_, i) => (
       <ConfettiPiece
@@ -86,12 +84,12 @@ export function HomePage() {
     ));
     setConfetti(newConfetti);
     setTimeout(() => setConfetti([]), 2000);
-  };
+  }, []);
   const handleSpin = useCallback(() => {
     const { newRound, profit } = spinNewRound();
     if (profit !== null) {
       if (profit > 0) {
-        toast.success(`Kỳ #${newRound.roundNumber} - Thắng!`, { description: `Lợi nhuận: +${profit.toLocaleString('vi-VN')} VND` });
+        toast.success(`Kỳ #${newRound.roundNumber} - Th��ng!`, { description: `Lợi nhuận: +${profit.toLocaleString('vi-VN')} VND` });
         triggerConfetti();
       } else if (profit < 0) {
         toast.error(`Kỳ #${newRound.roundNumber} - Thua!`, { description: `Mất: ${(-profit).toLocaleString('vi-VN')} VND` });
@@ -101,8 +99,8 @@ export function HomePage() {
     } else {
       toast.info(`Kỳ #${newRound.roundNumber} - ${newRound.taiXiu} - ${newRound.chanLe}`, { description: 'Đã có kết quả mới.' });
     }
-  }, [spinNewRound]);
-  const handleDisclaimerClose = () => {
+  }, [spinNewRound, triggerConfetti]);
+  const handleDisclaimerClose = useCallback(() => {
     localStorage.setItem('disclaimerSeen', 'true');
     setShowDisclaimer(false);
     if (!localStorage.getItem('onboardingSeen')) {
@@ -112,18 +110,18 @@ export function HomePage() {
         setShowOnboarding(false);
       }, 7000);
     }
-  };
+  }, []);
   if (!isClient) {
-    return null;
+    return <div className="min-h-screen bg-background" />;
   }
   return (
     <div className="min-h-screen bg-background text-foreground font-sans relative overflow-x-hidden" onClick={userInteracted} onTouchStart={userInteracted}>
       <div className="absolute inset-0 bg-gradient-mesh opacity-10 pointer-events-none" />
       <div className="absolute top-4 right-4 flex items-center gap-2 z-50">
-        <Button variant="ghost" size="icon" onClick={() => setShowGuide(true)} className="text-2xl hover:scale-110 hover:rotate-12 transition-all duration-200 active:scale-90">
+        <Button variant="ghost" size="icon" onClick={() => setShowGuide(true)} className="text-2xl hover:scale-110 hover:rotate-12 transition-all duration-200 active:scale-90" aria-label="Mở hướng dẫn">
           <HelpCircle className="h-6 w-6" />
         </Button>
-        <Button variant="ghost" size="icon" onClick={() => setShowSettings(true)} className="text-2xl hover:scale-110 hover:rotate-12 transition-all duration-200 active:scale-90">
+        <Button variant="ghost" size="icon" onClick={() => setShowSettings(true)} className="text-2xl hover:scale-110 hover:rotate-12 transition-all duration-200 active:scale-90" aria-label="Mở cài đặt">
           <SettingsIcon className="h-6 w-6" />
         </Button>
       </div>
@@ -162,7 +160,7 @@ export function HomePage() {
         </TooltipProvider>
       </main>
       <footer className="text-center py-8 text-muted-foreground/80 text-sm">
-        <p>Built with ❤️ at Cloudflare</p>
+        <p>Built with ���️ at Cloudflare</p>
       </footer>
       <Toaster richColors closeButton theme={settings.theme === 'light' ? 'light' : 'dark'} />
       <SettingsPanel open={showSettings} onOpenChange={setShowSettings} />
@@ -172,7 +170,7 @@ export function HomePage() {
           <AlertDialogHeader>
             <AlertDialogTitle>Lưu ý quan trọng</AlertDialogTitle>
             <AlertDialogDescription>
-              Đây là một ứng dụng giả lập chỉ dành cho mục đích giải trí. Mọi kết quả đều là ngẫu nhiên và không liên quan đến kết quả xổ số thực tế. Ứng dụng này không sử dụng tiền thật và không dành cho mục đích cờ bạc.
+              Đây là m���t ứng dụng giả lập chỉ dành cho mục đích giải trí. Mọi kết quả đều là ngẫu nhiên và không liên quan đến kết quả xổ số thực tế. Ứng dụng này không sử dụng tiền thật và không dành cho mục đích cờ bạc.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>

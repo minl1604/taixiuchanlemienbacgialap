@@ -1,13 +1,10 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, memo } from 'react';
 import { motion } from 'framer-motion';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { ResponsiveContainer, ScatterChart, Scatter, XAxis, YAxis, Tooltip, ZAxis } from 'recharts';
 import type { Round } from '@/types';
 import { cn } from '@/lib/utils';
-interface TrendViewProps {
-  history: Round[];
-}
 const CustomTooltip = ({ active, payload }: any) => {
   if (active && payload && payload.length) {
     const data = payload[0].payload;
@@ -23,9 +20,9 @@ const CustomTooltip = ({ active, payload }: any) => {
   }
   return null;
 };
-const TrendChart = ({ data, type }: { data: any[]; type: 'tx' | 'cl' }) => {
+const TrendChart = memo(({ data, type }: { data: any[]; type: 'tx' | 'cl' }) => {
   if (!data || data.length === 0) {
-    return <div className="text-center text-muted-foreground p-4 h-40 center">Chưa có dữ liệu xu hướng.</div>;
+    return <div className="text-center text-muted-foreground p-4 h-40 center">Ch��a có dữ liệu xu hướng.</div>;
   }
   return (
     <ResponsiveContainer width="100%" height={150}>
@@ -47,8 +44,9 @@ const TrendChart = ({ data, type }: { data: any[]; type: 'tx' | 'cl' }) => {
       </ScatterChart>
     </ResponsiveContainer>
   );
-};
-export function TrendView({ history }: TrendViewProps) {
+});
+TrendChart.displayName = 'TrendChart';
+function TrendViewComponent({ history }: { history: Round[] }) {
   const [showAll, setShowAll] = useState(false);
   const chartData = useMemo(() => {
     const reversedHistory = [...history].reverse();
@@ -80,3 +78,5 @@ export function TrendView({ history }: TrendViewProps) {
     </Card>
   );
 }
+export const TrendView = memo(TrendViewComponent);
+TrendView.displayName = 'TrendView';

@@ -28,7 +28,7 @@ const guideSections = [
   {
     icon: Target,
     title: "Dự Đoán",
-    content: "Trước mỗi kỳ, bạn có thể chọn dự đoán kết quả. Có hai chế độ: 'Tài / Xỉu' hoặc 'Chẵn / Lẻ'. Bạn chỉ có thể chọn một trong hai chế độ và đặt cược cho một kết quả duy nhất trong chế độ đó."
+    content: "Trư��c mỗi kỳ, bạn có thể chọn dự đoán kết quả. Có hai chế độ: 'Tài / Xỉu' hoặc 'Chẵn / Lẻ'. Bạn chỉ có thể chọn một trong hai chế độ và đặt cược cho một kết quả duy nhất trong chế độ đó."
   },
   {
     icon: CircleDollarSign,
@@ -43,17 +43,17 @@ const guideSections = [
   {
     icon: BarChart,
     title: "Thống Kê & Xu Hướng",
-    content: "Ứng dụng theo dõi độ chính xác, chuỗi thắng và lợi nhuận của bạn. Bảng 'Xu hướng' hiển thị các kết quả gần đây dưới dạng lưới chấm màu để bạn dễ dàng theo dõi."
+    content: "Ứng dụng theo dõi độ chính xác, chuỗi thắng và lợi nhuận của bạn. Bảng 'Xu hướng' hi��n thị các kết quả gần đây dưới dạng biểu đồ để bạn dễ dàng theo dõi."
   },
   {
     icon: Settings,
     title: "Cài Đặt & Âm Thanh",
-    content: "Trong phần Cài đặt (biểu tượng bánh răng), bạn có thể bật/tắt chế độ tự động bắt đầu, hiệu ứng âm thanh, điều chỉnh âm lượng và giới hạn lịch sử các kỳ quay."
+    content: "Trong phần Cài ��ặt (biểu tượng bánh răng), bạn có thể bật/tắt chế độ tự động bắt đầu, hiệu ��ng âm thanh, điều chỉnh âm lượng và giới hạn lịch sử các kỳ quay."
   },
   {
     icon: AlertTriangle,
     title: "Lưu Ý Quan Trọng",
-    content: "Đây là ứng dụng gi��� lập chỉ dành cho mục đích giải trí. Mọi kết quả đều là ngẫu nhiên và không có giá trị tiền thật. Vui lòng chơi có trách nhiệm."
+    content: "Đây là ứng dụng giả lập chỉ dành cho mục đích giải trí. Mọi kết quả đều là ngẫu nhiên và không có giá trị tiền thật. Vui lòng chơi có trách nhiệm."
   }
 ];
 export function GameGuide({ open, onOpenChange }: GameGuideProps) {
