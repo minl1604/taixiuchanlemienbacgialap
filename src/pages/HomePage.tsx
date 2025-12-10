@@ -12,6 +12,7 @@ import { StatsPanel } from '@/components/StatsPanel';
 import { SettingsPanel } from '@/components/SettingsPanel';
 import { GameGuide } from '@/components/GameGuide';
 import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
 import { AlertDialog, AlertDialogAction, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -52,28 +53,6 @@ export function HomePage() {
     setIsClient(true);
     try {
       getGameActions().init();
-
-      // Seed preview history when empty so TrendView has data for testing.
-      // Avoid showing UI toasts by calling the action directly and wrapping in try/catch.
-      try {
-        const actions = getGameActions();
-        const gs = (actions as any).getState ? (actions as any).getState() : undefined;
-        const currentLen = gs?.history?.length || 0;
-        const target = 6;
-        const needed = Math.max(0, target - currentLen);
-        for (let i = 0; i < needed; i++) {
-          try {
-            // call action directly to avoid UI toast side-effects
-            actions.spinNewRound();
-          } catch (seedErr) {
-            console.error('Error seeding round:', seedErr);
-            break;
-          }
-        }
-      } catch (seedOuterErr) {
-        console.error('Seeding history error:', seedOuterErr);
-      }
-
       const theme = storage.getSettings().theme || 'dark';
       document.documentElement.setAttribute('data-theme', theme);
       if (!localStorage.getItem('disclaimerSeen')) {
@@ -115,7 +94,6 @@ export function HomePage() {
   }, []);
   const handleSpin = useCallback(() => {
     const { newRound, profit, wasCorrect } = spinNewRound();
-    // Only show win/loss toast if a bet was made (profit is not null)
     if (profit !== null) {
       if (profit > 0) {
         toast.success(`Kỳ #${newRound.roundNumber} - Thắng!`, { description: `Lợi nhuận: +${profit.toLocaleString('vi-VN')} VND` });
@@ -126,11 +104,9 @@ export function HomePage() {
         toast.info(`Kỳ #${newRound.roundNumber} - Hòa`, { description: 'Hoàn tiền cược.' });
       }
     } else if (wasCorrect !== null) {
-      // A prediction was made, but no bet
-      toast.info(`Kỳ #${newRound.roundNumber} - ${newRound.taiXiu} - ${newRound.chanLe}`, { description: `Dự đoán của bạn: ${wasCorrect ? 'Đúng' : 'Sai'}` });
+      toast.info(`Kỳ #${newRound.roundNumber} - ${newRound.taiXiu} - ${newRound.chanLe}`, { description: `Dự đoán c���a bạn: ${wasCorrect ? 'Đúng' : 'Sai'}` });
     } else {
-      // No prediction was made
-      toast.info(`Kỳ #${newRound.roundNumber} - ${newRound.taiXiu} - ${newRound.chanLe}`, { description: 'Đã có kết quả mới.' });
+      toast.info(`Kỳ #${newRound.roundNumber} - ${newRound.taiXiu} - ${newRound.chanLe}`, { description: 'Đã có kết qu�� mới.' });
     }
   }, [spinNewRound, triggerConfetti]);
   const handleDisclaimerClose = useCallback(() => {
@@ -185,11 +161,11 @@ export function HomePage() {
       </div>
       <header className="text-center pt-8 pb-4">
         <h1 className="text-4xl md:text-5xl font-display font-bold text-balance leading-tight">
-          <span className="text-gradient">Tài Xỉu Miền Bắc</span> Giả Lập
+          <span className="text-gradient">Tài X��u Miền Bắc</span> Giả Lập
         </h1>
         <p className="text-sm text-muted-foreground mt-2">Không dùng cho cá cược tiền thật</p>
       </header>
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8" aria-label="Trò chơi chính">
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8" aria-label="Trò chơi Tài Xỉu Miền Bắc Giả Lập - Kỳ hiện tại và dự đoán">
         <TooltipProvider>
           <div className="py-8 md:py-10 lg:py-12">
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
@@ -202,7 +178,7 @@ export function HomePage() {
                 <Tooltip open={showOnboarding}><TooltipTrigger asChild><div><RoundTimer isAutoRunning={isAutoRunning} onExpire={handleSpin} intervalSeconds={20} /></div></TooltipTrigger><TooltipContent><p>Đếm ngược kỳ tiếp theo (20s)</p></TooltipContent></Tooltip>
                 <CurrentRoundPanel round={lastRound} />
                 <Tooltip open={showOnboarding}><TooltipTrigger asChild><div><PredictionPanel onSpinNow={handleSpin} defaultBet={storage.getBetAmount()} /></div></TooltipTrigger><TooltipContent><p>Dự đoán và đặt cược tại đây</p></TooltipContent></Tooltip>
-                <TrendView history={history} />
+                <TrendView />
               </motion.div>
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
@@ -210,7 +186,7 @@ export function HomePage() {
                 transition={{ duration: 0.5, delay: 0.2 }}
                 className="space-y-8"
               >
-                <Tooltip open={showOnboarding}><TooltipTrigger asChild><div><StatsPanel stats={stats} balance={balance} bettingHistory={bettingHistory} onResetStats={resetStatsAndBalance} /></div></TooltipTrigger><TooltipContent><p>Theo dõi thống kê và thành tích của bạn</p></TooltipContent></Tooltip>
+                <Tooltip open={showOnboarding}><TooltipTrigger asChild><div><StatsPanel stats={stats} balance={balance} bettingHistory={bettingHistory} onResetStats={resetStatsAndBalance} /></div></TooltipTrigger><TooltipContent><p>Theo d��i thống kê và thành tích của bạn</p></TooltipContent></Tooltip>
                 <HistoryTable history={history} onClearHistory={resetHistory} />
               </motion.div>
             </div>
@@ -218,8 +194,9 @@ export function HomePage() {
         </TooltipProvider>
       </main>
       <footer className="text-center py-8 text-muted-foreground/80 text-sm">
-        <p>© 2025 CLTX MB • Dev by MinL x Cloudflare</p>
-        <p className="mt-1">Built with ❤️ at Cloudflare</p>
+        <p>© 2025 CLTX MB ��� Dev by MinL x Cloudflare</p>
+        <p className="mt-1">Built with ��️ at Cloudflare</p>
+        <Badge variant="secondary" className="text-xs mt-2 opacity-80">Không dùng cho cá cược tiền thật</Badge>
       </footer>
       <Toaster richColors closeButton theme={settings?.theme === 'light' ? 'light' : 'dark'} />
       <SettingsPanel open={showSettings} onOpenChange={setShowSettings} />
@@ -229,7 +206,7 @@ export function HomePage() {
           <AlertDialogHeader>
             <AlertDialogTitle>Lưu ý quan trọng</AlertDialogTitle>
             <AlertDialogDescription>
-              Đây là một ứng dụng giả lập chỉ dành cho mục đích giải trí. Mọi kết quả đều là ngẫu nhiên và không liên quan đến kết quả xổ số thực tế. Ứng dụng này không sử dụng tiền thật và không dành cho mục đích cờ bạc.
+              Đây là một ứng dụng giả lập chỉ dành cho m��c đích giải trí. Mọi kết quả đều là ngẫu nhiên và không liên quan đến kết quả xổ số thực tế. Ứng dụng này không sử dụng tiền thật và không dành cho mục đích cờ bạc.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>

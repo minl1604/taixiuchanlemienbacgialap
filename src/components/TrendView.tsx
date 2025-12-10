@@ -7,10 +7,12 @@ import { Skeleton } from '@/components/ui/skeleton';
 import type { Round, TaiXiu, ChanLe } from '@/types';
 import { cn } from '@/lib/utils';
 import { Label } from '@/components/ui/label';
+import { useGameStore } from '@/hooks/useGameStore';
+import { useShallow } from 'zustand/react/shallow';
 const TrendDot = memo(({ round, viewMode, index }: { round: Round; viewMode: 'taiXiu' | 'chanLe'; index: number }) => {
   const isTx = viewMode === 'taiXiu';
   const result: TaiXiu | ChanLe = isTx ? round.taiXiu : round.chanLe;
-  // Determine if the outcome is primary (T��i/Lẻ) or secondary (Xỉu/Chẵn) for styling
+  // Determine if the outcome is primary (Tài/Lẻ) or secondary (X��u/Chẵn) for styling
   const isPrimary = (isTx && result === 'Tài') || (!isTx && result === 'Lẻ');
   const isSecondary = (isTx && result === 'Xỉu') || (!isTx && result === 'Chẵn');
   // Set the label for the dot (T/X or L/C)
@@ -19,6 +21,15 @@ const TrendDot = memo(({ round, viewMode, index }: { round: Round; viewMode: 'ta
     : (result === 'Lẻ' ? 'L' : 'C');
   const tooltipId = `trend-dot-tooltip-${round.id}`;
   const ariaLabel = `Kỳ #${round.roundNumber}: ${result}`;
+  const handleMouseEnter = () => {
+    if (navigator.vibrate) {
+      try {
+        navigator.vibrate(10);
+      } catch (e) {
+        // Vibration may be unsupported or blocked
+      }
+    }
+  };
   return (
     <TooltipProvider delayDuration={100}>
       <Tooltip>
@@ -34,6 +45,7 @@ const TrendDot = memo(({ round, viewMode, index }: { round: Round; viewMode: 'ta
             )}
             aria-label={ariaLabel}
             aria-describedby={tooltipId}
+            onMouseEnter={handleMouseEnter}
           >
             {label}
           </motion.div>
@@ -87,7 +99,7 @@ function TrendViewComponent({ history }: { history: Round[] }) {
         <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
           <CardTitle className="text-2xl font-display text-gradient">Xu Hướng</CardTitle>
           <div className="w-full sm:w-auto">
-            <Label id="trend-mode-label" className="sr-only">Chế ��ộ xem xu hướng</Label>
+            <Label id="trend-mode-label" className="sr-only">Chế độ xem xu hướng</Label>
             <ToggleGroup
               type="single"
               value={viewMode}
@@ -103,7 +115,7 @@ function TrendViewComponent({ history }: { history: Round[] }) {
       </CardHeader>
       <CardContent>
         {history.length > 0 ? (
-          <div className="grid grid-flow-col auto-rows-[24px] sm:auto-rows-[28px] gap-y-1.5 sm:gap-y-2 gap-x-2 sm:gap-x-3 p-3 sm:p-4 rounded-lg bg-black/20 min-h-[12rem] overflow-x-auto w-full">
+          <div className="grid grid-flow-col auto-rows-[24px] sm:auto-rows-[28px] gap-y-1.5 sm:gap-y-2 gap-x-2 sm:gap-x-3 p-3 sm:p-4 rounded-lg bg-black/20 min-h-[12rem] overflow-x-auto w-full touch-pan-x" style={{ touchAction: 'manipulation' }}>
             {flatHistory.map((round, index) => (
               <TrendDot key={round.id} round={round} viewMode={viewMode} index={index} />
             ))}
@@ -124,5 +136,10 @@ function TrendViewComponent({ history }: { history: Round[] }) {
     </Card>
   );
 }
-export const TrendView = memo(TrendViewComponent);
+// Wrapper component to connect to the store
+function TrendViewWrapper() {
+  const history = useGameStore(state => state.history, useShallow);
+  return <TrendViewComponent history={history} />;
+}
+export const TrendView = memo(TrendViewWrapper);
 TrendView.displayName = 'TrendView';
