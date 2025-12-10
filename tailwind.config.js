@@ -201,8 +201,8 @@ export default {
         'slide-up': 'slide-up 0.4s ease-out',
         'scale-in': 'scale-in 0.3s ease-out',
         shimmer: 'shimmer 1.5s infinite',
-        glow: 'glow 2s ease-in-out infinite',
-        float: 'float 3s ease-in-out infinite',
+        glow: 'glow 1.8s ease-in-out infinite',
+        float: 'float 2.5s ease-in-out infinite',
         'accordion-down': 'accordion-down 0.2s ease-out',
         'accordion-up': 'accordion-up 0.2s ease-out'
       },

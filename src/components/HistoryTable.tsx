@@ -48,7 +48,7 @@ function HistoryTableComponent({ history, onClearHistory }: { history: Round[]; 
   return (
     <Card className="glass-dark border-green-500/20">
       <CardHeader className="flex flex-row items-center justify-between">
-        <CardTitle className="text-2xl font-display">Kết qu��� gần đây</CardTitle>
+        <CardTitle className="text-2xl font-display">Kết qu�� gần đây</CardTitle>
         <Button variant="destructive" size="sm" onClick={handleClear}>Xóa lịch sử</Button>
       </CardHeader>
       <CardContent>

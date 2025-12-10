@@ -28,7 +28,10 @@ function PredictionPanelComponent({ onSpinNow, defaultBet }: { onSpinNow: () => 
   useEffect(() => {
     setSelectedTaiXiu(currentPrediction.taiXiu || "");
     setSelectedChanLe(currentPrediction.chanLe || "");
-    setIsSpinning(false); // Reset spinning state after a round resolves
+    // Reset spinning state after a round resolves and prediction is cleared
+    if (!currentPrediction.taiXiu && !currentPrediction.chanLe) {
+      setIsSpinning(false);
+    }
   }, [currentPrediction]);
   const handleBetAmountChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
@@ -69,7 +72,7 @@ function PredictionPanelComponent({ onSpinNow, defaultBet }: { onSpinNow: () => 
   const handleSpinWithBet = useCallback(() => {
     const betValue = parseInt(betAmount, 10);
     if (isNaN(betValue) || betValue <= 0) {
-      toast.error("Số tiền cược không hợp lệ.");
+      toast.error("Số ti��n cược không hợp lệ.");
       return;
     }
     if (betValue > balance) {
@@ -86,7 +89,7 @@ function PredictionPanelComponent({ onSpinNow, defaultBet }: { onSpinNow: () => 
     }
     setIsSpinning(true);
     setPrediction({ bet: betValue });
-    toast.success(`��ặt cược ${betValue.toLocaleString('vi-VN')} VND thành công!`);
+    toast.success(`Đặt cược ${betValue.toLocaleString('vi-VN')} VND thành công!`);
     setTimeout(() => {
       onSpinNow();
     }, 100);

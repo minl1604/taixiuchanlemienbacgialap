@@ -23,12 +23,12 @@ const guideSections = [
     {
     icon: Gamepad2,
     title: "Cách Chơi",
-    content: "M��i kỳ quay sẽ tạo ra một số ngẫu nhiên 5 chữ số. Một kỳ mới sẽ tự động bắt đầu sau mỗi 20 giây nếu chế độ 'Auto' được bật. Bạn cũng có thể nhấn 'Đặt cược & Quay' để bắt đầu một kỳ mới ngay lập tức."
+    content: "Mỗi kỳ quay sẽ tạo ra một số ngẫu nhiên 5 chữ số. Một kỳ mới sẽ tự động bắt đầu sau mỗi 20 giây nếu chế độ 'Auto' được bật. Bạn cũng có thể nhấn 'Đặt cược & Quay' để bắt đầu một kỳ mới ngay lập tức."
   },
   {
     icon: Target,
     title: "Dự Đoán",
-    content: "Trư��c mỗi kỳ, bạn có thể chọn dự đoán kết quả. Có hai chế độ: 'Tài / Xỉu' hoặc 'Chẵn / Lẻ'. Bạn chỉ có thể chọn một trong hai chế độ và đặt cược cho một kết quả duy nhất trong chế độ đó."
+    content: "Trước mỗi kỳ, bạn có thể chọn dự đoán kết quả. Có hai chế độ: 'Tài / Xỉu' hoặc 'Chẵn / Lẻ'. Bạn chỉ có thể chọn một trong hai chế độ và đặt cược cho một kết quả duy nhất trong chế độ đó."
   },
   {
     icon: CircleDollarSign,
@@ -38,22 +38,22 @@ const guideSections = [
   {
     icon: Trophy,
     title: "Kết Quả",
-    content: "Kết quả được xác định bằng t��ng của 5 chữ số:\n- TÀI: nếu tổng lớn hơn hoặc bằng 23.\n- XỈU: nếu tổng nhỏ hơn 23.\n- CH���N: nếu tổng là số chẵn.\n- LẺ: nếu tổng là số lẻ."
+    content: "Kết quả được xác định bằng tổng của 5 chữ số:\n- TÀI: nếu tổng lớn hơn hoặc bằng 23.\n- XỈU: nếu tổng nhỏ hơn 23.\n- CHẴN: nếu tổng là số chẵn.\n- LẺ: nếu tổng là số lẻ."
   },
   {
     icon: BarChart,
     title: "Thống Kê & Xu Hướng",
-    content: "Ứng dụng theo dõi độ chính xác, chuỗi thắng và lợi nhuận của bạn. Bảng 'Xu hướng' hiển thị các kết quả gần đây dưới dạng biểu đồ để bạn dễ dàng theo dõi."
+    content: "��ng dụng theo dõi độ chính xác, chuỗi thắng và lợi nhuận của bạn. Bảng 'Xu hướng' hi��n thị các kết quả gần đây dưới dạng biểu đồ để bạn dễ dàng theo dõi."
   },
   {
     icon: Settings,
-    title: "Cài Đặt & Âm Thanh",
-    content: "Trong phần Cài đặt (biểu tượng bánh răng), bạn có thể bật/tắt chế độ tự động bắt đầu, hiệu ứng âm thanh, điều chỉnh âm lượng và giới hạn lịch sử các kỳ quay."
+    title: "Cài ��ặt & Âm Thanh",
+    content: "Trong phần Cài ��ặt (biểu tượng bánh răng), bạn có thể bật/tắt chế độ tự động bắt đầu, hiệu ��ng âm thanh, điều chỉnh âm lượng và giới hạn lịch sử các kỳ quay."
   },
   {
     icon: AlertTriangle,
     title: "Lưu Ý Quan Trọng",
-    content: "Đây là ứng dụng giả lập chỉ dành cho mục đích giải trí. Mọi kết quả đều là ngẫu nhiên và không có giá trị tiền thật. Vui lòng chơi có trách nhiệm."
+    content: "Đây là ứng dụng giả lập chỉ dành cho mục đích giải trí. Mọi kết quả đều là ngẫu nhiên và không có gi�� trị tiền thật. Vui lòng chơi có trách nhiệm."
   }
 ];
 export function GameGuide({ open, onOpenChange }: GameGuideProps) {

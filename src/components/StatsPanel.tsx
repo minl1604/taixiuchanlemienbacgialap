@@ -1,4 +1,4 @@
-import React, { memo } from 'react';
+import React, { memo, useMemo } from 'react';
 import { motion } from 'framer-motion';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -52,8 +52,9 @@ function StatsPanelComponent({ stats, balance, bettingHistory, onResetStats }: {
   const unlockedAchievements = stats.achievements.filter(a => a.unlocked);
   const handleReset = () => {
     onResetStats();
-    toast.success("Đã đặt lại thống kê và số dư.");
+    toast.success("Đã đặt l��i thống kê và số dư.");
   };
+  const recentBets = useMemo(() => bettingHistory.slice(0, 20), [bettingHistory]);
   return (
     <Card className="glass-dark border-yellow-500/20 hover:shadow-glow transition-shadow">
         <CardHeader className="flex flex-row items-center justify-between">
@@ -66,7 +67,7 @@ function StatsPanelComponent({ stats, balance, bettingHistory, onResetStats }: {
               <AlertDialogHeader>
                 <AlertDialogTitle>Bạn có chắc chắn?</AlertDialogTitle>
                 <AlertDialogDescription>
-                  H��nh động này sẽ xóa toàn bộ thống kê, thành tích, lịch sử c��ợc và đặt lại số dư của bạn về mặc định.
+                  Hành động này sẽ xóa toàn bộ thống kê, thành tích, lịch s�� cược và đặt lại số dư của bạn về mặc định.
                 </AlertDialogDescription>
               </AlertDialogHeader>
               <AlertDialogFooter>
@@ -132,8 +133,8 @@ function StatsPanelComponent({ stats, balance, bettingHistory, onResetStats }: {
           <p className="text-sm font-semibold mb-2">Lịch sử cược</p>
           <ScrollArea className="h-40 pr-4" aria-label="Lịch sử cược gần đây">
             <div className="space-y-2 text-sm">
-              {bettingHistory.length > 0 ? (
-                bettingHistory.slice(0, 20).map((bet) => (
+              {recentBets.length > 0 ? (
+                recentBets.map((bet) => (
                   <BetHistoryItem key={bet.roundId} bet={bet} />
                 ))
               ) : (

@@ -36,7 +36,7 @@ const ConfettiPiece = memo(({ x, y, rotate, color }: { x: number; y: number; rot
       scale: [1, 1.2, 0],
       rotate: rotate + 180,
     }}
-    transition={{ duration: 2, ease: "easeOut" }}
+    transition={{ duration: 1.5, ease: "easeOut" }}
   />
 ));
 ConfettiPiece.displayName = 'ConfettiPiece';
@@ -79,7 +79,7 @@ export function HomePage() {
   const { spinNewRound, resetHistory, resetStatsAndBalance } = useGameActions();
   const triggerConfetti = useCallback(() => {
     const colors = ['#F38020', '#4FACFE', '#F5576C', '#FFD700'];
-    const newConfetti = Array.from({ length: 30 }).map((_, i) => (
+    const newConfetti = Array.from({ length: 20 }).map((_, i) => (
       <ConfettiPiece
         key={i}
         x={Math.random() * 400 - 200}
@@ -92,17 +92,22 @@ export function HomePage() {
     setTimeout(() => setConfetti([]), 2000);
   }, []);
   const handleSpin = useCallback(() => {
-    const { newRound, profit } = spinNewRound();
+    const { newRound, profit, wasCorrect } = spinNewRound();
+    // Only show win/loss toast if a bet was made (profit is not null)
     if (profit !== null) {
       if (profit > 0) {
-        toast.success(`Kỳ #${newRound.roundNumber} - Thắng!`, { description: `Lợi nhu���n: +${profit.toLocaleString('vi-VN')} VND` });
+        toast.success(`Kỳ #${newRound.roundNumber} - Thắng!`, { description: `Lợi nhuận: +${profit.toLocaleString('vi-VN')} VND` });
         triggerConfetti();
       } else if (profit < 0) {
         toast.error(`Kỳ #${newRound.roundNumber} - Thua!`, { description: `Mất: ${(-profit).toLocaleString('vi-VN')} VND` });
       } else {
-        toast.info(`Kỳ #${newRound.roundNumber} - Hòa`, { description: 'Hoàn tiền cược.' });
+        toast.info(`Kỳ #${newRound.roundNumber} - Hòa`, { description: 'Hoàn ti���n cược.' });
       }
+    } else if (wasCorrect !== null) {
+      // A prediction was made, but no bet
+      toast.info(`Kỳ #${newRound.roundNumber} - ${newRound.taiXiu} - ${newRound.chanLe}`, { description: `Dự đoán của bạn: ${wasCorrect ? 'Đúng' : 'Sai'}` });
     } else {
+      // No prediction was made
       toast.info(`Kỳ #${newRound.roundNumber} - ${newRound.taiXiu} - ${newRound.chanLe}`, { description: 'Đã có kết quả mới.' });
     }
   }, [spinNewRound, triggerConfetti]);
@@ -160,7 +165,7 @@ export function HomePage() {
         <h1 className="text-4xl md:text-5xl font-display font-bold text-balance leading-tight">
           <span className="text-gradient">Tài Xỉu Miền Bắc</span> Giả Lập
         </h1>
-        <p className="text-sm text-muted-foreground mt-2">Không d��ng cho cá cược tiền thật</p>
+        <p className="text-sm text-muted-foreground mt-2">Không dùng cho cá cược tiền thật</p>
       </header>
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8" aria-label="Trò chơi chính">
         <TooltipProvider>
@@ -200,9 +205,9 @@ export function HomePage() {
       <AlertDialog open={showDisclaimer} onOpenChange={setShowDisclaimer}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Lưu �� quan trọng</AlertDialogTitle>
+            <AlertDialogTitle>Lưu ý quan trọng</AlertDialogTitle>
             <AlertDialogDescription>
-              Đây là một ���ng dụng giả lập chỉ dành cho mục đích giải trí. Mọi kết quả đều là ngẫu nhiên và không liên quan đến kết quả xổ số thực tế. Ứng dụng này không sử dụng tiền thật và không dành cho mục đích cờ bạc.
+              Đây là một ứng dụng giả lập chỉ dành cho mục đích giải trí. Mọi kết quả đều là ngẫu nhiên và không liên quan đến kết quả xổ số thực tế. Ứng dụng này không sử dụng tiền thật và không dành cho mục đích cờ bạc.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>

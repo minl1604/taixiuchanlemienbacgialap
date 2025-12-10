@@ -10,7 +10,7 @@ import { Label } from '@/components/ui/label';
 const TrendDot = memo(({ round, viewMode, index }: { round: Round; viewMode: 'taiXiu' | 'chanLe'; index: number }) => {
   const isTx = viewMode === 'taiXiu';
   const result: TaiXiu | ChanLe = isTx ? round.taiXiu : round.chanLe;
-  // Tài/Lẻ are "primary" (red), Xỉu/Chẵn are "secondary" (blue)
+  // Tài/Lẻ are "primary" (red), Xỉu/Ch���n are "secondary" (blue)
   const isPrimary = (isTx && result === 'Tài') || (!isTx && result === 'Lẻ');
   const isSecondary = (isTx && result === 'Xỉu') || (!isTx && result === 'Chẵn');
   const label = isTx
@@ -24,7 +24,7 @@ const TrendDot = memo(({ round, viewMode, index }: { round: Round; viewMode: 'ta
           <motion.div
             initial={{ opacity: 0, scale: 0.5 }}
             animate={{ opacity: 1, scale: 1 }}
-            transition={{ delay: index * 0.02, type: 'spring', stiffness: 300, damping: 20 }}
+            transition={{ delay: index * 0.02, type: 'spring', stiffness: 400, damping: 25 }}
             className={cn(
               "center w-6 h-6 rounded-full font-mono text-xs font-bold text-white shadow-sm transition-all duration-200 cursor-pointer",
               isPrimary && "bg-red-500/90 hover:shadow-[0_0_10px_theme(colors.red.500)]",

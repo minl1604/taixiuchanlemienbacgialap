@@ -57,8 +57,8 @@ export const playSound = (type: 'win' | 'loss' | 'tick' | 'achievement', setting
 };
 const initialAchievements: Achievement[] = [
   { id: 'streak5', name: 'Nóng Tay', description: 'Đạt chuỗi thắng 5 kỳ liên tiếp.', unlocked: false, criteria: { type: 'streak', value: 5 } },
-  { id: 'streak10', name: 'B��c Thầy Chuỗi', description: 'Đạt chuỗi thắng 10 kỳ liên tiếp!', unlocked: false, criteria: { type: 'streak', value: 10 } },
-  { id: 'rounds50', name: 'Người Chơi Bền Bỉ', description: 'Ho��n thành 50 kỳ quay.', unlocked: false, criteria: { type: 'rounds', value: 50 } },
+  { id: 'streak10', name: 'Bậc Thầy Chuỗi', description: 'Đạt chuỗi thắng 10 kỳ liên tiếp!', unlocked: false, criteria: { type: 'streak', value: 10 } },
+  { id: 'rounds50', name: 'Người Chơi Bền Bỉ', description: 'Hoàn thành 50 kỳ quay.', unlocked: false, criteria: { type: 'rounds', value: 50 } },
   { id: 'rounds100', name: 'Trăm Trận Trăm Thắng', description: 'Hoàn thành 100 kỳ quay.', unlocked: false, criteria: { type: 'rounds', value: 100 } },
   { id: 'wins50', name: 'Chuyên Gia Dự Đoán', description: 'Thắng 50 lần.', unlocked: false, criteria: { type: 'wins', value: 50 } },
 ];
@@ -140,7 +140,7 @@ export const useGameStore = create<GameState>()(
           newStats = evalResult.newStats;
           wasCorrect = evalResult.wasCorrect;
           const betAmount = currentPrediction.bet;
-          if (betAmount && betAmount > 0) {
+          if (betAmount && betAmount > 0 && betAmount <= get().balance) {
             const rewardResult = calculateReward(betAmount, evalResult.matches);
             profit = rewardResult.profit;
             set(state => {

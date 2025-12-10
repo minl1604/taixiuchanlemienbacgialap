@@ -102,6 +102,7 @@
   }
   * {
     @apply border-border;
+    font-feature-settings: 'kern' 1, 'liga' 1, 'cv02' 1;
   }
   html {
     scroll-behavior: smooth;
@@ -113,7 +114,6 @@
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     text-rendering: optimizeLegibility;
-    font-feature-settings: 'kern liga cv02';
     font-synthesis: none;
   }
 }
