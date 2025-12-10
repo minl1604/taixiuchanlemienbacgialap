@@ -20,10 +20,10 @@ interface GameGuideProps {
   onOpenChange: (open: boolean) => void;
 }
 const guideSections = [
-    {
+  {
     icon: Gamepad2,
     title: "Cách Chơi",
-    content: "Mỗi kỳ quay sẽ tạo ra một số ngẫu nhiên 5 chữ số. Một kỳ mới sẽ tự động bắt đầu sau mỗi 20 giây nếu chế độ 'Auto' được bật. Bạn cũng có thể nhấn 'Đặt cược & Quay' để bắt đầu một kỳ mới ngay lập tức."
+    content: "Mỗi kỳ quay sẽ tạo ra một số ngẫu nhiên 5 chữ số. Một kỳ mới sẽ tự động bắt đ���u sau mỗi 20 giây nếu chế độ 'Auto' được bật. Bạn cũng có thể nhấn 'Đặt cược & Quay' để bắt đầu một kỳ mới ngay lập tức."
   },
   {
     icon: Target,
@@ -33,17 +33,17 @@ const guideSections = [
   {
     icon: CircleDollarSign,
     title: "Quy Tắc Cược",
-    content: "Bạn bắt đầu với một số dư VND ảo. Nhập số tiền bạn muốn cược. Số tiền phải lớn hơn 0 và không vượt quá số dư của bạn. Nếu dự đoán đúng, bạn nhận lại 1.9 lần số tiền cược (lợi nhuận 0.9 lần). Nếu sai, bạn mất số tiền đã cược."
+    content: "Bạn bắt đầu với một số d�� VND ảo. Nhập số tiền bạn muốn cược. Số tiền phải lớn hơn 0 và không vượt quá số dư của bạn. Nếu dự đoán đúng, bạn nhận lại 1.9 lần số tiền cược (lợi nhuận 0.9 lần). Nếu sai, bạn mất số tiền đã cược."
   },
   {
     icon: Trophy,
     title: "Kết Quả",
-    content: "Kết quả được xác đ��nh bằng tổng của 5 chữ số:\n- TÀI: nếu tổng lớn hơn hoặc bằng 23.\n- XỈU: nếu tổng nhỏ hơn 23.\n- CHẴN: nếu tổng là số chẵn.\n- L���: nếu tổng là số lẻ."
+    content: "Kết quả được xác định bằng tổng của 5 chữ số:\n- TÀI: nếu tổng lớn hơn hoặc bằng 23.\n- XỈU: nếu tổng nhỏ hơn 23.\n- CHẴN: nếu tổng là số chẵn.\n- LẺ: nếu tổng là số lẻ."
   },
   {
     icon: BarChart,
     title: "Thống Kê & Xu Hướng",
-    content: "Ứng dụng theo dõi độ chính xác, chuỗi thắng và lợi nhuận của bạn. Bảng 'Xu hướng' hiển thị các kết quả gần đây dưới dạng biểu đồ để bạn dễ dàng theo dõi."
+    content: "���ng dụng theo dõi độ chính xác, chuỗi thắng và lợi nhuận của bạn. Bảng 'Xu hướng' hiển thị các kết quả gần đây dưới dạng biểu đồ để bạn dễ dàng theo dõi."
   },
   {
     icon: Settings,
@@ -63,7 +63,7 @@ export function GameGuide({ open, onOpenChange }: GameGuideProps) {
         <DialogHeader>
           <DialogTitle className="font-display text-2xl text-center">Hướng Dẫn Chơi</DialogTitle>
           <DialogDescription className="text-center">
-            Tìm hiểu cách hoạt động của trò chơi giả lập này.
+            T��m hiểu cách hoạt động của trò chơi giả lập này.
           </DialogDescription>
         </DialogHeader>
         <div className="py-4 max-h-[70vh] overflow-y-auto pr-4">

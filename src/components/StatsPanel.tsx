@@ -26,7 +26,7 @@ function StatsPanelComponent({ stats, balance, bettingHistory, onResetStats }: {
   if (!stats || !bettingHistory) {
     return (
       <Card className="glass-dark border-yellow-500/20">
-        <CardHeader><CardTitle>Thống kê</CardTitle></CardHeader>
+        <CardHeader><CardTitle>Th���ng kê</CardTitle></CardHeader>
         <CardContent className="space-y-4">
           <Skeleton className="h-8 w-3/4" />
           <Skeleton className="h-6 w-1/2" />
@@ -58,7 +58,7 @@ function StatsPanelComponent({ stats, balance, bettingHistory, onResetStats }: {
   return (
     <Card className="glass-dark border-yellow-500/20 hover:shadow-glow transition-shadow">
         <CardHeader className="flex flex-row items-center justify-between">
-          <CardTitle className="text-2xl font-display">Th���ng kê</CardTitle>
+          <CardTitle className="text-2xl font-display">Thống kê</CardTitle>
           <AlertDialog>
             <AlertDialogTrigger asChild>
               <Button variant="outline" size="sm">Đặt lại</Button>
@@ -67,12 +67,12 @@ function StatsPanelComponent({ stats, balance, bettingHistory, onResetStats }: {
               <AlertDialogHeader>
                 <AlertDialogTitle>Bạn có chắc chắn?</AlertDialogTitle>
                 <AlertDialogDescription>
-                  Hành động này sẽ xóa toàn bộ thống kê, thành t��ch, lịch sử cược và đặt lại số dư về mặc định.
+                  Hành động này sẽ xóa toàn bộ thống kê, thành tích, lịch sử cược và đặt lại số dư về mặc định.
                 </AlertDialogDescription>
               </AlertDialogHeader>
               <AlertDialogFooter>
                 <AlertDialogCancel>Hủy</AlertDialogCancel>
-                <AlertDialogAction onClick={handleReset}>Xác nh��n</AlertDialogAction>
+                <AlertDialogAction onClick={handleReset}>Xác nhận</AlertDialogAction>
               </AlertDialogFooter>
             </AlertDialogContent>
           </AlertDialog>
@@ -125,7 +125,7 @@ function StatsPanelComponent({ stats, balance, bettingHistory, onResetStats }: {
                 )
               })
             ) : (
-              <p className="text-xs text-muted-foreground">Chưa có thành tích nào được mở khóa.</p>
+              <p className="text-xs text-muted-foreground">Chưa có thành tích nào ��ược mở khóa.</p>
             )}
           </div>
         </div>
