@@ -1,4 +1,4 @@
-import React, { useState, memo } from 'react';
+import React, { useState, memo, useMemo } from 'react';
 import { motion } from 'framer-motion';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
@@ -10,7 +10,7 @@ const TrendDot = memo(({ round, viewMode, index }: { round: Round; viewMode: 'tx
   const isTx = viewMode === 'tx';
   const result = isTx ? round.taiXiu : round.chanLe;
   const isPrimary = isTx ? result === 'Tài' : result === 'Lẻ'; // Red for Tài/Lẻ
-  const isSecondary = isTx ? result === 'Xỉu' : result === 'Chẵn'; // Blue for Xỉu/Chẵn
+  const isSecondary = isTx ? result === 'Xỉu' : result === 'Ch��n'; // Blue for Xỉu/Chẵn
   const label = isTx
     ? (result === 'Tài' ? 'T' : 'X')
     : (result === 'Lẻ' ? 'L' : 'C');
@@ -34,7 +34,7 @@ const TrendDot = memo(({ round, viewMode, index }: { round: Round; viewMode: 'tx
         <TooltipContent>
           <div className="text-sm">
             <p className="font-bold">Kỳ #{round.roundNumber}</p>
-            <p>Kết quả: {round.digits}</p>
+            <p>K���t quả: {round.digits}</p>
             <p>Tổng: {round.sum}</p>
             <p>T/X: <span className={cn(round.taiXiu === 'Tài' ? 'text-red-400' : 'text-blue-400')}>{round.taiXiu}</span></p>
             <p>C/L: <span className={cn(round.chanLe === 'Lẻ' ? 'text-red-400' : 'text-blue-400')}>{round.chanLe}</span></p>
@@ -47,12 +47,36 @@ const TrendDot = memo(({ round, viewMode, index }: { round: Round; viewMode: 'tx
 TrendDot.displayName = 'TrendDot';
 function TrendViewComponent({ history }: { history: Round[] }) {
   const [viewMode, setViewMode] = useState<'tx' | 'cl'>('tx');
+  const groupedRows = useMemo(() => {
+    if (!history || history.length < 1) {
+      return [];
+    }
+    const recentHistory = history.slice(0, 50).reverse();
+    const rows: Round[][] = [];
+    let currentRow: Round[] = [];
+    const primaryResult = viewMode === 'tx' ? 'Tài' : 'Chẵn';
+    const secondaryResult = viewMode === 'tx' ? 'Xỉu' : 'Lẻ';
+    recentHistory.forEach(round => {
+      const result = viewMode === 'tx' ? round.taiXiu : round.chanLe;
+      if (result === secondaryResult) {
+        if (currentRow.length > 0) {
+          rows.push(currentRow);
+        }
+        rows.push([round]);
+        currentRow = [];
+      } else { // primaryResult
+        currentRow.push(round);
+      }
+    });
+    if (currentRow.length > 0) {
+      rows.push(currentRow);
+    }
+    return rows;
+  }, [history, viewMode]);
   if (!history) {
     console.warn("TrendView received null or undefined history.");
     return <Skeleton className="h-48 w-full" />;
   }
-  // Display up to 50 recent rounds, reversed for chronological order (oldest top-left)
-  const recentHistory = history.slice(0, 50).reverse();
   return (
     <Card className="glass-dark border-purple-500/20 hover:shadow-glow transition-shadow">
       <CardHeader>
@@ -71,10 +95,14 @@ function TrendViewComponent({ history }: { history: Round[] }) {
         </div>
       </CardHeader>
       <CardContent>
-        {recentHistory.length >= 5 ? (
-          <div className="grid grid-cols-10 sm:grid-cols-12 gap-1.5 p-2 rounded-lg bg-black/20">
-            {recentHistory.map((round, index) => (
-              <TrendDot key={round.id} round={round} viewMode={viewMode} index={index} />
+        {history.length >= 5 ? (
+          <div className="flex flex-col gap-1 p-2 rounded-lg bg-black/20 min-h-[12rem]">
+            {groupedRows.map((row, rowIndex) => (
+              <div key={rowIndex} className="flex flex-wrap gap-1.5">
+                {row.map((round, dotIndex) => (
+                  <TrendDot key={round.id} round={round} viewMode={viewMode} index={dotIndex} />
+                ))}
+              </div>
             ))}
           </div>
         ) : (
