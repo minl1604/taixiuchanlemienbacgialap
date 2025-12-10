@@ -23,7 +23,7 @@ const guideSections = [
   {
     icon: Gamepad2,
     title: "Cách Chơi",
-    content: "Mỗi kỳ quay s�� tạo ra một số ngẫu nhiên 5 chữ số. Một kỳ mới sẽ tự động bắt đầu sau mỗi 20 giây nếu chế độ 'Auto' được bật. Bạn cũng có thể nhấn 'Đặt cược & Quay' để bắt đầu một kỳ mới ngay lập t��c."
+    content: "Mỗi kỳ quay sẽ tạo ra một số ngẫu nhiên 5 chữ số. Một kỳ mới sẽ tự động bắt đ���u sau mỗi 20 giây nếu chế độ 'Auto' được bật. Bạn cũng có thể nhấn 'Đặt cược & Quay' để bắt đầu một kỳ mới ngay lập tức."
   },
   {
     icon: Target,
@@ -63,7 +63,7 @@ export function GameGuide({ open, onOpenChange }: GameGuideProps) {
         <DialogHeader>
           <DialogTitle className="font-display text-2xl text-center">Hướng Dẫn Chơi</DialogTitle>
           <DialogDescription className="text-center">
-            Tìm hiểu cách hoạt động của trò chơi giả lập này.
+            Tìm hiểu cách ho��t động của trò chơi giả lập này.
           </DialogDescription>
         </DialogHeader>
         <div className="py-4 max-h-[70vh] overflow-y-auto pr-4">
