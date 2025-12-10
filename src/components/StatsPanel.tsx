@@ -6,7 +6,8 @@ import { Progress } from '@/components/ui/progress';
 import { Badge } from '@/components/ui/badge';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
-import type { Stats, BetRecord, Achievement } from '@/types';
+import { Skeleton } from '@/components/ui/skeleton';
+import type { Stats, BetRecord } from '@/types';
 import { cn } from '@/lib/utils';
 import { Trophy } from 'lucide-react';
 const BetHistoryItem = memo(({ bet }: { bet: BetRecord }) => (
@@ -19,11 +20,15 @@ const BetHistoryItem = memo(({ bet }: { bet: BetRecord }) => (
 ));
 BetHistoryItem.displayName = 'BetHistoryItem';
 function StatsPanelComponent({ stats, balance, bettingHistory, onResetStats }: { stats: Stats; balance: number; bettingHistory: BetRecord[]; onResetStats: () => void; }) {
+  if (!stats || !bettingHistory) {
+    console.error('Stats or bettingHistory is undefined in StatsPanel');
+    return <Skeleton className="h-[500px] w-full" />;
+  }
   const accuracy = stats.predictionsMade > 0 ? Math.round((stats.correct / stats.predictionsMade) * 100) : 0;
   const totalWagered = bettingHistory.reduce((sum, bet) => sum + bet.betAmount, 0);
   const unlockedAchievements = stats.achievements.filter(a => a.unlocked);
   return (
-    <Card className="glass-dark border-yellow-500/20">
+    <Card className="glass-dark border-yellow-500/20 hover:shadow-glow transition-shadow">
         <CardHeader className="flex flex-row items-center justify-between">
           <CardTitle className="text-2xl font-display">Thống kê</CardTitle>
           <Button variant="outline" size="sm" onClick={onResetStats}>Đặt lại</Button>

@@ -14,6 +14,7 @@ import { GameGuide } from '@/components/GameGuide';
 import { Button } from '@/components/ui/button';
 import { AlertDialog, AlertDialogAction, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import { Skeleton } from '@/components/ui/skeleton';
 import * as storage from '@/lib/storage';
 const ConfettiPiece = memo(({ x, y, rotate, color }: { x: number; y: number; rotate: number; color: string }) => (
   <motion.div
@@ -46,23 +47,28 @@ export function HomePage() {
   const [showDisclaimer, setShowDisclaimer] = useState(false);
   const [showOnboarding, setShowOnboarding] = useState(false);
   const [confetti, setConfetti] = useState<JSX.Element[]>([]);
-  const settings = useSettings();
   useEffect(() => {
     setIsClient(true);
-    getGameActions().init();
-    const theme = storage.getSettings().theme || 'dark';
-    document.documentElement.setAttribute('data-theme', theme);
-    if (!localStorage.getItem('disclaimerSeen')) {
-      setShowDisclaimer(true);
-    } else if (!localStorage.getItem('onboardingSeen')) {
-      setShowOnboarding(true);
-      const timer = setTimeout(() => {
-        localStorage.setItem('onboardingSeen', 'true');
-        setShowOnboarding(false);
-      }, 7000);
-      return () => clearTimeout(timer);
+    try {
+      getGameActions().init();
+      const theme = storage.getSettings().theme || 'dark';
+      document.documentElement.setAttribute('data-theme', theme);
+      if (!localStorage.getItem('disclaimerSeen')) {
+        setShowDisclaimer(true);
+      } else if (!localStorage.getItem('onboardingSeen')) {
+        setShowOnboarding(true);
+        const timer = setTimeout(() => {
+          localStorage.setItem('onboardingSeen', 'true');
+          setShowOnboarding(false);
+        }, 7000);
+        return () => clearTimeout(timer);
+      }
+    } catch (error) {
+      console.error("Initialization error:", error);
+      toast.error('Lỗi khởi tạo, vui lòng tải lại trang.');
     }
   }, []);
+  const settings = useSettings();
   const history = useHistory();
   const stats = useStats();
   const isAutoRunning = useIsAutoRunning();
@@ -88,7 +94,7 @@ export function HomePage() {
     const { newRound, profit } = spinNewRound();
     if (profit !== null) {
       if (profit > 0) {
-        toast.success(`K�� #${newRound.roundNumber} - Thắng!`, { description: `Lợi nhuận: +${profit.toLocaleString('vi-VN')} VND` });
+        toast.success(`Kỳ #${newRound.roundNumber} - Thắng!`, { description: `Lợi nhuận: +${profit.toLocaleString('vi-VN')} VND` });
         triggerConfetti();
       } else if (profit < 0) {
         toast.error(`Kỳ #${newRound.roundNumber} - Thua!`, { description: `Mất: ${(-profit).toLocaleString('vi-VN')} VND` });
@@ -96,7 +102,7 @@ export function HomePage() {
         toast.info(`Kỳ #${newRound.roundNumber} - Hòa`, { description: 'Hoàn tiền cược.' });
       }
     } else {
-      toast.info(`Kỳ #${newRound.roundNumber} - ${newRound.taiXiu} - ${newRound.chanLe}`, { description: 'Đã có kết quả mới.' });
+      toast.info(`Kỳ #${newRound.roundNumber} - ${newRound.taiXiu} - ${newRound.chanLe}`, { description: 'Đ�� có kết quả mới.' });
     }
   }, [spinNewRound, triggerConfetti]);
   const handleDisclaimerClose = useCallback(() => {
@@ -111,13 +117,32 @@ export function HomePage() {
     }
   }, []);
   if (!isClient) {
-    return <div className="min-h-screen bg-background" />;
+    return (
+      <div className="min-h-screen bg-background text-foreground font-sans">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="py-8 md:py-10 lg:py-12">
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+              <div className="lg:col-span-2 space-y-8">
+                <Skeleton className="h-24 w-full" />
+                <Skeleton className="h-64 w-full" />
+                <Skeleton className="h-96 w-full" />
+                <Skeleton className="h-48 w-full" />
+              </div>
+              <div className="space-y-8">
+                <Skeleton className="h-96 w-full" />
+                <Skeleton className="h-96 w-full" />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
   }
   return (
     <div className="min-h-screen bg-background text-foreground font-sans relative overflow-x-hidden" onClick={() => getGameActions().userInteracted()} onTouchStart={() => getGameActions().userInteracted()}>
       <div className="absolute inset-0 bg-gradient-mesh opacity-10 pointer-events-none" />
       <div className="absolute top-4 right-4 flex items-center gap-2 z-50">
-        <Button variant="ghost" size="icon" onClick={() => setShowGuide(true)} className="text-2xl hover:scale-110 hover:rotate-12 transition-all duration-200 active:scale-90" aria-label="M��� hướng dẫn">
+        <Button variant="ghost" size="icon" onClick={() => setShowGuide(true)} className="text-2xl hover:scale-110 hover:rotate-12 transition-all duration-200 active:scale-90" aria-label="Mở hướng dẫn">
           <HelpCircle className="h-6 w-6" />
         </Button>
         <Button variant="ghost" size="icon" onClick={() => setShowSettings(true)} className="text-2xl hover:scale-110 hover:rotate-12 transition-all duration-200 active:scale-90" aria-label="Mở cài đặt">
@@ -128,7 +153,7 @@ export function HomePage() {
         <h1 className="text-4xl md:text-5xl font-display font-bold text-balance leading-tight">
           <span className="text-gradient">Tài Xỉu Miền Bắc</span> Giả Lập
         </h1>
-        <p className="text-sm text-muted-foreground mt-2">Không dùng cho cá cược tiền thật</p>
+        <p className="text-sm text-muted-foreground mt-2">Không dùng cho c�� cược tiền thật</p>
       </header>
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <TooltipProvider>
@@ -160,17 +185,18 @@ export function HomePage() {
       </main>
       <footer className="text-center py-8 text-muted-foreground/80 text-sm">
         <p>© 2025 CLTX MB • Dev by MinL x Cloudflare</p>
+        <p className="mt-1">Built with ❤️ at Cloudflare</p>
       </footer>
-      <Toaster richColors closeButton theme={settings.theme === 'light' ? 'light' : 'dark'} />
+      <Toaster richColors closeButton theme={settings?.theme === 'light' ? 'light' : 'dark'} />
       <SettingsPanel open={showSettings} onOpenChange={setShowSettings} />
       <GameGuide open={showGuide} onOpenChange={setShowGuide} />
       <AlertDialog open={showDisclaimer} onOpenChange={setShowDisclaimer}>
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle>Lưu ý quan trọng</AlertDialogTitle>
-<AlertDialogDescription>
-  Đây là một ứng dụng giả lập chỉ dành cho mục đích giải trí. Mọi kết quả đều là ngẫu nhiên và không liên quan đến kết quả xổ số thực tế. Ứng dụng này không sử dụng tiền thật và không dành cho mục đích cờ bạc.
-</AlertDialogDescription>
+            <AlertDialogDescription>
+              Đây là một ứng dụng giả lập chỉ dành cho mục đích giải trí. Mọi kết quả đều là ngẫu nhiên và không liên quan đến kết quả xổ số thực tế. Ứng dụng này không sử dụng tiền thật và không dành cho mục đích cờ bạc.
+            </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogAction onClick={handleDisclaimerClose}>Tôi đã hiểu</AlertDialogAction>

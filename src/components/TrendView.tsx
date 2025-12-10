@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import { Skeleton } from '@/components/ui/skeleton';
 import type { Round } from '@/types';
 import { cn } from '@/lib/utils';
 const TrendDot = memo(({ round, viewMode, index }: { round: Round; viewMode: 'tx' | 'cl'; index: number }) => {
@@ -22,7 +23,7 @@ const TrendDot = memo(({ round, viewMode, index }: { round: Round; viewMode: 'tx
             animate={{ opacity: 1, scale: 1 }}
             transition={{ delay: index * 0.05, type: 'spring', stiffness: 300, damping: 20 }}
             className={cn(
-              "center w-6 h-6 rounded-full font-mono text-xs font-bold text-white shadow-md hover:scale-110 hover:shadow-glow transition-all duration-200 cursor-pointer",
+              "center w-6 h-6 rounded-full font-mono text-xs font-bold text-white shadow-md hover:scale-110 active:scale-105 hover:shadow-glow transition-all duration-200 cursor-pointer",
               isPrimary && "bg-red-500/90",
               isSecondary && "bg-blue-500/90"
             )}
@@ -46,12 +47,16 @@ const TrendDot = memo(({ round, viewMode, index }: { round: Round; viewMode: 'tx
 TrendDot.displayName = 'TrendDot';
 function TrendViewComponent({ history }: { history: Round[] }) {
   const [viewMode, setViewMode] = useState<'tx' | 'cl'>('tx');
+  if (!history) {
+    console.warn("TrendView received null or undefined history.");
+    return <Skeleton className="h-48 w-full" />;
+  }
   const recentHistory = history.slice(0, 40).reverse();
   return (
-    <Card className="glass-dark border-purple-500/20">
+    <Card className="glass-dark border-purple-500/20 hover:shadow-glow transition-shadow">
       <CardHeader>
         <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
-          <CardTitle className="text-2xl font-display text-gradient">Xu Hướng G���n Đây</CardTitle>
+          <CardTitle className="text-2xl font-display text-gradient">Xu Hướng Gần Đây</CardTitle>
           <ToggleGroup
             type="single"
             value={viewMode}
