@@ -23,7 +23,7 @@ const themes: { value: Theme; label: string }[] = [
   { value: 'dark', label: 'Tối (Mặc định)' },
   { value: 'light', label: 'Sáng' },
   { value: 'neon', label: 'Neon' },
-  { value: 'vintage', label: 'Cổ điển (Vintage)' },
+  { value: 'vintage', label: 'C�� điển (Vintage)' },
 ];
 export function SettingsPanel({ open, onOpenChange }: SettingsPanelProps) {
   const settings = useGameStore((state) => state.settings);
@@ -60,7 +60,7 @@ export function SettingsPanel({ open, onOpenChange }: SettingsPanelProps) {
         toast.error('Xuất lịch sử thất bại.');
       }
     } else {
-      toast.warning('Chưa có dữ liệu lịch sử để xuất.');
+      toast.warning('Chưa có dữ liệu lịch sử đ�� xuất.');
     }
   };
   return (

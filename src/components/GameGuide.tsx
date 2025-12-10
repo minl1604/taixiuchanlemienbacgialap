@@ -28,7 +28,7 @@ const guideSections = [
   {
     icon: Target,
     title: "Dự Đoán",
-    content: "Trước mỗi kỳ, bạn có thể chọn dự đoán kết quả. Có hai chế độ: 'Tài / Xỉu' hoặc 'Chẵn / Lẻ'. Bạn chỉ có thể chọn một trong hai chế độ và đặt cược cho một kết quả duy nhất trong chế độ đó."
+    content: "Trước mỗi kỳ, bạn có thể chọn dự đoán kết quả. Có hai chế độ: 'Tài / Xỉu' hoặc 'Chẵn / Lẻ'. Bạn chỉ có thể chọn một trong hai chế độ và đặt cược cho một kết quả duy nhất trong chế độ ��ó."
   },
   {
     icon: CircleDollarSign,
@@ -38,12 +38,12 @@ const guideSections = [
   {
     icon: Trophy,
     title: "Kết Quả",
-    content: "Kết quả được xác định bằng tổng của 5 chữ số:\n- TÀI: nếu tổng lớn hơn hoặc bằng 23.\n- XỈU: nếu tổng nhỏ hơn 23.\n- CHẴN: nếu tổng là số chẵn.\n- LẺ: nếu tổng là số lẻ."
+    content: "Kết quả được xác định bằng tổng của 5 chữ số:\n- TÀI: nếu tổng lớn hơn hoặc bằng 23.\n- XỈU: nếu tổng nhỏ hơn 23.\n- CH���N: nếu tổng là số chẵn.\n- LẺ: nếu tổng là số lẻ."
   },
   {
     icon: BarChart,
     title: "Thống Kê & Xu Hướng",
-    content: "Ứng dụng theo dõi độ chính xác, chuỗi thắng và lợi nhuận của bạn. Bảng 'Xu hướng' hiển thị các kết quả gần đây dưới dạng biểu đồ để bạn dễ dàng theo dõi."
+    content: "Ứng dụng theo dõi độ chính xác, chuỗi th��ng và lợi nhuận của bạn. Bảng 'Xu hướng' hiển thị các kết quả gần đây dưới dạng biểu đồ để bạn dễ dàng theo dõi."
   },
   {
     icon: Settings,
@@ -53,7 +53,7 @@ const guideSections = [
   {
     icon: AlertTriangle,
     title: "Lưu Ý Quan Trọng",
-    content: "Đây là ứng dụng giả lập chỉ dành cho mục đích giải trí. M��i kết quả đều là ngẫu nhiên và không có giá trị tiền thật. Vui lòng chơi có trách nhiệm."
+    content: "Đây là ứng dụng giả lập chỉ dành cho mục đích giải trí. Mọi kết quả đều là ngẫu nhiên và không có giá trị tiền thật. Vui lòng chơi có trách nhiệm."
   }
 ];
 export function GameGuide({ open, onOpenChange }: GameGuideProps) {
@@ -63,7 +63,7 @@ export function GameGuide({ open, onOpenChange }: GameGuideProps) {
         <DialogHeader>
           <DialogTitle className="font-display text-2xl text-center">Hướng Dẫn Chơi</DialogTitle>
           <DialogDescription className="text-center">
-            T��m hiểu cách hoạt động của trò chơi giả lập này.
+            Tìm hiểu cách hoạt động của trò chơi giả lập này.
           </DialogDescription>
         </DialogHeader>
         <div className="py-4 max-h-[70vh] overflow-y-auto pr-4">

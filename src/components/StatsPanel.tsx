@@ -26,7 +26,7 @@ function StatsPanelComponent({ stats, balance, bettingHistory, onResetStats }: {
   if (!stats || !bettingHistory) {
     return (
       <Card className="glass-dark border-yellow-500/20">
-        <CardHeader><CardTitle>Thống k��</CardTitle></CardHeader>
+        <CardHeader><CardTitle>Thống kê</CardTitle></CardHeader>
         <CardContent className="space-y-4">
           <Skeleton className="h-8 w-3/4" />
           <Skeleton className="h-6 w-1/2" />
@@ -67,12 +67,12 @@ function StatsPanelComponent({ stats, balance, bettingHistory, onResetStats }: {
               <AlertDialogHeader>
                 <AlertDialogTitle>Bạn có chắc chắn?</AlertDialogTitle>
                 <AlertDialogDescription>
-                  Hành động này sẽ xóa toàn bộ thống kê, thành tích, lịch sử cược và đặt lại số dư của bạn về mặc định.
+                  Hành động này sẽ xóa toàn bộ thống kê, thành tích, lịch sử cược và đặt lại số dư về mặc định.
                 </AlertDialogDescription>
               </AlertDialogHeader>
               <AlertDialogFooter>
                 <AlertDialogCancel>Hủy</AlertDialogCancel>
-                <AlertDialogAction onClick={handleReset}>Xác nhận</AlertDialogAction>
+                <AlertDialogAction onClick={handleReset}>X��c nhận</AlertDialogAction>
               </AlertDialogFooter>
             </AlertDialogContent>
           </AlertDialog>

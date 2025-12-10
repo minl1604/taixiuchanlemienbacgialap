@@ -114,10 +114,10 @@ function HomePageContent() {
           } else if (profit < 0) {
             toast.error(`Kỳ #${newRound.roundNumber} - Thua!`, { description: `Mất: ${(-profit).toLocaleString('vi-VN')} VND` });
           } else {
-            toast.info(`Kỳ #${newRound.roundNumber} - Hòa`, { description: 'Hoàn ti��n cược.' });
+            toast.info(`Kỳ #${newRound.roundNumber} - Hòa`, { description: 'Hoàn tiền cược.' });
           }
         } else if (wasCorrect !== null) {
-          toast.info(`Kỳ #${newRound.roundNumber} - ${newRound.taiXiu} - ${newRound.chanLe}`, { description: `Dự đoán của bạn: ${wasCorrect ? 'Đúng' : 'Sai'}` });
+          toast.info(`Kỳ #${newRound.roundNumber} - ${newRound.taiXiu} - ${newRound.chanLe}`, { description: `Dự đoán của b���n: ${wasCorrect ? 'Đúng' : 'Sai'}` });
         } else {
           toast.info(`Kỳ #${newRound.roundNumber} - ${newRound.taiXiu} - ${newRound.chanLe}`, { description: 'Đã có kết quả mới.' });
         }
