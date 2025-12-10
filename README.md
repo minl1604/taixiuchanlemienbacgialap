@@ -19,7 +19,7 @@
     -   Thiết kế dark-theme với hiệu ứng neon, gradient và glassmorphism.
     -   Tương thích hoàn toàn với thiết bị di động (mobile-first).
 -   **Hướng dẫn chi tiết**: Modal hướng dẫn chơi tích hợp sẵn trong ứng dụng.
-## ��️ Hình Ảnh Minh Họa
+##  Hình Ảnh Minh Họa
 ![Trang Chính - Timer và Dự Đoán](https://placehold.co/1200x600/171717/FFFFFF?text=Trang+Ch%C3%ADnh+-+Timer+v%C3%A0+D%E1%BB%B1+%C4%90o%C3%A1n)
 ![Xu Hướng Soicau](https://placehold.co/600x400/9333ea/FFFFFF?text=Xu+H%C6%B0%E1%BB%9Bng+Soicau)
 ![Thống Kê & Thành Tích](https://placehold.co/600x400/f38020/FFFFFF?text=Th%E1%BB%91ng+K%C3%AA+%26+Th%C3%A0nh+T%C3%ADch)
