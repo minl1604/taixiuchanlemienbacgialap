@@ -29,7 +29,7 @@ const guideSections = [
   {
     icon: Target,
     title: "Dự Đoán",
-    content: "Trước mỗi kỳ, bạn có thể chọn dự đoán kết quả. Có hai chế độ: 'Tài / Xỉu' hoặc 'Chẵn / Lẻ'. Bạn chỉ có thể chọn một trong hai chế độ và đặt cược cho một kết quả duy nhất trong chế độ đ��."
+    content: "Trước mỗi kỳ, b��n có thể chọn dự đoán kết quả. Có hai chế độ: 'Tài / Xỉu' hoặc 'Chẵn / Lẻ'. Bạn chỉ có thể chọn một trong hai chế độ và đặt cược cho một k���t quả duy nhất trong chế độ đó."
   },
   {
     icon: CircleDollarSign,
@@ -62,8 +62,8 @@ export function GameGuide({ open, onOpenChange }: GameGuideProps) {
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-lg glass-dark border-blue-500/20">
         <DialogHeader>
-          <DialogTitle className="font-display text-2xl text-center">Hướng Dẫn Chơi</DialogTitle>
-          <DialogDescription className="text-center">
+          <DialogTitle className="font-display text-2xl text-center font-vietnamese">Hướng Dẫn Chơi</DialogTitle>
+          <DialogDescription className="text-center font-vietnamese">
             Tìm hiểu cách hoạt động của trò chơi giả lập này.
           </DialogDescription>
         </DialogHeader>
@@ -71,7 +71,7 @@ export function GameGuide({ open, onOpenChange }: GameGuideProps) {
           <Accordion type="single" collapsible className="w-full" defaultValue="item-0">
             {guideSections.map((section, index) => (
               <AccordionItem value={`item-${index}`} key={index}>
-                <AccordionTrigger className="hover:no-underline">
+                <AccordionTrigger className="hover:no-underline font-vietnamese">
                   <div className="flex items-center gap-3">
                     <section.icon className="h-5 w-5 text-primary" />
                     <span className="font-semibold">{section.title}</span>
@@ -85,7 +85,7 @@ export function GameGuide({ open, onOpenChange }: GameGuideProps) {
           </Accordion>
         </div>
         <DialogFooter>
-          <Button onClick={() => onOpenChange(false)}>Đã hiểu</Button>
+          <Button onClick={() => onOpenChange(false)} className="font-vietnamese">Đã hiểu</Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>
