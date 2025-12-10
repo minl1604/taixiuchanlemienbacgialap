@@ -1,8 +1,15 @@
 import { create } from 'zustand';
 import { immer } from 'zustand/middleware/immer';
-import type { Round, Prediction, Stats, BetRecord } from '@/types';
+import type { Round, Prediction, Stats, BetRecord, Settings } from '@/types';
 import * as storage from '@/lib/storage';
 import { generateRound, evaluatePrediction, calculateReward } from '@/lib/simulator';
+// Mock sound player
+const playSound = (type: 'win' | 'loss' | 'tick') => {
+  console.log(`🔊 Sound played: ${type}`);
+  // In a real app, you would use a library like Howler.js here
+  // const sound = new Audio(`/sounds/${type}.mp3`);
+  // sound.play();
+};
 interface GameState {
   history: Round[];
   stats: Stats;
@@ -11,6 +18,7 @@ interface GameState {
   currentPrediction: Prediction;
   isAutoRunning: boolean;
   lastRound?: Round;
+  settings: Settings;
   actions: {
     init: () => void;
     setPrediction: (prediction: Prediction) => void;
@@ -19,9 +27,10 @@ interface GameState {
     spinNewRound: () => { newRound: Round; wasCorrect: boolean | null; profit: number | null };
     resetHistory: () => void;
     resetStatsAndBalance: () => void;
+    setSettings: (newSettings: Partial<Settings>) => void;
   };
 }
-const initialStats = {
+const initialStats: Stats = {
   predictionsMade: 0,
   correct: 0,
   incorrect: 0,
@@ -39,19 +48,27 @@ export const useGameStore = create<GameState>()(
     currentPrediction: {},
     isAutoRunning: false,
     lastRound: undefined,
+    settings: storage.getSettings(), // Initialize with settings from storage
     actions: {
       init: () => {
         const history = storage.getHistory();
         const stats = storage.getStats();
         const balance = storage.getBalance();
         const bettingHistory = storage.getBettingHistory();
+        const settings = storage.getSettings();
         set((state) => {
           state.history = history;
           state.stats = stats;
           state.balance = balance;
           state.bettingHistory = bettingHistory;
           state.lastRound = history[0];
+          state.settings = settings;
         });
+        if (settings.autoStart) {
+          setTimeout(() => {
+            set({ isAutoRunning: true });
+          }, 1000);
+        }
       },
       setPrediction: (prediction) => {
         set((state) => {
@@ -61,6 +78,7 @@ export const useGameStore = create<GameState>()(
       startAuto: () => set({ isAutoRunning: true }),
       stopAuto: () => set({ isAutoRunning: false }),
       spinNewRound: () => {
+        const { settings } = get();
         const lastRoundNumber = get().history[0]?.roundNumber ?? 0;
         const newRound = generateRound(lastRoundNumber);
         const currentPrediction = get().currentPrediction;
@@ -89,28 +107,32 @@ export const useGameStore = create<GameState>()(
                 timestamp: newRound.timestamp,
               };
               state.bettingHistory.unshift(newBetRecord);
-              if (state.bettingHistory.length > 100) {
-                state.bettingHistory.pop();
+              if (state.bettingHistory.length > state.settings.historyLimit) {
+                state.bettingHistory = state.bettingHistory.slice(0, state.settings.historyLimit);
               }
             });
+            if (settings.soundEnabled) {
+              playSound(profit > 0 ? 'win' : 'loss');
+            }
           }
         }
-        const newHistory = [newRound, ...get().history].slice(0, 100);
+        const newHistory = [newRound, ...get().history].slice(0, settings.historyLimit);
         set((state) => {
           state.history = newHistory;
           state.stats = newStats;
           state.lastRound = newRound;
           state.currentPrediction = {}; // Clear prediction for next round
         });
-        storage.setHistory(newHistory);
+        storage.setHistory(get().history);
         storage.setStats(get().stats);
         storage.setBalance(get().balance);
         storage.setBettingHistory(get().bettingHistory);
         return { newRound, wasCorrect, profit };
       },
       resetHistory: () => {
-        set({ history: [], lastRound: undefined });
+        set({ history: [], lastRound: undefined, bettingHistory: [] });
         storage.setHistory([]);
+        storage.setBettingHistory([]);
       },
       resetStatsAndBalance: () => {
         set({ stats: initialStats, balance: 1000000000, bettingHistory: [] });
@@ -118,15 +140,12 @@ export const useGameStore = create<GameState>()(
         storage.setBalance(1000000000);
         storage.setBettingHistory([]);
       },
+      setSettings: (newSettings: Partial<Settings>) => {
+        set(state => {
+          state.settings = { ...state.settings, ...newSettings };
+        });
+        storage.setSettings(get().settings);
+      },
     },
   }))
 );
-// Export actions and selectors for convenience and to enforce best practices
-export const useGameActions = () => useGameStore((state) => state.actions);
-export const useHistory = () => useGameStore((state) => state.history);
-export const useStats = () => useGameStore((state) => state.stats);
-export const useCurrentPrediction = () => useGameStore((state) => state.currentPrediction);
-export const useIsAutoRunning = () => useGameStore((state) => state.isAutoRunning);
-export const useLastRound = () => useGameStore((state) => state.lastRound);
-export const useBalance = () => useGameStore((state) => state.balance);
-export const useBettingHistory = () => useGameStore((state) => state.bettingHistory);

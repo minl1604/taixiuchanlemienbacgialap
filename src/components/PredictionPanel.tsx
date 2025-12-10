@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { motion } from 'framer-motion';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -6,22 +7,35 @@ import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
 import { useGameActions, useCurrentPrediction, useIsAutoRunning, useBalance } from '@/hooks/useGameStore';
 import type { TaiXiu, ChanLe } from '@/types';
 import { toast } from 'sonner';
+import * as storage from '@/lib/storage';
 interface PredictionPanelProps {
   onSpinNow: () => void;
+  defaultBet?: number;
 }
-export function PredictionPanel({ onSpinNow }: PredictionPanelProps) {
+export function PredictionPanel({ onSpinNow, defaultBet }: PredictionPanelProps) {
   const { setPrediction, startAuto, stopAuto } = useGameActions();
   const currentPrediction = useCurrentPrediction();
   const isAutoRunning = useIsAutoRunning();
   const balance = useBalance();
   const [predictionMode, setPredictionMode] = useState<'taiXiu' | 'chanLe'>('taiXiu');
-  const [betAmount, setBetAmount] = useState<string>("500000000");
+  const [betAmount, setBetAmount] = useState<string>("");
   const [selectedTaiXiu, setSelectedTaiXiu] = useState<string>("");
   const [selectedChanLe, setSelectedChanLe] = useState<string>("");
+  useEffect(() => {
+    setBetAmount(String(defaultBet || 500000000));
+  }, [defaultBet]);
   useEffect(() => {
     setSelectedTaiXiu(currentPrediction.taiXiu || "");
     setSelectedChanLe(currentPrediction.chanLe || "");
   }, [currentPrediction]);
+  const handleBetAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setBetAmount(value);
+    const numValue = parseInt(value, 10);
+    if (!isNaN(numValue) && numValue > 0) {
+      storage.setBetAmount(numValue);
+    }
+  };
   const handleModeChange = (mode: 'taiXiu' | 'chanLe') => {
     if (!mode) return;
     setPredictionMode(mode);
@@ -44,19 +58,19 @@ export function PredictionPanel({ onSpinNow }: PredictionPanelProps) {
   const handleSpinWithBet = () => {
     const betValue = parseInt(betAmount, 10);
     if (isNaN(betValue) || betValue <= 0) {
-      toast.error("Số tiền cược không hợp lệ.");
+      toast.error("Số ti���n cược không hợp lệ.");
       return;
     }
     if (betValue > balance) {
-      toast.error("Số dư không đủ.");
+      toast.error("Số dư không đ��.");
       return;
     }
-    if (!currentPrediction.taiXiu && !currentPrediction.chanLe) {
-      toast.warning("Vui lòng chọn dự đoán.");
+    if (!selectedTaiXiu && !selectedChanLe) {
+      toast.warning("Vui lòng ch��n dự đoán.");
       return;
     }
     setPrediction({ bet: betValue });
-    toast.success(`��ặt cược ${betValue.toLocaleString('vi-VN')} VND thành công!`);
+    toast.success(`Đặt cược ${betValue.toLocaleString('vi-VN')} VND thành công!`);
     setTimeout(() => {
       onSpinNow();
     }, 100);
@@ -107,13 +121,15 @@ export function PredictionPanel({ onSpinNow }: PredictionPanelProps) {
             type="number"
             placeholder="Số tiền cược"
             value={betAmount}
-            onChange={(e) => setBetAmount(e.target.value)}
+            onChange={handleBetAmountChange}
             className="h-14 text-center text-lg"
             min="0"
           />
-          <Button size="lg" onClick={handleSpinWithBet} className="btn-gradient w-full h-14 text-lg">
-            Đặt cược & Quay
-          </Button>
+          <motion.div whileTap={{ scale: 0.95 }}>
+            <Button size="lg" onClick={handleSpinWithBet} className="btn-gradient w-full h-14 text-lg">
+              Đặt cược & Quay
+            </Button>
+          </motion.div>
         </div>
         <div className="grid grid-cols-1 gap-2">
           {isAutoRunning ? (

@@ -5,6 +5,7 @@ const SETTINGS_KEY = 'txmb_settings';
 const PREDICTIONS_KEY = 'txmb_predictions';
 const BALANCE_KEY = 'txmb_balance';
 const BETTING_HISTORY_KEY = 'txmb_bettingHistory';
+const BET_AMOUNT_KEY = 'txmb_betAmount';
 const safeJSONParse = <T>(jsonString: string | null, fallback: T): T => {
   if (!jsonString) return fallback;
   try {
@@ -41,11 +42,15 @@ export const setStats = (stats: Stats): void => {
   }
 };
 // Settings
-export const getSettings = (): Settings => safeJSONParse(localStorage.getItem(SETTINGS_KEY), {
-  autoStart: false,
-  soundEnabled: true,
-  historyLimit: 100,
-});
+export const getSettings = (): Settings => {
+  const defaultSettings: Settings = {
+    autoStart: false,
+    soundEnabled: true,
+    historyLimit: 100,
+  };
+  const storedSettings = safeJSONParse(localStorage.getItem(SETTINGS_KEY), {});
+  return { ...defaultSettings, ...storedSettings };
+};
 export const setSettings = (settings: Settings): void => {
   try {
     localStorage.setItem(SETTINGS_KEY, JSON.stringify(settings));
@@ -78,5 +83,14 @@ export const setBettingHistory = (bettingHistory: BetRecord[]): void => {
     localStorage.setItem(BETTING_HISTORY_KEY, JSON.stringify(bettingHistory));
   } catch (error) {
     console.error("Failed to save betting history to localStorage", error);
+  }
+};
+// Bet Amount
+export const getBetAmount = (): number => safeJSONParse(localStorage.getItem(BET_AMOUNT_KEY), 500000000);
+export const setBetAmount = (amount: number): void => {
+  try {
+    localStorage.setItem(BET_AMOUNT_KEY, JSON.stringify(amount));
+  } catch (error) {
+    console.error("Failed to save bet amount to localStorage", error);
   }
 };
