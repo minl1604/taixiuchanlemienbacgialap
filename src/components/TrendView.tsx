@@ -4,13 +4,14 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { Skeleton } from '@/components/ui/skeleton';
-import type { Round } from '@/types';
+import type { Round, TaiXiu, ChanLe } from '@/types';
 import { cn } from '@/lib/utils';
 const TrendDot = memo(({ round, viewMode, index }: { round: Round; viewMode: 'tx' | 'cl'; index: number }) => {
   const isTx = viewMode === 'tx';
-  const result = isTx ? round.taiXiu : round.chanLe;
-  const isPrimary = isTx ? result === 'Tài' : result === 'Lẻ'; // Red for Tài/Lẻ
-  const isSecondary = isTx ? result === 'Xỉu' : result === 'Ch��n'; // Blue for Xỉu/Chẵn
+  const result: TaiXiu | ChanLe = isTx ? round.taiXiu : round.chanLe;
+  // Tài/Lẻ are "primary" (red), Xỉu/Chẵn are "secondary" (blue)
+  const isPrimary = (isTx && result === 'Tài') || (!isTx && result === 'Lẻ');
+  const isSecondary = (isTx && result === 'Xỉu') || (!isTx && result === 'Chẵn');
   const label = isTx
     ? (result === 'Tài' ? 'T' : 'X')
     : (result === 'Lẻ' ? 'L' : 'C');
@@ -34,7 +35,7 @@ const TrendDot = memo(({ round, viewMode, index }: { round: Round; viewMode: 'tx
         <TooltipContent>
           <div className="text-sm">
             <p className="font-bold">Kỳ #{round.roundNumber}</p>
-            <p>K���t quả: {round.digits}</p>
+            <p>Kết qu���: {round.digits}</p>
             <p>Tổng: {round.sum}</p>
             <p>T/X: <span className={cn(round.taiXiu === 'Tài' ? 'text-red-400' : 'text-blue-400')}>{round.taiXiu}</span></p>
             <p>C/L: <span className={cn(round.chanLe === 'Lẻ' ? 'text-red-400' : 'text-blue-400')}>{round.chanLe}</span></p>
@@ -48,26 +49,29 @@ TrendDot.displayName = 'TrendDot';
 function TrendViewComponent({ history }: { history: Round[] }) {
   const [viewMode, setViewMode] = useState<'tx' | 'cl'>('tx');
   const groupedRows = useMemo(() => {
-    if (!history || history.length < 1) {
+    if (!history || history.length === 0) {
       return [];
     }
+    // Take the last 50 rounds and reverse so the oldest is first.
     const recentHistory = history.slice(0, 50).reverse();
     const rows: Round[][] = [];
-    let currentRow: Round[] = [];
-    const primaryResult = viewMode === 'tx' ? 'Tài' : 'Chẵn';
-    const secondaryResult = viewMode === 'tx' ? 'Xỉu' : 'Lẻ';
-    recentHistory.forEach(round => {
-      const result = viewMode === 'tx' ? round.taiXiu : round.chanLe;
-      if (result === secondaryResult) {
-        if (currentRow.length > 0) {
-          rows.push(currentRow);
-        }
-        rows.push([round]);
-        currentRow = [];
-      } else { // primaryResult
-        currentRow.push(round);
+    if (recentHistory.length === 0) {
+      return [];
+    }
+    let currentRow: Round[] = [recentHistory[0]];
+    for (let i = 1; i < recentHistory.length; i++) {
+      const currentRound = recentHistory[i];
+      const prevRound = recentHistory[i - 1];
+      const currentResult = viewMode === 'tx' ? currentRound.taiXiu : currentRound.chanLe;
+      const prevResult = viewMode === 'tx' ? prevRound.taiXiu : prevRound.chanLe;
+      if (currentResult === prevResult) {
+        currentRow.push(currentRound);
+      } else {
+        rows.push(currentRow);
+        currentRow = [currentRound];
       }
-    });
+    }
+    // Add the last running row
     if (currentRow.length > 0) {
       rows.push(currentRow);
     }
@@ -98,9 +102,9 @@ function TrendViewComponent({ history }: { history: Round[] }) {
         {history.length >= 5 ? (
           <div className="flex flex-col gap-1 p-2 rounded-lg bg-black/20 min-h-[12rem]">
             {groupedRows.map((row, rowIndex) => (
-              <div key={rowIndex} className="flex flex-wrap gap-1.5">
+              <div key={rowIndex} className="flex flex-wrap gap-1 sm:gap-1.5">
                 {row.map((round, dotIndex) => (
-                  <TrendDot key={round.id} round={round} viewMode={viewMode} index={dotIndex} />
+                  <TrendDot key={round.id} round={round} viewMode={viewMode} index={rowIndex * 10 + dotIndex} />
                 ))}
               </div>
             ))}
