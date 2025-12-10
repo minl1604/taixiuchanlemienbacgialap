@@ -15,6 +15,7 @@ import {
 } from '@/components/ui/accordion';
 import { Button } from '@/components/ui/button';
 import { Gamepad2, Target, CircleDollarSign, Trophy, BarChart, Settings, AlertTriangle } from 'lucide-react';
+import { cn } from '@/lib/utils';
 interface GameGuideProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
@@ -23,7 +24,7 @@ const guideSections = [
   {
     icon: Gamepad2,
     title: "Cách Chơi",
-    content: "Mỗi kỳ quay sẽ tạo ra một số ngẫu nhiên 5 chữ số. Một kỳ mới sẽ tự động bắt đầu sau mỗi 20 giây nếu chế độ 'Auto' được bật. Bạn cũng có thể nhấn 'Đặt cược & Quay' để bắt đầu một kỳ mới ngay lập tức."
+    content: "Mỗi kỳ quay sẽ t��o ra một số ngẫu nhiên 5 chữ số. Một kỳ mới sẽ tự động bắt đầu sau mỗi 20 giây nếu chế độ 'Auto' được bật. Bạn cũng có thể nhấn 'Đặt cược & Quay' để bắt đầu một kỳ mới ngay lập tức."
   },
   {
     icon: Target,
@@ -33,17 +34,17 @@ const guideSections = [
   {
     icon: CircleDollarSign,
     title: "Quy Tắc Cược",
-    content: "Bạn bắt đầu với một số dư VND ảo. Nhập số tiền bạn muốn cược. Số tiền phải lớn hơn 0 và không vượt quá số dư của bạn. Nếu dự đoán đúng, bạn nhận lại 1.9 lần số tiền cược (lợi nhuận 0.9 lần). Nếu sai, bạn mất số tiền đã cược."
+    content: "Bạn bắt đầu với một số dư ảo 1,000,000,000 VND. Nhập số tiền cược (mặc định 500,000,000 VND). Nếu đúng, nhận 1.9x (lợi nhuận 0.9x); nếu sai, mất toàn bộ."
   },
   {
     icon: Trophy,
     title: "Kết Quả",
-    content: "Kết quả được xác định bằng tổng của 5 chữ số:\n- TÀI: nếu tổng lớn hơn hoặc bằng 23.\n- XỈU: nếu tổng nhỏ hơn 23.\n- CHẴN: nếu tổng là số chẵn.\n- LẺ: nếu tổng là số lẻ."
+    content: "Kết quả dựa trên tổng 5 chữ số:\n- TÀI: nếu tổng lớn hơn hoặc bằng 23.\n- XỈU: nếu tổng nhỏ hơn 23.\n- CHẴN: nếu tổng là số chẵn.\n- LẺ: nếu tổng là số lẻ."
   },
   {
     icon: BarChart,
     title: "Thống Kê & Xu Hướng",
-    content: "Ứng dụng theo dõi độ chính xác, chuỗi thắng và lợi nhuận của bạn. Bảng 'Xu hướng' hiển th�� các kết quả gần đây dưới dạng biểu đồ để bạn dễ dàng theo dõi."
+    content: "Ứng dụng theo dõi độ chính xác, chuỗi thắng và lợi nhuận của bạn. Bảng 'Xu hướng' hiển thị các kết quả gần đây dưới dạng biểu đồ để bạn dễ dàng theo dõi."
   },
   {
     icon: Settings,
@@ -53,7 +54,7 @@ const guideSections = [
   {
     icon: AlertTriangle,
     title: "Lưu Ý Quan Trọng",
-    content: "Đây là ứng dụng gi��� lập chỉ dành cho mục đích giải trí. Mọi kết quả đều là ngẫu nhiên và không có giá trị tiền thật. Vui lòng chơi có trách nhiệm."
+    content: "Đây là ứng dụng giả lập chỉ dành cho mục đích giải trí. Mỗi kết quả đều là ngẫu nhiên và không có giá trị tiền thật. Vui lòng chơi có trách nhiệm."
   }
 ];
 export function GameGuide({ open, onOpenChange }: GameGuideProps) {
@@ -76,7 +77,7 @@ export function GameGuide({ open, onOpenChange }: GameGuideProps) {
                     <span className="font-semibold">{section.title}</span>
                   </div>
                 </AccordionTrigger>
-                <AccordionContent className="text-muted-foreground whitespace-pre-line">
+                <AccordionContent className={cn("font-vietnamese text-muted-foreground whitespace-pre-line")}>
                   {section.content}
                 </AccordionContent>
               </AccordionItem>

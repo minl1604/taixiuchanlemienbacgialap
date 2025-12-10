@@ -117,6 +117,13 @@
     font-synthesis: none;
     font-feature-settings: 'kern' 1, 'liga' 1, 'cv02' 1;
   }
+  .font-vietnamese {
+    font-family: 'Inter', sans-serif !important;
+    font-feature-settings: 'kern' 1;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+  }
   /* Ensure Inter font is applied everywhere, overriding Tailwind's defaults */
   h1, h2, h3, h4, h5, h6, p, a, span, div, button, input, textarea, select, .font-sans {
     font-family: 'Inter', system-ui, sans-serif !important;
