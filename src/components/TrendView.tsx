@@ -12,7 +12,7 @@ import { shallow } from 'zustand/shallow';
 const TrendDot = memo(({ round, viewMode, index, style }: { round: Round; viewMode: 'taiXiu' | 'chanLe'; index: number; style: React.CSSProperties }) => {
   const isTx = viewMode === 'taiXiu';
   const result: TaiXiu | ChanLe = isTx ? round.taiXiu : round.chanLe;
-  const isPrimary = (isTx && result === 'T��i') || (!isTx && result === 'Lẻ');
+  const isPrimary = (isTx && result === 'Tài') || (!isTx && result === 'Lẻ');
   const isSecondary = (isTx && result === 'Xỉu') || (!isTx && result === 'Chẵn');
   const label = isTx ? (result === 'Tài' ? 'T' : 'X') : (result === 'Lẻ' ? 'L' : 'C');
   const tooltipId = `trend-dot-tooltip-${round.id}`;
@@ -147,7 +147,7 @@ function TrendViewComponent({ history }: { history: Round[] }) {
   );
 }
 function TrendViewWrapper() {
-  const history = useGameStore(state => state.history || [], shallow);
+  const history = useGameStore((state) => state.history ?? [], shallow);
   return <TrendViewComponent history={history} />;
 }
 export const TrendView = memo(TrendViewWrapper);
