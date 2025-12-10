@@ -54,7 +54,7 @@ function TrendViewComponent({ history }: { history: Round[] }) {
       return [];
     }
     // Take the last 50 rounds and reverse so the oldest is first for top-to-bottom rendering.
-    const recentHistory = history.slice(0, 50).reverse();
+    const recentHistory = history.slice(-50).reverse();
     const rows: Round[][] = [];
     if (recentHistory.length === 0) {
       return [];
