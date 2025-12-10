@@ -50,10 +50,12 @@ export function HomePage() {
   const [confetti, setConfetti] = useState<JSX.Element[]>([]);
   const hasInteracted = useRef(false);
   useEffect(() => {
+    // This effect runs only on the client
     setIsClient(true);
+    console.log('React version:', React.version);
     try {
-      getGameActions().init();
-      const theme = storage.getSettings().theme || 'dark';
+      getGameActions()?.init();
+      const theme = storage.getSettings()?.theme || 'dark';
       document.documentElement.setAttribute('data-theme', theme);
       if (!localStorage.getItem('disclaimerSeen')) {
         setShowDisclaimer(true);
@@ -93,20 +95,27 @@ export function HomePage() {
     setTimeout(() => setConfetti([]), 2000);
   }, []);
   const handleSpin = useCallback(() => {
-    const { newRound, profit, wasCorrect } = spinNewRound();
-    if (profit !== null) {
-      if (profit > 0) {
-        toast.success(`Kỳ #${newRound.roundNumber} - Thắng!`, { description: `Lợi nhuận: +${profit.toLocaleString('vi-VN')} VND` });
-        triggerConfetti();
-      } else if (profit < 0) {
-        toast.error(`Kỳ #${newRound.roundNumber} - Thua!`, { description: `Mất: ${(-profit).toLocaleString('vi-VN')} VND` });
+    if (!spinNewRound) return;
+    try {
+      const { newRound, profit, wasCorrect } = spinNewRound();
+      if (!newRound) return; // Guard against null return
+      if (profit !== null) {
+        if (profit > 0) {
+          toast.success(`Kỳ #${newRound.roundNumber} - Thắng!`, { description: `Lợi nhuận: +${profit.toLocaleString('vi-VN')} VND` });
+          triggerConfetti();
+        } else if (profit < 0) {
+          toast.error(`Kỳ #${newRound.roundNumber} - Thua!`, { description: `Mất: ${(-profit).toLocaleString('vi-VN')} VND` });
+        } else {
+          toast.info(`Kỳ #${newRound.roundNumber} - Hòa`, { description: 'Hoàn tiền cược.' });
+        }
+      } else if (wasCorrect !== null) {
+        toast.info(`Kỳ #${newRound.roundNumber} - ${newRound.taiXiu} - ${newRound.chanLe}`, { description: `Dự đoán của bạn: ${wasCorrect ? 'Đúng' : 'Sai'}` });
       } else {
-        toast.info(`Kỳ #${newRound.roundNumber} - Hòa`, { description: 'Hoàn tiền cược.' });
+        toast.info(`Kỳ #${newRound.roundNumber} - ${newRound.taiXiu} - ${newRound.chanLe}`, { description: 'Đã có kết qu��� mới.' });
       }
-    } else if (wasCorrect !== null) {
-      toast.info(`Kỳ #${newRound.roundNumber} - ${newRound.taiXiu} - ${newRound.chanLe}`, { description: `Dự đoán của bạn: ${wasCorrect ? 'Đúng' : 'Sai'}` });
-    } else {
-      toast.info(`Kỳ #${newRound.roundNumber} - ${newRound.taiXiu} - ${newRound.chanLe}`, { description: 'Đã có kết quả m���i.' });
+    } catch (error) {
+      console.error("Error during spin:", error);
+      toast.error("Đã xảy ra lỗi khi quay. Vui lòng thử lại.");
     }
   }, [spinNewRound, triggerConfetti]);
   const handleDisclaimerClose = useCallback(() => {
@@ -122,7 +131,7 @@ export function HomePage() {
   }, []);
   const handleUserInteraction = () => {
     if (!hasInteracted.current) {
-      getGameActions().userInteracted();
+      getGameActions()?.userInteracted();
       hasInteracted.current = true;
     }
   };
@@ -149,7 +158,7 @@ export function HomePage() {
     );
   }
   return (
-    <div className="min-h-screen bg-background text-foreground font-sans relative overflow-x-hidden" onClick={handleUserInteraction} onTouchStart={handleUserInteraction}>
+    <div className="min-h-screen bg-background text-foreground font-sans relative overflow-x-hidden flex flex-col" onClick={handleUserInteraction} onTouchStart={handleUserInteraction}>
       <div className="absolute inset-0 bg-gradient-mesh opacity-10 pointer-events-none" />
       <div className="absolute top-4 right-4 flex items-center gap-2 z-50">
         <Button variant="ghost" size="icon" onClick={() => setShowGuide(true)} className="text-2xl hover:scale-110 hover:rotate-12 transition-all duration-200 active:scale-90" aria-label="Mở hướng dẫn">
@@ -165,7 +174,7 @@ export function HomePage() {
         </h1>
         <p className="text-sm text-muted-foreground mt-2">Không dùng cho cá cược tiền thật</p>
       </header>
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8" aria-label="Trò chơi Tài Xỉu Miền Bắc Giả Lập - Kỳ hiện tại và dự đoán">
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex-1 w-full" aria-label="Trò chơi Tài Xỉu Miền Bắc Giả Lập - Kỳ hiện tại và dự đoán">
         <TooltipProvider>
           <div className="py-8 md:py-10 lg:py-12">
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
@@ -186,7 +195,7 @@ export function HomePage() {
                 transition={{ duration: 0.5, delay: 0.2 }}
                 className="space-y-8"
               >
-                <Tooltip open={showOnboarding}><TooltipTrigger asChild><div><StatsPanel stats={stats} balance={balance} bettingHistory={bettingHistory} onResetStats={resetStatsAndBalance} /></div></TooltipTrigger><TooltipContent><p>Theo dõi thống k�� và thành tích của bạn</p></TooltipContent></Tooltip>
+                <Tooltip open={showOnboarding}><TooltipTrigger asChild><div><StatsPanel stats={stats} balance={balance} bettingHistory={bettingHistory} onResetStats={resetStatsAndBalance} /></div></TooltipTrigger><TooltipContent><p>Theo dõi thống kê và thành tích của bạn</p></TooltipContent></Tooltip>
                 <HistoryTable history={history} onClearHistory={resetHistory} />
               </motion.div>
             </div>
@@ -204,13 +213,13 @@ export function HomePage() {
       <AlertDialog open={showDisclaimer} onOpenChange={setShowDisclaimer}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Lưu ý quan trọng</AlertDialogTitle>
+            <AlertDialogTitle>Lưu ý quan tr���ng</AlertDialogTitle>
             <AlertDialogDescription>
               Đây là một ứng dụng giả lập chỉ dành cho mục đích giải trí. Mọi kết quả đều là ngẫu nhiên và không liên quan đến kết quả xổ số thực tế. Ứng dụng này không sử dụng tiền thật và không dành cho mục đích cờ bạc.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogAction onClick={handleDisclaimerClose}>Tôi đ�� hiểu</AlertDialogAction>
+            <AlertDialogAction onClick={handleDisclaimerClose}>Tôi đã hiểu</AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>

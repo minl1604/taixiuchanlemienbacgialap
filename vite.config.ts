@@ -18,20 +18,25 @@ export default defineConfig({
       'react': path.resolve(__dirname, 'node_modules/react'),
       'react-dom': path.resolve(__dirname, 'node_modules/react-dom'),
       'react/jsx-runtime': path.resolve(__dirname, 'node_modules/react/jsx-runtime'),
+      'react-dom/client': path.resolve(__dirname, 'node_modules/react-dom/client'),
     },
+    dedupe: ['react', 'react-dom', 'framer-motion', 'zustand'],
   },
   // Prevent Vite from pre-bundling key dependencies that might cause conflicts
   optimizeDeps: {
-    exclude: ['react', 'react-dom', 'framer-motion', 'zustand'],
+    exclude: ['react', 'react-dom', 'framer-motion', 'zustand', 'react-router-dom', 'sonner'],
+    include: ['react/jsx-runtime'],
   },
   // Define global for compatibility with certain libraries
   define: {
     global: 'globalThis',
   },
-  server: {
-    // Optional: configure server settings if needed
-  },
   build: {
-    // Optional: configure build settings if needed
+    rollupOptions: {
+      external: [],
+      output: {
+        manualChunks: undefined,
+      },
+    },
   },
 })

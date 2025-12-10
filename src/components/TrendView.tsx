@@ -10,6 +10,7 @@ import { Label } from '@/components/ui/label';
 import { useHistory } from '@/hooks/useGameStore';
 import { ChevronRight } from 'lucide-react';
 const TrendDot = memo(({ round, viewMode, index, style }: { round: Round; viewMode: 'taiXiu' | 'chanLe'; index: number; style: React.CSSProperties }) => {
+  if (!round) return null;
   const isTx = viewMode === 'taiXiu';
   const result: TaiXiu | ChanLe = isTx ? round.taiXiu : round.chanLe;
   const isPrimary = (isTx && result === 'Tài') || (!isTx && result === 'Lẻ');
@@ -69,6 +70,9 @@ function TrendViewComponent({ history }: { history: Round[] }) {
       return { columns: [], maxColHeight: 0, gridNodes: [], totalColumns: 0 };
     }
     const recentHistory = history.slice(0, 50).reverse();
+    if (!recentHistory?.length) {
+        return { columns: [], maxColHeight: 0, gridNodes: [], totalColumns: 0 };
+    }
     const allColumns: Round[][] = [];
     if (recentHistory.length > 0) {
       allColumns.push([recentHistory[0]]);
@@ -100,7 +104,7 @@ function TrendViewComponent({ history }: { history: Round[] }) {
     <Card className="glass-dark border-purple-500/20 hover:shadow-glow transition-shadow overflow-hidden">
       <CardHeader>
         <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
-          <CardTitle className="text-2xl font-display text-gradient">Xu Hư���ng</CardTitle>
+          <CardTitle className="text-2xl font-display text-gradient">Xu Hướng</CardTitle>
           <div className="w-full sm:w-auto">
             <Label id="trend-mode-label" className="sr-only">Chế độ xem xu hướng</Label>
             <ToggleGroup
@@ -157,7 +161,7 @@ function TrendViewComponent({ history }: { history: Round[] }) {
   );
 }
 function TrendViewWrapper() {
-  const history = useHistory();
+  const history = useHistory() ?? [];
   return <TrendViewComponent history={history} />;
 }
 export const TrendView = memo(TrendViewWrapper);

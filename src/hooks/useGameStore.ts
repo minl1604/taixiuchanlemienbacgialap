@@ -1,7 +1,6 @@
 import { create } from 'zustand';
 import { immer } from 'zustand/middleware/immer';
 import { toast } from 'sonner';
-
 import type { Round, Prediction, Stats, BetRecord, Settings, Achievement } from '@/types';
 import * as storage from '@/lib/storage';
 import { generateRound, evaluatePrediction, calculateReward } from '@/lib/simulator';
@@ -58,7 +57,7 @@ export const playSound = (type: 'win' | 'loss' | 'tick' | 'achievement', setting
 const initialAchievements: Achievement[] = [
   { id: 'streak5', name: 'Nóng Tay', description: 'Đạt chuỗi thắng 5 kỳ liên tiếp.', unlocked: false, criteria: { type: 'streak', value: 5 } },
   { id: 'streak10', name: 'Bậc Thầy Chuỗi', description: 'Đạt chuỗi thắng 10 kỳ liên tiếp!', unlocked: false, criteria: { type: 'streak', value: 10 } },
-  { id: 'rounds50', name: 'Người Chơi Bền Bỉ', description: 'Hoàn thành 50 kỳ quay.', unlocked: false, criteria: { type: 'rounds', value: 50 } },
+  { id: 'rounds50', name: 'Người Chơi Bền B���', description: 'Hoàn thành 50 kỳ quay.', unlocked: false, criteria: { type: 'rounds', value: 50 } },
   { id: 'rounds100', name: 'Trăm Trận Trăm Thắng', description: 'Hoàn thành 100 kỳ quay.', unlocked: false, criteria: { type: 'rounds', value: 100 } },
   { id: 'wins50', name: 'Chuyên Gia Dự Đoán', description: 'Thắng 50 lần.', unlocked: false, criteria: { type: 'wins', value: 50 } },
 ];
@@ -76,7 +75,7 @@ interface GameState {
     setPrediction: (prediction: Prediction) => void;
     startAuto: () => void;
     stopAuto: () => void;
-    spinNewRound: () => { newRound: Round; wasCorrect: boolean | null; profit: number | null };
+    spinNewRound: () => { newRound: Round | null; wasCorrect: boolean | null; profit: number | null };
     resetHistory: () => void;
     resetStatsAndBalance: () => void;
     setSettings: (newSettings: Partial<Settings>) => void;
@@ -98,22 +97,26 @@ export const useGameStore = create<GameState>()(
     settings: storage.getSettings(),
     actions: {
       init: () => {
-        const history = storage.getHistory();
-        const stats = storage.getStats();
-        const achievements = storage.getAchievements(initialAchievements);
-        const balance = storage.getBalance();
-        const bettingHistory = storage.getBettingHistory();
-        const settings = storage.getSettings();
-        set((state) => {
-          state.history = history;
-          state.stats = { ...stats, achievements };
-          state.balance = balance;
-          state.bettingHistory = bettingHistory;
-          state.lastRound = history[0];
-          state.settings = settings;
-        });
-        if (settings.autoStart) {
-          setTimeout(() => set({ isAutoRunning: true }), 1000);
+        try {
+          const history = storage.getHistory?.() ?? [];
+          const stats = storage.getStats?.() ?? initialStats;
+          const achievements = storage.getAchievements?.(initialAchievements) ?? initialAchievements;
+          const balance = storage.getBalance?.() ?? 1000000000;
+          const bettingHistory = storage.getBettingHistory?.() ?? [];
+          const settings = storage.getSettings?.() ?? { autoStart: false, soundEnabled: true, historyLimit: 100, soundVolume: 50, theme: 'dark' };
+          set((state) => {
+            state.history = history;
+            state.stats = { ...stats, achievements };
+            state.balance = balance;
+            state.bettingHistory = bettingHistory;
+            state.lastRound = history[0];
+            state.settings = settings;
+          });
+          if (settings.autoStart) {
+            setTimeout(() => set({ isAutoRunning: true }), 1000);
+          }
+        } catch (e) {
+          console.error('Store initialization failed', e);
         }
       },
       userInteracted: () => {
@@ -122,11 +125,16 @@ export const useGameStore = create<GameState>()(
           audioCtx.resume().catch(console.error);
         }
       },
-      setPrediction: (prediction) => set((state) => { state.currentPrediction = { ...state.currentPrediction, ...prediction }; }),
+      setPrediction: (prediction) => {
+        try {
+          set((state) => { state.currentPrediction = { ...state.currentPrediction, ...prediction }; });
+        } catch (e) { console.error('setPrediction failed', e); }
+      },
       startAuto: () => set({ isAutoRunning: true }),
       stopAuto: () => set({ isAutoRunning: false }),
       spinNewRound: () => {
         const { settings } = get();
+        if (!settings) return { newRound: null, wasCorrect: null, profit: null };
         const lastRoundNumber = get().history[0]?.roundNumber ?? 0;
         const newRound = generateRound(lastRoundNumber);
         const currentPrediction = get().currentPrediction;
@@ -143,18 +151,20 @@ export const useGameStore = create<GameState>()(
           if (betAmount && betAmount > 0 && betAmount <= get().balance) {
             const rewardResult = calculateReward(betAmount, evalResult.matches);
             profit = rewardResult.profit;
-            set(state => {
-              state.balance += profit ?? 0;
-              state.stats.netProfit += profit ?? 0;
-              const newBetRecord: BetRecord = {
-                roundId: newRound.id, roundNumber: newRound.roundNumber, betAmount,
-                outcome: rewardResult.outcome, profit: profit ?? 0, timestamp: newRound.timestamp,
-              };
-              state.bettingHistory.unshift(newBetRecord);
-              if (state.bettingHistory.length > state.settings.historyLimit) {
-                state.bettingHistory = state.bettingHistory.slice(0, state.settings.historyLimit);
-              }
-            });
+            try {
+              set(state => {
+                state.balance += profit ?? 0;
+                state.stats.netProfit += profit ?? 0;
+                const newBetRecord: BetRecord = {
+                  roundId: newRound.id, roundNumber: newRound.roundNumber, betAmount,
+                  outcome: rewardResult.outcome, profit: profit ?? 0, timestamp: newRound.timestamp,
+                };
+                state.bettingHistory.unshift(newBetRecord);
+                if (state.bettingHistory.length > state.settings.historyLimit) {
+                  state.bettingHistory = state.bettingHistory.slice(0, state.settings.historyLimit);
+                }
+              });
+            } catch (e) { console.error('Betting update failed', e); }
             playSound(profit > 0 ? 'win' : 'loss', settings);
           }
         }
@@ -180,12 +190,14 @@ export const useGameStore = create<GameState>()(
           playSound('achievement', settings);
         }
         newStats.achievements = updatedAchievements;
-        set((state) => {
-          state.history = newHistory;
-          state.stats = newStats;
-          state.lastRound = newRound;
-          state.currentPrediction = {};
-        });
+        try {
+          set((state) => {
+            state.history = newHistory;
+            state.stats = newStats;
+            state.lastRound = newRound;
+            state.currentPrediction = {};
+          });
+        } catch (e) { console.error('Round update failed', e); }
         storage.setHistory(get().history);
         const { achievements, ...statsToSave } = get().stats;
         storage.setStats(statsToSave);
@@ -214,10 +226,10 @@ export const useGameStore = create<GameState>()(
     },
   }))
 );
-export const useHistory = () => useGameStore(s => s.history);
+export const useHistory = () => useGameStore(s => s.history ?? []);
 export const useStats = () => useGameStore(s => s.stats);
 export const useBalance = () => useGameStore(s => s.balance);
-export const useBettingHistory = () => useGameStore(s => s.bettingHistory);
+export const useBettingHistory = () => useGameStore(s => s.bettingHistory ?? []);
 export const useCurrentPrediction = () => useGameStore(s => s.currentPrediction);
 export const useIsAutoRunning = () => useGameStore(s => s.isAutoRunning);
 export const useLastRound = () => useGameStore(s => s.lastRound);
