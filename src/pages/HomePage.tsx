@@ -2,7 +2,7 @@ import React, { useEffect, useCallback, useState, memo } from 'react';
 import { motion } from 'framer-motion';
 import { Toaster, toast } from 'sonner';
 import { Settings as SettingsIcon, HelpCircle } from 'lucide-react';
-import { useGameStore, useHistory, useStats, useIsAutoRunning, useLastRound, useGameActions, useBalance, useBettingHistory, useSettings } from '@/hooks/useGameStore';
+import { useGameStore, useHistory, useStats, useIsAutoRunning, useLastRound, useGameActions, getGameActions, useBalance, useBettingHistory, useSettings } from '@/hooks/useGameStore';
 import { RoundTimer } from '@/components/RoundTimer';
 import { CurrentRoundPanel } from '@/components/CurrentRoundPanel';
 import { PredictionPanel } from '@/components/PredictionPanel';
@@ -46,11 +46,11 @@ export function HomePage() {
   const [showDisclaimer, setShowDisclaimer] = useState(false);
   const [showOnboarding, setShowOnboarding] = useState(false);
   const [confetti, setConfetti] = useState<JSX.Element[]>([]);
-  const { init, userInteracted } = useGameActions();
+
   const settings = useSettings();
   useEffect(() => {
     setIsClient(true);
-    init();
+    getGameActions().init();
     const theme = storage.getSettings().theme || 'dark';
     document.documentElement.setAttribute('data-theme', theme);
     if (!localStorage.getItem('disclaimerSeen')) {
@@ -63,7 +63,7 @@ export function HomePage() {
       }, 7000);
       return () => clearTimeout(timer);
     }
-  }, [init]);
+  }, []);
   const history = useHistory();
   const stats = useStats();
   const isAutoRunning = useIsAutoRunning();
@@ -97,7 +97,7 @@ export function HomePage() {
         toast.info(`Kỳ #${newRound.roundNumber} - Hòa`, { description: 'Hoàn tiền cược.' });
       }
     } else {
-      toast.info(`Kỳ #${newRound.roundNumber} - ${newRound.taiXiu} - ${newRound.chanLe}`, { description: 'Đã có kết quả m���i.' });
+      toast.info(`Kỳ #${newRound.roundNumber} - ${newRound.taiXiu} - ${newRound.chanLe}`, { description: 'Đã có kết quả mới.' });
     }
   }, [spinNewRound, triggerConfetti]);
   const handleDisclaimerClose = useCallback(() => {
@@ -115,7 +115,7 @@ export function HomePage() {
     return <div className="min-h-screen bg-background" />;
   }
   return (
-    <div className="min-h-screen bg-background text-foreground font-sans relative overflow-x-hidden" onClick={userInteracted} onTouchStart={userInteracted}>
+    <div className="min-h-screen bg-background text-foreground font-sans relative overflow-x-hidden" onClick={() => getGameActions().userInteracted()} onTouchStart={() => getGameActions().userInteracted()}>
       <div className="absolute inset-0 bg-gradient-mesh opacity-10 pointer-events-none" />
       <div className="absolute top-4 right-4 flex items-center gap-2 z-50">
         <Button variant="ghost" size="icon" onClick={() => setShowGuide(true)} className="text-2xl hover:scale-110 hover:rotate-12 transition-all duration-200 active:scale-90" aria-label="Mở hướng dẫn">
@@ -152,7 +152,7 @@ export function HomePage() {
                 transition={{ duration: 0.5, delay: 0.2 }}
                 className="space-y-8"
               >
-                <Tooltip open={showOnboarding}><TooltipTrigger asChild><div><StatsPanel stats={stats} balance={balance} bettingHistory={bettingHistory} onResetStats={resetStatsAndBalance} /></div></TooltipTrigger><TooltipContent><p>Theo d��i thống kê và thành tích của bạn</p></TooltipContent></Tooltip>
+                <Tooltip open={showOnboarding}><TooltipTrigger asChild><div><StatsPanel stats={stats} balance={balance} bettingHistory={bettingHistory} onResetStats={resetStatsAndBalance} /></div></TooltipTrigger><TooltipContent><p>Theo dõi thống kê và thành tích của bạn</p></TooltipContent></Tooltip>
                 <HistoryTable history={history} onClearHistory={resetHistory} />
               </motion.div>
             </div>
@@ -160,7 +160,7 @@ export function HomePage() {
         </TooltipProvider>
       </main>
       <footer className="text-center py-8 text-muted-foreground/80 text-sm">
-        <p>Built with ���️ at Cloudflare</p>
+        <p>Built with ❤️ at Cloudflare</p>
       </footer>
       <Toaster richColors closeButton theme={settings.theme === 'light' ? 'light' : 'dark'} />
       <SettingsPanel open={showSettings} onOpenChange={setShowSettings} />
@@ -169,9 +169,9 @@ export function HomePage() {
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle>Lưu ý quan trọng</AlertDialogTitle>
-            <AlertDialogDescription>
-              Đây là m���t ứng dụng giả lập chỉ dành cho mục đích giải trí. Mọi kết quả đều là ngẫu nhiên và không liên quan đến kết quả xổ số thực tế. Ứng dụng này không sử dụng tiền thật và không dành cho mục đích cờ bạc.
-            </AlertDialogDescription>
+<AlertDialogDescription>
+  Đây là một ứng dụng giả lập chỉ dành cho mục đích giải trí. Mọi kết quả đều là ngẫu nhiên và không liên quan đến kết quả xổ số thực tế. Ứng dụng này không sử dụng tiền thật và không dành cho mục đích cờ bạc.
+</AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogAction onClick={handleDisclaimerClose}>Tôi đã hiểu</AlertDialogAction>

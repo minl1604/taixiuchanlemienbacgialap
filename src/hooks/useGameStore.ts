@@ -222,3 +222,4 @@ export const useLastRound = () => useGameStore(s => s.lastRound);
 export const useGameActions = () => useGameStore(s => s.actions);
 export const useSettings = () => useGameStore(s => s.settings);
 export const useAchievements = () => useGameStore(s => s.stats.achievements);
+export const getGameActions = () => useGameStore.getState().actions;

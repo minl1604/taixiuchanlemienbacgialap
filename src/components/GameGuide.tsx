@@ -20,10 +20,10 @@ interface GameGuideProps {
   onOpenChange: (open: boolean) => void;
 }
 const guideSections = [
-  {
+    {
     icon: Gamepad2,
     title: "Cách Chơi",
-    content: "Mỗi kỳ quay sẽ t��o ra một số ngẫu nhiên 5 chữ số. Một kỳ mới sẽ tự động bắt đầu sau mỗi 20 giây nếu chế độ 'Auto' được bật. Bạn cũng có thể nhấn 'Đặt cược & Quay' để bắt đầu một kỳ mới ngay lập tức."
+    content: "Mỗi kỳ quay sẽ tạo ra một số ngẫu nhiên 5 chữ số. Một kỳ mới sẽ tự động bắt đầu sau mỗi 20 giây nếu chế độ 'Auto' được bật. Bạn cũng có thể nhấn 'Đặt cược & Quay' để bắt đầu một kỳ mới ngay lập tức."
   },
   {
     icon: Target,
@@ -38,7 +38,7 @@ const guideSections = [
   {
     icon: Trophy,
     title: "Kết Quả",
-    content: "Kết quả được xác định bằng tổng của 5 chữ số:\n- TÀI: nếu tổng lớn hơn hoặc bằng 23.\n- XỈU: nếu tổng nhỏ hơn 23.\n- CH���N: nếu tổng là số chẵn.\n- LẺ: nếu tổng là số lẻ."
+    content: "Kết quả được xác định bằng tổng của 5 chữ số:\n- TÀI: nếu tổng lớn hơn hoặc bằng 23.\n- XỈU: nếu tổng nhỏ hơn 23.\n- Chẵn: nếu tổng là số chẵn.\n- Lẻ: nếu tổng là số lẻ."
   },
   {
     icon: BarChart,
@@ -48,12 +48,12 @@ const guideSections = [
   {
     icon: Settings,
     title: "Cài Đặt & Âm Thanh",
-    content: "Trong phần Cài đặt (biểu tượng bánh răng), bạn có thể bật/tắt chế độ tự động bắt đầu, hiệu ứng âm thanh, điều chỉnh âm lượng và giới hạn l��ch sử các kỳ quay."
+    content: "Trong phần Cài đặt (biểu tượng bánh răng), bạn có thể bật/tắt chế độ tự động bắt đầu, hiệu ứng âm thanh, điều chỉnh âm lượng và giới hạn lịch sử các kỳ quay."
   },
   {
     icon: AlertTriangle,
     title: "Lưu Ý Quan Trọng",
-    content: "��ây là ứng dụng giả lập chỉ dành cho mục đích giải trí. Mọi kết quả đều là ngẫu nhiên và không có giá trị tiền thật. Vui lòng chơi có trách nhiệm."
+    content: "Đây là ứng dụng giả lập chỉ dành cho mục đích giải trí. Mọi kết quả đều là ngẫu nhiên và không có giá trị tiền thật. Vui lòng chơi có trách nhiệm."
   }
 ];
 export function GameGuide({ open, onOpenChange }: GameGuideProps) {

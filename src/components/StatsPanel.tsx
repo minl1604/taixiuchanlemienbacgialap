@@ -73,7 +73,7 @@ function StatsPanelComponent({ stats, balance, bettingHistory, onResetStats }: {
                 </TooltipProvider>
               ))
             ) : (
-              <p className="text-xs text-muted-foreground">Chưa có thành tích nào được m��� khóa.</p>
+              <p className="text-xs text-muted-foreground">Chưa có thành tích nào được mở khóa.</p>
             )}
           </div>
         </div>

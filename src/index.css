@@ -113,7 +113,7 @@
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     text-rendering: optimizeLegibility;
-    font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11', 'liga', 'kern';
+    font-feature-settings: 'kern liga cv02';
   }
 }
 @layer components {
