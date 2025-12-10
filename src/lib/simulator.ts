@@ -46,7 +46,7 @@ export const evaluatePrediction = (round: Round, prediction: Prediction, current
 };
 export const calculateReward = (bet: number, matches: number): { profit: number; outcome: BetOutcome } => {
   if (matches >= 1) { // Win single category prediction
-    return { profit: Math.floor(bet * 0.95), outcome: 'win' }; // 1.9x payout
+    return { profit: Math.floor(bet * 0.9), outcome: 'win' }; // 1.9x payout
   }
   // Lose all predictions
   return { profit: -bet, outcome: 'loss' };

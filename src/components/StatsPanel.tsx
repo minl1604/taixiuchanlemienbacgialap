@@ -44,7 +44,7 @@ export function StatsPanel({ stats, balance, bettingHistory, onResetStats }: Sta
           <Progress value={accuracy} className="h-2 [&>div]:bg-gradient-to-r [&>div]:from-blue-500 [&>div]:to-purple-500" />
         </div>
         <div className="flex justify-between items-baseline">
-          <span className="text-muted-foreground">Chuỗi thắng dài nh��t</span>
+          <span className="text-muted-foreground">Chuỗi thắng dài nhất</span>
           <span className="text-lg font-semibold">{stats.longestStreak}</span>
         </div>
         <div>

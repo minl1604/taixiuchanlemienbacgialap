@@ -49,11 +49,11 @@ export function PredictionPanel({ onSpinNow, defaultBet }: PredictionPanelProps)
   };
   const handleTaiXiuChange = (value: string | undefined) => {
     setSelectedTaiXiu(value || "");
-    setPrediction({ taiXiu: value as TaiXiu | undefined });
+    setPrediction({ taiXiu: value as TaiXiu | undefined, chanLe: undefined });
   };
   const handleChanLeChange = (value: string | undefined) => {
     setSelectedChanLe(value || "");
-    setPrediction({ chanLe: value as ChanLe | undefined });
+    setPrediction({ chanLe: value as ChanLe | undefined, taiXiu: undefined });
   };
   const handleSpinWithBet = () => {
     const betValue = parseInt(betAmount, 10);
@@ -65,12 +65,16 @@ export function PredictionPanel({ onSpinNow, defaultBet }: PredictionPanelProps)
       toast.error("Số dư không đủ.");
       return;
     }
-    if (!selectedTaiXiu && !selectedChanLe) {
-      toast.warning("Vui l��ng chọn dự đoán.");
+    if (predictionMode === 'taiXiu' && !selectedTaiXiu) {
+      toast.warning("Vui lòng chọn dự đoán.");
+      return;
+    }
+    if (predictionMode === 'chanLe' && !selectedChanLe) {
+      toast.warning("Vui lòng chọn dự đoán.");
       return;
     }
     setPrediction({ bet: betValue });
-    toast.success(`��ặt cược ${betValue.toLocaleString('vi-VN')} VND thành công!`);
+    toast.success(`Đặt cược ${betValue.toLocaleString('vi-VN')} VND thành công!`);
     setTimeout(() => {
       onSpinNow();
     }, 100);

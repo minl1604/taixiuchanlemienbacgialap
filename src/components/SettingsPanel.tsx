@@ -61,12 +61,12 @@ export function SettingsPanel({ open, onOpenChange }: SettingsPanelProps) {
             />
           </div>
           <div className="space-y-3">
-            <Label htmlFor="sound-volume">Âm lượng ({settings.soundVolume}%)</Label>
+            <Label htmlFor="sound-volume">Âm lượng âm thanh ({settings.soundVolume}%)</Label>
             <Slider
               id="sound-volume"
               min={0}
               max={100}
-              step={10}
+              step={1}
               value={[settings.soundVolume]}
               onValueChange={(value) => handleSettingsChange({ soundVolume: value[0] })}
               disabled={!settings.soundEnabled}

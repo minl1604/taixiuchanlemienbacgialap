@@ -6,45 +6,97 @@ import { generateRound, evaluatePrediction, calculateReward } from '@/lib/simula
 let audioCtx: AudioContext | null = null;
 const initAudioContext = () => {
   if (!audioCtx) {
+    const AudioCtxConstructor = (window.AudioContext || (window as any).webkitAudioContext);
+    if (!AudioCtxConstructor) {
+      console.warn("Web Audio API is not available in this browser");
+      return;
+    }
     try {
-      audioCtx = new (window.AudioContext || (window as any).webkitAudioContext)();
+      audioCtx = new AudioCtxConstructor();
     } catch (e) {
-      console.error("Web Audio API is not supported in this browser", e);
+      console.error("Failed to create AudioContext", e);
+      audioCtx = null;
     }
   }
 };
 export const playSound = (type: 'win' | 'loss' | 'tick', settings: Settings) => {
   if (!settings.soundEnabled || settings.soundVolume === 0) return;
-  initAudioContext();
-  if (!audioCtx) return;
-  const oscillator = audioCtx.createOscillator();
-  const gainNode = audioCtx.createGain();
-  gainNode.gain.setValueAtTime(settings.soundVolume / 100, audioCtx.currentTime);
-  oscillator.connect(gainNode);
-  gainNode.connect(audioCtx.destination);
-  let freq: number, waveType: OscillatorType, duration: number;
-  switch (type) {
-    case 'win':
-      freq = 800;
-      waveType = 'sine';
-      duration = 0.5;
-      break;
-    case 'loss':
-      freq = 200;
-      waveType = 'square';
-      duration = 0.3;
-      break;
-    case 'tick':
-      freq = 600;
-      waveType = 'triangle';
-      duration = 0.05;
-      gainNode.gain.setValueAtTime(settings.soundVolume / 200, audioCtx.currentTime); // Ticks are quieter
-      break;
+  try {
+    initAudioContext();
+    if (!audioCtx) return;
+    const now = audioCtx.currentTime;
+    const oscillator = audioCtx.createOscillator();
+    const gainNode = audioCtx.createGain();
+
+    // Normalize volume 0-1
+    const baseVolume = Math.max(0, Math.min(1, (settings.soundVolume ?? 100) / 100));
+
+    let freq: number;
+    let waveType: OscillatorType;
+    let duration: number;
+
+    switch (type) {
+      case 'win':
+        freq = 800;
+        waveType = 'sine';
+        duration = 0.5;
+        break;
+      case 'loss':
+        freq = 400;
+        waveType = 'square';
+        duration = 0.3;
+        break;
+      case 'tick':
+        freq = 600;
+        waveType = 'triangle';
+        duration = 0.1;
+        break;
+      default:
+        freq = 600;
+        waveType = 'sine';
+        duration = 0.1;
+    }
+
+    // Slightly quieter ticks
+    const targetVolume = type === 'tick' ? baseVolume * 0.5 : baseVolume;
+
+    // Use a short attack/release envelope to avoid clicks
+    const attack = Math.min(0.02, duration * 0.2);
+    const release = Math.min(0.05, duration * 0.3);
+
+    gainNode.gain.setValueAtTime(0, now);
+    gainNode.gain.linearRampToValueAtTime(targetVolume, now + attack);
+    // hold until release
+    gainNode.gain.setValueAtTime(targetVolume, now + duration - release);
+    gainNode.gain.linearRampToValueAtTime(0, now + duration + 0.001);
+
+    oscillator.type = waveType;
+    oscillator.frequency.setValueAtTime(freq, now);
+
+    oscillator.connect(gainNode);
+    gainNode.connect(audioCtx.destination);
+
+    oscillator.start(now);
+    // stop slightly after envelope ends
+    oscillator.stop(now + duration + 0.02);
+
+    // Clean up connections after sound ends
+    const cleanupMs = Math.ceil((duration + 0.05) * 1000);
+    setTimeout(() => {
+      try {
+        oscillator.disconnect();
+      } catch (e) {
+        /* ignore */
+      }
+      try {
+        gainNode.disconnect();
+      } catch (e) {
+        /* ignore */
+      }
+    }, cleanupMs);
+  } catch (e) {
+    console.error('playSound error', e);
   }
-  oscillator.type = waveType;
-  oscillator.frequency.setValueAtTime(freq, audioCtx.currentTime);
-  oscillator.start();
-  oscillator.stop(audioCtx.currentTime + duration);
 };
 interface GameState {
   history: Round[];
@@ -109,6 +161,13 @@ export const useGameStore = create<GameState>()(
       },
       userInteracted: () => {
         initAudioContext();
+        try {
+          if (audioCtx && audioCtx.state === 'suspended' && typeof audioCtx.resume === 'function') {
+            audioCtx.resume().catch(() => {});
+          }
+        } catch (e) {
+          // ignore resume errors
+        }
       },
       setPrediction: (prediction) => {
         set((state) => {

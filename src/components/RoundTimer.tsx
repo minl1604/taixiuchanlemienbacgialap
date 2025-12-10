@@ -9,7 +9,7 @@ interface RoundTimerProps {
 export function RoundTimer({ intervalSeconds = 20, isAutoRunning, onExpire }: RoundTimerProps) {
   const [secondsLeft, setSecondsLeft] = useState(intervalSeconds);
   const settings = useGameStore(s => s.settings);
-  const intervalRef = useRef<NodeJS.Timeout | null>(null);
+  const intervalRef = useRef<number | null>(null);
   const expectedRef = useRef<number | null>(null);
   const tick = useCallback(() => {
     if (expectedRef.current === null) return;
@@ -23,23 +23,23 @@ export function RoundTimer({ intervalSeconds = 20, isAutoRunning, onExpire }: Ro
       return prev - 1;
     });
     expectedRef.current += 1000;
-    intervalRef.current = setTimeout(tick, 1000 - drift);
+    intervalRef.current = window.setTimeout(tick, 1000 - drift);
   }, [onExpire, intervalSeconds, settings]);
   useEffect(() => {
     if (isAutoRunning) {
       setSecondsLeft(intervalSeconds);
       expectedRef.current = Date.now() + 1000;
-      intervalRef.current = setTimeout(tick, 1000);
+      intervalRef.current = window.setTimeout(tick, 1000);
     } else {
       if (intervalRef.current) {
-        clearTimeout(intervalRef.current);
+        window.clearTimeout(intervalRef.current);
         intervalRef.current = null;
         expectedRef.current = null;
       }
     }
     return () => {
       if (intervalRef.current) {
-        clearTimeout(intervalRef.current);
+        window.clearTimeout(intervalRef.current);
       }
     };
   }, [isAutoRunning, intervalSeconds, tick]);
