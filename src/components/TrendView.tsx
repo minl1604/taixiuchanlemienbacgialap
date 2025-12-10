@@ -8,17 +8,13 @@ import type { Round, TaiXiu, ChanLe } from '@/types';
 import { cn } from '@/lib/utils';
 import { Label } from '@/components/ui/label';
 import { useGameStore } from '@/hooks/useGameStore';
-import { useShallow } from 'zustand/react/shallow';
-const TrendDot = memo(({ round, viewMode, index }: { round: Round; viewMode: 'taiXiu' | 'chanLe'; index: number }) => {
+import { shallow } from 'zustand/shallow';
+const TrendDot = memo(({ round, viewMode, index, style }: { round: Round; viewMode: 'taiXiu' | 'chanLe'; index: number; style: React.CSSProperties }) => {
   const isTx = viewMode === 'taiXiu';
   const result: TaiXiu | ChanLe = isTx ? round.taiXiu : round.chanLe;
-  // Determine if the outcome is primary (Tài/Lẻ) or secondary (X��u/Chẵn) for styling
-  const isPrimary = (isTx && result === 'Tài') || (!isTx && result === 'Lẻ');
+  const isPrimary = (isTx && result === 'T��i') || (!isTx && result === 'Lẻ');
   const isSecondary = (isTx && result === 'Xỉu') || (!isTx && result === 'Chẵn');
-  // Set the label for the dot (T/X or L/C)
-  const label = isTx
-    ? (result === 'Tài' ? 'T' : 'X')
-    : (result === 'Lẻ' ? 'L' : 'C');
+  const label = isTx ? (result === 'Tài' ? 'T' : 'X') : (result === 'Lẻ' ? 'L' : 'C');
   const tooltipId = `trend-dot-tooltip-${round.id}`;
   const ariaLabel = `Kỳ #${round.roundNumber}: ${result}`;
   const handleMouseEnter = () => {
@@ -35,6 +31,7 @@ const TrendDot = memo(({ round, viewMode, index }: { round: Round; viewMode: 'ta
       <Tooltip>
         <TooltipTrigger asChild>
           <motion.div
+            style={style}
             initial={{ opacity: 0, scale: 0.5 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ delay: index * 0.02, type: 'spring', stiffness: 400, damping: 25 }}
@@ -66,15 +63,15 @@ const TrendDot = memo(({ round, viewMode, index }: { round: Round; viewMode: 'ta
 TrendDot.displayName = 'TrendDot';
 function TrendViewComponent({ history }: { history: Round[] }) {
   const [viewMode, setViewMode] = useState<'taiXiu' | 'chanLe'>('taiXiu');
-  const flatHistory = useMemo(() => {
-    if (!history || history.length === 0) return [];
-    // Take the last 50 rounds and reverse so the oldest is first
+  const { columns, maxColHeight, gridNodes } = useMemo(() => {
+    if (!history || history.length === 0) {
+      return { columns: [], maxColHeight: 0, gridNodes: [] };
+    }
     const recentHistory = history.slice(0, 50).reverse();
     const columns: Round[][] = [];
     if (recentHistory.length > 0) {
       columns.push([recentHistory[0]]);
     }
-    // Group consecutive outcomes into columns (run-length encoding)
     for (let i = 1; i < recentHistory.length; i++) {
       const currentRound = recentHistory[i];
       const lastColumn = columns[columns.length - 1];
@@ -82,13 +79,16 @@ function TrendViewComponent({ history }: { history: Round[] }) {
       const currentOutcome = viewMode === 'taiXiu' ? currentRound.taiXiu : currentRound.chanLe;
       const lastOutcome = viewMode === 'taiXiu' ? lastRoundInColumn.taiXiu : lastRoundInColumn.chanLe;
       if (currentOutcome === lastOutcome) {
-        lastColumn.push(currentRound); // Add to the current vertical column
+        lastColumn.push(currentRound);
       } else {
-        columns.push([currentRound]); // Start a new column
+        columns.push([currentRound]);
       }
     }
-    // Flatten the columns into a single array for grid rendering
-    return columns.flat();
+    const maxColHeight = columns.length > 0 ? Math.max(...columns.map(col => col.length)) : 0;
+    const gridNodes = columns.flatMap((col, colIndex) =>
+      col.map((round, rowIndex) => ({ round, colIndex, rowIndex }))
+    );
+    return { columns, maxColHeight, gridNodes };
   }, [history, viewMode]);
   if (!history) {
     return <Skeleton className="h-48 w-full" />;
@@ -115,20 +115,30 @@ function TrendViewComponent({ history }: { history: Round[] }) {
       </CardHeader>
       <CardContent>
         {history.length > 0 ? (
-          <div className="grid grid-flow-col auto-rows-[24px] sm:auto-rows-[28px] gap-y-1.5 sm:gap-y-2 gap-x-2 sm:gap-x-3 p-3 sm:p-4 rounded-lg bg-black/20 min-h-[12rem] overflow-x-auto w-full touch-pan-x" style={{ touchAction: 'manipulation' }}>
-            {flatHistory.map((round, index) => (
-              <TrendDot key={round.id} round={round} viewMode={viewMode} index={index} />
-            ))}
+          <div className="overflow-x-auto w-full touch-pan-x" style={{ touchAction: 'manipulation' }}>
+            <div
+              className="p-3 sm:p-4 rounded-lg bg-black/20 min-h-[12rem] inline-grid"
+              style={{
+                gridTemplateColumns: `repeat(${columns.length}, minmax(24px, 1fr))`,
+                gridTemplateRows: `repeat(${maxColHeight}, minmax(24px, 1fr))`,
+                gap: '6px 8px',
+              }}
+            >
+              {gridNodes.map(({ round, colIndex, rowIndex }, index) => (
+                <TrendDot
+                  key={round.id}
+                  round={round}
+                  viewMode={viewMode}
+                  index={index}
+                  style={{ gridColumn: colIndex + 1, gridRow: rowIndex + 1 }}
+                />
+              ))}
+            </div>
           </div>
         ) : (
           <div className="text-center text-muted-foreground p-4 min-h-[12rem] center flex-col">
             <div className="w-full space-y-2 p-2">
               <p>Đang chờ dữ liệu...</p>
-              <div className="grid grid-flow-col auto-rows-[24px] sm:auto-rows-[28px] gap-y-1.5 sm:gap-y-2 gap-x-2 sm:gap-x-3">
-                {Array.from({ length: 12 }).map((_, i) => (
-                  <Skeleton key={i} className="w-6 h-6 sm:w-7 sm:h-7 rounded-full" />
-                ))}
-              </div>
             </div>
           </div>
         )}
@@ -136,9 +146,8 @@ function TrendViewComponent({ history }: { history: Round[] }) {
     </Card>
   );
 }
-// Wrapper component to connect to the store
 function TrendViewWrapper() {
-  const history = useGameStore(state => state.history, useShallow);
+  const history = useGameStore(state => state.history || [], shallow);
   return <TrendViewComponent history={history} />;
 }
 export const TrendView = memo(TrendViewWrapper);
