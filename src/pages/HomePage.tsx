@@ -105,11 +105,11 @@ function HomePageContent() {
           return;
         }
         const { newRound, profit, wasCorrect } = result;
-        const resultMessage = `Kết quả k�� ${newRound.roundNumber}: ${newRound.taiXiu} - ${newRound.chanLe}`;
+        const resultMessage = `Kết quả kỳ ${newRound.roundNumber}: ${newRound.taiXiu} - ${newRound.chanLe}`;
         setAriaLiveMessage(resultMessage);
         if (profit !== null) {
           if (profit > 0) {
-            toast.success(`K��� #${newRound.roundNumber} - Thắng!`, { description: `Lợi nhuận: +${profit.toLocaleString('vi-VN')} VND` });
+            toast.success(`Kỳ #${newRound.roundNumber} - Thắng!`, { description: `L��i nhuận: +${profit.toLocaleString('vi-VN')} VND` });
             triggerConfetti();
           } else if (profit < 0) {
             toast.error(`Kỳ #${newRound.roundNumber} - Thua!`, { description: `Mất: ${(-profit).toLocaleString('vi-VN')} VND` });
@@ -150,7 +150,7 @@ function HomePageContent() {
     <div className="min-h-screen bg-background text-foreground font-sans relative overflow-x-hidden flex flex-col" onClick={handleUserInteraction} onTouchStart={handleUserInteraction}>
       <div className="absolute inset-0 bg-gradient-mesh opacity-10 pointer-events-none" />
       <div className="absolute top-4 right-4 flex items-center gap-2 z-50">
-        <Button variant="ghost" size="icon" onClick={() => setShowGuide(true)} className="text-2xl hover:scale-110 hover:rotate-12 transition-all duration-200 active:scale-90" aria-label="Mở hướng dẫn">
+        <Button variant="ghost" size="icon" onClick={() => setShowGuide(true)} className="text-2xl hover:scale-110 hover:rotate-12 transition-all duration-200 active:scale-90" aria-label="Mở hướng d��n">
           <HelpCircle className="h-6 w-6" />
         </Button>
         <Button variant="ghost" size="icon" onClick={() => setShowSettings(true)} className="text-2xl hover:scale-110 hover:rotate-12 transition-all duration-200 active:scale-90" aria-label="Mở cài đặt">
@@ -159,7 +159,7 @@ function HomePageContent() {
       </div>
       <header className="text-center pt-8 pb-4">
         <h1 className="text-4xl md:text-5xl font-display font-bold text-balance leading-tight">
-          <span className="text-gradient">Tài Xỉu Miền Bắc</span> Giả Lập
+          <span className="text-gradient">Tài Xỉu Miền Bắc</span> Giả L��p
         </h1>
         <p className="text-sm text-muted-foreground mt-2">Không dùng cho cá cược tiền thật</p>
       </header>
@@ -192,7 +192,7 @@ function HomePageContent() {
         </TooltipProvider>
       </main>
       <footer className="text-center py-8 text-muted-foreground/80 text-sm">
-        <p>© 2025 CLTX MB �� Built with ❤️ at Cloudflare</p>
+        <p>© 2025 CLTX MB ��� Built with ❤️ at Cloudflare</p>
         <Badge variant="secondary" className="text-xs mt-2 opacity-80">Giả Lập Giải Trí • Không dùng cho cá cược tiền thật</Badge>
       </footer>
       <Toaster richColors closeButton theme={settings?.theme === 'light' ? 'light' : 'dark'} />
@@ -201,9 +201,9 @@ function HomePageContent() {
       <AlertDialog open={showDisclaimer} onOpenChange={setShowDisclaimer}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Lưu ý quan trọng</AlertDialogTitle>
+            <AlertDialogTitle>L��u ý quan trọng</AlertDialogTitle>
             <AlertDialogDescription>
-              Đây là một ứng dụng giả lập chỉ dành cho mục đích giải trí. Mọi kết quả đều là ngẫu nhiên và không liên quan đến kết quả xổ số thực tế. Ứng dụng này không sử dụng tiền thật và không dành cho mục đích cờ bạc. Vui lòng chơi có trách nhiệm.
+              Đây là một ���ng dụng giả lập chỉ dành cho mục đích giải trí. Mọi kết quả đều là ngẫu nhiên và không liên quan đến kết quả xổ số thực tế. Ứng dụng này không sử dụng tiền thật và không dành cho mục đích cờ bạc. Vui lòng chơi có trách nhiệm.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>

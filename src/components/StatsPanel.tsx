@@ -26,7 +26,7 @@ function StatsPanelComponent({ stats, balance, bettingHistory, onResetStats }: {
   if (!stats || !bettingHistory) {
     return (
       <Card className="glass-dark border-yellow-500/20">
-        <CardHeader><CardTitle>Thống kê</CardTitle></CardHeader>
+        <CardHeader><CardTitle>Thống k��</CardTitle></CardHeader>
         <CardContent className="space-y-4">
           <Skeleton className="h-8 w-3/4" />
           <Skeleton className="h-6 w-1/2" />
@@ -53,12 +53,12 @@ function StatsPanelComponent({ stats, balance, bettingHistory, onResetStats }: {
   const unlockedAchievements = stats.achievements.filter(a => a.unlocked);
   const handleReset = () => {
     onResetStats();
-    toast.success("��ã đặt lại thống kê và số dư.");
+    toast.success("Đã đặt lại thống kê và số dư.");
   };
   return (
     <Card className="glass-dark border-yellow-500/20 hover:shadow-glow transition-shadow">
         <CardHeader className="flex flex-row items-center justify-between">
-          <CardTitle className="text-2xl font-display">Th���ng kê</CardTitle>
+          <CardTitle className="text-2xl font-display">Thống kê</CardTitle>
           <AlertDialog>
             <AlertDialogTrigger asChild>
               <Button variant="outline" size="sm">Đặt lại</Button>
