@@ -114,6 +114,7 @@
     -moz-osx-font-smoothing: grayscale;
     text-rendering: optimizeLegibility;
     font-feature-settings: 'kern liga cv02';
+    font-synthesis: none;
   }
 }
 @layer components {

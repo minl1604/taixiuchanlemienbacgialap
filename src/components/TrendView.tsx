@@ -89,7 +89,7 @@ function TrendViewComponent({ history }: { history: Round[] }) {
     <Card className="glass-dark border-purple-500/20 hover:shadow-glow transition-shadow">
       <CardHeader>
         <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
-          <CardTitle className="text-2xl font-display text-gradient">Xu Hư��ng</CardTitle>
+          <CardTitle className="text-2xl font-display text-gradient">Xu Hướng</CardTitle>
           <div className="w-full sm:w-auto">
             <Label id="trend-mode-label" className="sr-only">Chế độ xem xu hướng</Label>
             <ToggleGroup
@@ -119,12 +119,13 @@ function TrendViewComponent({ history }: { history: Round[] }) {
         ) : (
           <div className="text-center text-muted-foreground p-4 min-h-[12rem] center flex-col">
             {history.length > 0 ? (
-              <p>Chưa có đ�� dữ liệu để hiển thị xu hướng.</p>
+              <p>Chưa có đủ dữ li��u để hiển thị xu hướng.</p>
             ) : (
-              <div className="w-full space-y-2">
-                <div className="flex flex-row gap-1"><Skeleton className="w-6 h-6 rounded-full" /><Skeleton className="w-6 h-6 rounded-full" /></div>
-                <div className="flex flex-row gap-1"><Skeleton className="w-6 h-6 rounded-full" /></div>
+              <div className="w-full space-y-2 p-2">
                 <div className="flex flex-row gap-1"><Skeleton className="w-6 h-6 rounded-full" /><Skeleton className="w-6 h-6 rounded-full" /><Skeleton className="w-6 h-6 rounded-full" /></div>
+                <div className="flex flex-row gap-1"><Skeleton className="w-6 h-6 rounded-full" /></div>
+                <div className="flex flex-row gap-1"><Skeleton className="w-6 h-6 rounded-full" /><Skeleton className="w-6 h-6 rounded-full" /></div>
+                <div className="flex flex-row gap-1"><Skeleton className="w-6 h-6 rounded-full" /><Skeleton className="w-6 h-6 rounded-full" /><Skeleton className="w-6 h-6 rounded-full" /><Skeleton className="w-6 h-6 rounded-full" /></div>
               </div>
             )}
           </div>

@@ -7,8 +7,8 @@ export default {
       fontFamily: {
         // Font stack optimized for Vietnamese diacritics.
         // 'Inter' is the primary font, with 'Noto Sans' as a fallback for comprehensive Vietnamese character support.
-        sans: ['Inter', 'Noto Sans', 'sans-serif'],
-        display: ['Inter', 'Noto Sans', 'sans-serif'],
+        sans: ['Inter', 'Noto Sans', 'system-ui', 'sans-serif'],
+        display: ['Inter', 'Noto Sans', 'system-ui', 'sans-serif'],
         mono: ['JetBrains Mono', 'Fira Code', 'Consolas', 'monospace'],
       },
       fontSize: {
@@ -200,7 +200,7 @@ export default {
         'fade-in': 'fade-in 0.6s ease-out',
         'slide-up': 'slide-up 0.4s ease-out',
         'scale-in': 'scale-in 0.3s ease-out',
-        shimmer: 'shimmer 2s infinite',
+        shimmer: 'shimmer 1.5s infinite',
         glow: 'glow 2s ease-in-out infinite',
         float: 'float 3s ease-in-out infinite',
         'accordion-down': 'accordion-down 0.2s ease-out',

@@ -1,4 +1,4 @@
-import React, { useEffect, useCallback, useState, memo } from 'react';
+import React, { useEffect, useCallback, useState, memo, useRef } from 'react';
 import { motion } from 'framer-motion';
 import { Toaster, toast } from 'sonner';
 import { Settings as SettingsIcon, HelpCircle } from 'lucide-react';
@@ -47,6 +47,7 @@ export function HomePage() {
   const [showDisclaimer, setShowDisclaimer] = useState(false);
   const [showOnboarding, setShowOnboarding] = useState(false);
   const [confetti, setConfetti] = useState<JSX.Element[]>([]);
+  const hasInteracted = useRef(false);
   useEffect(() => {
     setIsClient(true);
     try {
@@ -60,7 +61,7 @@ export function HomePage() {
         const timer = setTimeout(() => {
           localStorage.setItem('onboardingSeen', 'true');
           setShowOnboarding(false);
-        }, 7000);
+        }, 5000);
         return () => clearTimeout(timer);
       }
     } catch (error) {
@@ -78,7 +79,7 @@ export function HomePage() {
   const { spinNewRound, resetHistory, resetStatsAndBalance } = useGameActions();
   const triggerConfetti = useCallback(() => {
     const colors = ['#F38020', '#4FACFE', '#F5576C', '#FFD700'];
-    const newConfetti = Array.from({ length: 50 }).map((_, i) => (
+    const newConfetti = Array.from({ length: 30 }).map((_, i) => (
       <ConfettiPiece
         key={i}
         x={Math.random() * 400 - 200}
@@ -94,7 +95,7 @@ export function HomePage() {
     const { newRound, profit } = spinNewRound();
     if (profit !== null) {
       if (profit > 0) {
-        toast.success(`Kỳ #${newRound.roundNumber} - Thắng!`, { description: `Lợi nhuận: +${profit.toLocaleString('vi-VN')} VND` });
+        toast.success(`Kỳ #${newRound.roundNumber} - Thắng!`, { description: `Lợi nhu���n: +${profit.toLocaleString('vi-VN')} VND` });
         triggerConfetti();
       } else if (profit < 0) {
         toast.error(`Kỳ #${newRound.roundNumber} - Thua!`, { description: `Mất: ${(-profit).toLocaleString('vi-VN')} VND` });
@@ -102,7 +103,7 @@ export function HomePage() {
         toast.info(`Kỳ #${newRound.roundNumber} - Hòa`, { description: 'Hoàn tiền cược.' });
       }
     } else {
-      toast.info(`Kỳ #${newRound.roundNumber} - ${newRound.taiXiu} - ${newRound.chanLe}`, { description: 'Đã c�� kết quả mới.' });
+      toast.info(`Kỳ #${newRound.roundNumber} - ${newRound.taiXiu} - ${newRound.chanLe}`, { description: 'Đã có kết quả mới.' });
     }
   }, [spinNewRound, triggerConfetti]);
   const handleDisclaimerClose = useCallback(() => {
@@ -113,9 +114,15 @@ export function HomePage() {
       setTimeout(() => {
         localStorage.setItem('onboardingSeen', 'true');
         setShowOnboarding(false);
-      }, 7000);
+      }, 5000);
     }
   }, []);
+  const handleUserInteraction = () => {
+    if (!hasInteracted.current) {
+      getGameActions().userInteracted();
+      hasInteracted.current = true;
+    }
+  };
   if (!isClient) {
     return (
       <div className="min-h-screen bg-background text-foreground font-sans">
@@ -139,10 +146,10 @@ export function HomePage() {
     );
   }
   return (
-    <div className="min-h-screen bg-background text-foreground font-sans relative overflow-x-hidden" onClick={() => getGameActions().userInteracted()} onTouchStart={() => getGameActions().userInteracted()}>
+    <div className="min-h-screen bg-background text-foreground font-sans relative overflow-x-hidden" onClick={handleUserInteraction} onTouchStart={handleUserInteraction}>
       <div className="absolute inset-0 bg-gradient-mesh opacity-10 pointer-events-none" />
       <div className="absolute top-4 right-4 flex items-center gap-2 z-50">
-        <Button variant="ghost" size="icon" onClick={() => setShowGuide(true)} className="text-2xl hover:scale-110 hover:rotate-12 transition-all duration-200 active:scale-90" aria-label="Mở hướng d��n">
+        <Button variant="ghost" size="icon" onClick={() => setShowGuide(true)} className="text-2xl hover:scale-110 hover:rotate-12 transition-all duration-200 active:scale-90" aria-label="Mở hướng dẫn">
           <HelpCircle className="h-6 w-6" />
         </Button>
         <Button variant="ghost" size="icon" onClick={() => setShowSettings(true)} className="text-2xl hover:scale-110 hover:rotate-12 transition-all duration-200 active:scale-90" aria-label="Mở cài đặt">
@@ -151,9 +158,9 @@ export function HomePage() {
       </div>
       <header className="text-center pt-8 pb-4">
         <h1 className="text-4xl md:text-5xl font-display font-bold text-balance leading-tight">
-          <span className="text-gradient">Tài Xỉu Miền Bắc</span> Giả L��p
+          <span className="text-gradient">Tài Xỉu Miền Bắc</span> Giả Lập
         </h1>
-        <p className="text-sm text-muted-foreground mt-2">Không dùng cho cá cược tiền thật</p>
+        <p className="text-sm text-muted-foreground mt-2">Không d��ng cho cá cược tiền thật</p>
       </header>
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8" aria-label="Trò chơi chính">
         <TooltipProvider>
@@ -193,9 +200,9 @@ export function HomePage() {
       <AlertDialog open={showDisclaimer} onOpenChange={setShowDisclaimer}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Lưu ý quan trọng</AlertDialogTitle>
+            <AlertDialogTitle>Lưu �� quan trọng</AlertDialogTitle>
             <AlertDialogDescription>
-              Đây là m���t ứng dụng giả lập chỉ dành cho mục đích giải trí. Mọi kết quả đều là ngẫu nhiên và không liên quan đến kết quả xổ số thực tế. Ứng dụng này không sử dụng tiền thật và không dành cho mục đích cờ bạc.
+              Đây là một ���ng dụng giả lập chỉ dành cho mục đích giải trí. Mọi kết quả đều là ngẫu nhiên và không liên quan đến kết quả xổ số thực tế. Ứng dụng này không sử dụng tiền thật và không dành cho mục đích cờ bạc.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>

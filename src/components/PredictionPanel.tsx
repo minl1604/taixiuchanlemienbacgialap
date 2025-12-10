@@ -11,6 +11,7 @@ import { toast } from 'sonner';
 import * as storage from '@/lib/storage';
 import { cn } from '@/lib/utils';
 import { Label } from '@/components/ui/label';
+import { Skeleton } from '@/components/ui/skeleton';
 function PredictionPanelComponent({ onSpinNow, defaultBet }: { onSpinNow: () => void; defaultBet?: number; }) {
   const { setPrediction, startAuto, stopAuto } = useGameActions();
   const currentPrediction = useCurrentPrediction();
@@ -68,7 +69,7 @@ function PredictionPanelComponent({ onSpinNow, defaultBet }: { onSpinNow: () => 
   const handleSpinWithBet = useCallback(() => {
     const betValue = parseInt(betAmount, 10);
     if (isNaN(betValue) || betValue <= 0) {
-      toast.error("Số ti��n cược không hợp lệ.");
+      toast.error("Số tiền cược không hợp lệ.");
       return;
     }
     if (betValue > balance) {
@@ -85,7 +86,7 @@ function PredictionPanelComponent({ onSpinNow, defaultBet }: { onSpinNow: () => 
     }
     setIsSpinning(true);
     setPrediction({ bet: betValue });
-    toast.success(`Đặt cược ${betValue.toLocaleString('vi-VN')} VND thành công!`);
+    toast.success(`��ặt cược ${betValue.toLocaleString('vi-VN')} VND thành công!`);
     setTimeout(() => {
       onSpinNow();
     }, 100);
@@ -126,8 +127,12 @@ function PredictionPanelComponent({ onSpinNow, defaultBet }: { onSpinNow: () => 
           )}
         </div>
         <div className="space-y-2">
-          <Input type="number" placeholder="Số tiền cược" value={betAmount} onChange={handleBetAmountChange} className="h-14 text-center text-lg min-h-[44px]" min="0" aria-describedby="bet-help" />
-          <p id="bet-help" className="text-xs text-muted-foreground text-center">Số tiền ph��i &gt; 0 và &le; số dư.</p>
+          {balance === undefined ? (
+            <Skeleton className="h-14 w-full" />
+          ) : (
+            <Input type="number" placeholder="Số tiền cược" value={betAmount} onChange={handleBetAmountChange} className="h-14 text-center text-lg min-h-[44px]" min="0" aria-describedby="bet-help" />
+          )}
+          <p id="bet-help" className="text-xs text-muted-foreground text-center">Số tiền phải &gt; 0 và &le; số dư.</p>
         </div>
         <div className="space-y-2">
           <motion.div whileTap={{ scale: 0.95 }}>

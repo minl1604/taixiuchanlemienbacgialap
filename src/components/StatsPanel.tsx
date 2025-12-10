@@ -10,6 +10,8 @@ import { Skeleton } from '@/components/ui/skeleton';
 import type { Stats, BetRecord } from '@/types';
 import { cn } from '@/lib/utils';
 import { Trophy } from 'lucide-react';
+import { toast } from 'sonner';
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
 const BetHistoryItem = memo(({ bet }: { bet: BetRecord }) => (
   <div className="flex justify-between items-center">
     <span>Kỳ #{bet.roundNumber}</span>
@@ -37,6 +39,10 @@ function StatsPanelComponent({ stats, balance, bettingHistory, onResetStats }: {
             <Skeleton className="h-4 w-1/4 mb-2" />
             <div className="flex gap-2"><Skeleton className="h-6 w-20" /><Skeleton className="h-6 w-24" /></div>
           </div>
+          <div className="pt-2">
+            <Skeleton className="h-4 w-1/4 mb-2" />
+            <Skeleton className="h-40 w-full" />
+          </div>
         </CardContent>
       </Card>
     );
@@ -44,11 +50,31 @@ function StatsPanelComponent({ stats, balance, bettingHistory, onResetStats }: {
   const accuracy = stats.predictionsMade > 0 ? Math.round((stats.correct / stats.predictionsMade) * 100) : 0;
   const totalWagered = bettingHistory.reduce((sum, bet) => sum + bet.betAmount, 0);
   const unlockedAchievements = stats.achievements.filter(a => a.unlocked);
+  const handleReset = () => {
+    onResetStats();
+    toast.success("Đã đặt lại thống kê và số dư.");
+  };
   return (
     <Card className="glass-dark border-yellow-500/20 hover:shadow-glow transition-shadow">
         <CardHeader className="flex flex-row items-center justify-between">
           <CardTitle className="text-2xl font-display">Thống kê</CardTitle>
-          <Button variant="outline" size="sm" onClick={onResetStats}>Đặt lại</Button>
+          <AlertDialog>
+            <AlertDialogTrigger asChild>
+              <Button variant="outline" size="sm">Đặt lại</Button>
+            </AlertDialogTrigger>
+            <AlertDialogContent>
+              <AlertDialogHeader>
+                <AlertDialogTitle>Bạn có chắc chắn?</AlertDialogTitle>
+                <AlertDialogDescription>
+                  H��nh động này sẽ xóa toàn bộ thống kê, thành tích, lịch sử c��ợc và đặt lại số dư của bạn về mặc định.
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel>Hủy</AlertDialogCancel>
+                <AlertDialogAction onClick={handleReset}>Xác nhận</AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
         </CardHeader>
       <CardContent className="space-y-4">
         <div className="flex justify-between items-baseline">

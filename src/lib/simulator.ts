@@ -3,7 +3,7 @@ import type { Round, TaiXiu, ChanLe, Prediction, Stats, BetOutcome } from '@/typ
 export const computeFromNumber = (numString: string): { digits: string[]; sum: number; taiXiu: TaiXiu; chanLe: ChanLe } => {
   const digits = numString.split('');
   const sum = digits.reduce((acc, digit) => acc + parseInt(digit, 10), 0);
-  const taiXiu: TaiXiu = sum >= 23 ? 'T��i' : 'Xỉu';
+  const taiXiu: TaiXiu = sum >= 23 ? 'Tài' : 'Xỉu';
   const chanLe: ChanLe = sum % 2 === 0 ? 'Chẵn' : 'Lẻ';
   return { digits, sum, taiXiu, chanLe };
 };

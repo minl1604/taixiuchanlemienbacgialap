@@ -6,6 +6,8 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import type { Round } from '@/types';
 import { cn } from '@/lib/utils';
+import { Skeleton } from '@/components/ui/skeleton';
+import { toast } from 'sonner';
 const MiniDigit = memo(({ digit }: { digit: string }) => (
   <div className="center w-5 h-5 rounded-full bg-gray-600 text-white text-xs font-bold">{digit}</div>
 ));
@@ -29,36 +31,59 @@ const HistoryRow = memo(({ round }: { round: Round }) => (
 ));
 HistoryRow.displayName = 'HistoryRow';
 function HistoryTableComponent({ history, onClearHistory }: { history: Round[]; onClearHistory: () => void; }) {
+  const handleClear = () => {
+    toast("Bạn có chắc muốn xóa toàn bộ lịch sử?", {
+      action: {
+        label: "Xác nhận",
+        onClick: () => {
+          onClearHistory();
+          toast.success("Đã xóa lịch sử.");
+        },
+      },
+      cancel: {
+        label: "Hủy"
+      }
+    });
+  };
   return (
     <Card className="glass-dark border-green-500/20">
       <CardHeader className="flex flex-row items-center justify-between">
-        <CardTitle className="text-2xl font-display">Kết quả gần đây</CardTitle>
-        <Button variant="destructive" size="sm" onClick={onClearHistory}>Xóa lịch sử</Button>
+        <CardTitle className="text-2xl font-display">Kết qu��� gần đây</CardTitle>
+        <Button variant="destructive" size="sm" onClick={handleClear}>Xóa lịch sử</Button>
       </CardHeader>
       <CardContent>
         <ScrollArea className="h-96">
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Kỳ</TableHead>
-                <TableHead>Kết quả</TableHead>
-                <TableHead className="text-center">Tổng</TableHead>
-                <TableHead className="text-center">T/X</TableHead>
-                <TableHead className="text-center">C/L</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {history.length > 0 ? (
-                history.map((round) => (
-                  <HistoryRow key={round.id} round={round} />
-                ))
-              ) : (
+          {!history ? (
+            <div className="space-y-2 p-4">
+              <Skeleton className="h-10 w-full" />
+              <Skeleton className="h-10 w-full" />
+              <Skeleton className="h-10 w-full" />
+              <Skeleton className="h-10 w-full" />
+            </div>
+          ) : (
+            <Table>
+              <TableHeader>
                 <TableRow>
-                  <TableCell colSpan={5} className="h-24 text-center">Chưa có lịch sử.</TableCell>
+                  <TableHead>Kỳ</TableHead>
+                  <TableHead>Kết quả</TableHead>
+                  <TableHead className="text-center">Tổng</TableHead>
+                  <TableHead className="text-center">T/X</TableHead>
+                  <TableHead className="text-center">C/L</TableHead>
                 </TableRow>
-              )}
-            </TableBody>
-          </Table>
+              </TableHeader>
+              <TableBody>
+                {history.length > 0 ? (
+                  history.map((round) => (
+                    <HistoryRow key={round.id} round={round} />
+                  ))
+                ) : (
+                  <TableRow>
+                    <TableCell colSpan={5} className="h-24 text-center">Chưa có lịch sử.</TableCell>
+                  </TableRow>
+                )}
+              </TableBody>
+            </Table>
+          )}
         </ScrollArea>
       </CardContent>
     </Card>

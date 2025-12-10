@@ -23,12 +23,12 @@ const guideSections = [
     {
     icon: Gamepad2,
     title: "Cách Chơi",
-    content: "Mỗi kỳ quay sẽ tạo ra một số ngẫu nhiên 5 chữ số. Một kỳ mới sẽ tự động bắt đầu sau mỗi 20 giây nếu chế độ 'Auto' được bật. Bạn cũng có thể nhấn 'Đặt cược & Quay' để bắt đầu một kỳ mới ngay lập tức."
+    content: "M��i kỳ quay sẽ tạo ra một số ngẫu nhiên 5 chữ số. Một kỳ mới sẽ tự động bắt đầu sau mỗi 20 giây nếu chế độ 'Auto' được bật. Bạn cũng có thể nhấn 'Đặt cược & Quay' để bắt đầu một kỳ mới ngay lập tức."
   },
   {
     icon: Target,
     title: "Dự Đoán",
-    content: "Trước mỗi kỳ, bạn có thể chọn dự đoán kết quả. Có hai chế độ: 'Tài / Xỉu' hoặc 'Chẵn / Lẻ'. Bạn chỉ có thể chọn một trong hai chế độ và đặt cược cho một kết quả duy nhất trong chế độ đó."
+    content: "Trư��c mỗi kỳ, bạn có thể chọn dự đoán kết quả. Có hai chế độ: 'Tài / Xỉu' hoặc 'Chẵn / Lẻ'. Bạn chỉ có thể chọn một trong hai chế độ và đặt cược cho một kết quả duy nhất trong chế độ đó."
   },
   {
     icon: CircleDollarSign,
@@ -38,7 +38,7 @@ const guideSections = [
   {
     icon: Trophy,
     title: "Kết Quả",
-    content: "Kết quả được xác định bằng tổng của 5 chữ số:\n- TÀI: nếu tổng lớn hơn hoặc bằng 23.\n- XỈU: nếu tổng nhỏ hơn 23.\n- Chẵn: nếu tổng là số chẵn.\n- Lẻ: nếu tổng là số lẻ."
+    content: "Kết quả được xác định bằng t��ng của 5 chữ số:\n- TÀI: nếu tổng lớn hơn hoặc bằng 23.\n- XỈU: nếu tổng nhỏ hơn 23.\n- CH���N: nếu tổng là số chẵn.\n- LẺ: nếu tổng là số lẻ."
   },
   {
     icon: BarChart,
@@ -66,7 +66,7 @@ export function GameGuide({ open, onOpenChange }: GameGuideProps) {
             Tìm hiểu cách hoạt động của trò chơi giả lập này.
           </DialogDescription>
         </DialogHeader>
-        <div className="py-4 max-h-[60vh] overflow-y-auto pr-4">
+        <div className="py-4 max-h-[70vh] overflow-y-auto pr-4">
           <Accordion type="single" collapsible className="w-full" defaultValue="item-0">
             {guideSections.map((section, index) => (
               <AccordionItem value={`item-${index}`} key={index}>
